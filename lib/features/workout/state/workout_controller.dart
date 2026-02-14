@@ -2,11 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/exercise_log.dart';
 import '../../../core/models/exercise_type.dart';
-import '../../../data/persistence/gtg_persistence.dart';
-
-final persistenceProvider = Provider<GtgPersistence>((ref) {
-  return GtgPersistence();
-});
+import '../../../data/persistence/persistence_provider.dart';
 
 final workoutControllerProvider =
     AsyncNotifierProvider<WorkoutController, WorkoutState>(

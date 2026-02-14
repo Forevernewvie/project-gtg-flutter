@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -23,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text('리마인더'),
                 subtitle: const Text('반복 주기, 조용한 시간, 주말 쉬기'),
                 trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () {},
+                onTap: () => context.push('/settings/reminders'),
               ),
               Divider(height: 1, color: Colors.black.withValues(alpha: 0.06)),
               ListTile(
@@ -31,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
                 title: const Text('전체 기록'),
                 subtitle: const Text('날짜별/종목별로 모아보기'),
                 trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () {},
+                onTap: () => context.push('/settings/logs'),
               ),
             ],
           ),

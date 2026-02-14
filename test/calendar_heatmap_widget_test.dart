@@ -10,7 +10,7 @@ import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/data/persistence/directory_provider.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
-import 'package:project_gtg/features/workout/state/workout_controller.dart';
+import 'package:project_gtg/data/persistence/persistence_provider.dart';
 
 class _DummyDirectoryProvider implements DirectoryProvider {
   @override

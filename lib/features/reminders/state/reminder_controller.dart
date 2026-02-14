@@ -1,0 +1,78 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/clock.dart';
+import '../../../core/models/reminder_settings.dart';
+import '../../../data/persistence/persistence_provider.dart';
+import 'reminder_dependencies.dart';
+
+final reminderControllerProvider =
+    AsyncNotifierProvider<ReminderController, ReminderSettings>(
+      ReminderController.new,
+    );
+
+class ReminderController extends AsyncNotifier<ReminderSettings> {
+  @override
+  Future<ReminderSettings> build() async {
+    final persistence = ref.read(persistenceProvider);
+    final settings = await persistence.loadReminderSettings();
+
+    // If reminders are enabled, refresh today's schedule on app load.
+    if (settings.enabled) {
+      await _reschedule(settings);
+    }
+
+    return settings;
+  }
+
+  Future<bool> setEnabled(bool enabled) async {
+    final current = state.asData?.value ?? ReminderSettings.defaults;
+
+    if (!enabled) {
+      final updated = current.copyWith(enabled: false);
+      state = AsyncData(updated);
+      await ref.read(persistenceProvider).saveReminderSettings(updated);
+      await ref.read(reminderNotificationClientProvider).cancelAll();
+      return true;
+    }
+
+    final granted = await ref
+        .read(reminderPermissionClientProvider)
+        .requestPermission();
+    if (!granted) {
+      final updated = current.copyWith(enabled: false);
+      state = AsyncData(updated);
+      await ref.read(persistenceProvider).saveReminderSettings(updated);
+      await ref.read(reminderNotificationClientProvider).cancelAll();
+      return false;
+    }
+
+    final updated = current.copyWith(enabled: true);
+    state = AsyncData(updated);
+    await ref.read(persistenceProvider).saveReminderSettings(updated);
+    await _reschedule(updated);
+    return true;
+  }
+
+  Future<void> updateSettings(ReminderSettings updated) async {
+    state = AsyncData(updated);
+    await ref.read(persistenceProvider).saveReminderSettings(updated);
+
+    if (updated.enabled) {
+      await _reschedule(updated);
+    }
+  }
+
+  Future<void> _reschedule(ReminderSettings settings) async {
+    final planner = ref.read(reminderPlannerProvider);
+    final now = ref.read(clockProvider).now();
+    final times = planner.planForToday(now: now, settings: settings);
+
+    await ref
+        .read(reminderNotificationClientProvider)
+        .scheduleBatch(
+          times: times,
+          title: '한 세트 타이밍',
+          body: '푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.',
+        );
+  }
+}

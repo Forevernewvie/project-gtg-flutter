@@ -14,7 +14,7 @@ echo "[gate] flutter analyze"
 flutter analyze
 
 echo "[gate] flutter test"
-flutter test
+flutter test --dart-define=UI_TESTING=true
 
 echo "[gate] iOS smoke"
 "$ROOT_DIR/tool/smoke_ios.sh"
