@@ -13,7 +13,7 @@ final reminderPlannerProvider = Provider<ReminderPlanner>((ref) {
 final reminderPermissionClientProvider = Provider<ReminderPermissionClient>((
   ref,
 ) {
-  if (Env.uiTesting) {
+  if (Env.useFakes) {
     return const FakeReminderPermissionClient(granted: true);
   }
   return IosReminderPermissionClient();
@@ -21,7 +21,7 @@ final reminderPermissionClientProvider = Provider<ReminderPermissionClient>((
 
 final reminderNotificationClientProvider = Provider<ReminderNotificationClient>(
   (ref) {
-    if (Env.uiTesting) {
+    if (Env.useFakes) {
       return const FakeReminderNotificationClient();
     }
     return FlutterReminderNotificationClient();

@@ -13,9 +13,10 @@ GTG(Grease the Groove) 스타일의 푸쉬업/풀업/딥스 루틴을 “자주,
 - 빠른 기록: 종목별 반복 횟수 +/- 후 `기록` 한 번으로 저장
 - 통계: 오늘 누적(총합 + 종목별)
 - 캘린더: 월간 히트맵 + 날짜 탭 시 상세(하루 누적/종목별/기록 리스트)
-- (예정) 로컬 알림: 반복 주기, 조용한 시간, 주말 쉬기, 하루 최대 예약 개수
-- (예정) 온보딩: 주 종목 선택
-- (예정) 스플래시: 네이티브 런치 + 인앱 2초 오버레이(탭 스킵)
+- 로컬 알림: 반복 주기, 조용한 시간, 주말 쉬기, 하루 최대 예약 개수
+- 설정: 리마인더 / 전체 기록
+- 온보딩: 주 종목 선택(첫 실행 시)
+- 스플래시: 네이티브 런치 + 인앱 2초 오버레이(탭 스킵)
 
 ## Badges
 
@@ -47,7 +48,7 @@ lib/
   features/
     workout/           # dashboard quick log + stats providers
     calendar/          # month heatmap + day detail
-    settings/          # settings entry (reminders/all logs 예정)
+    settings/          # settings + reminders + all logs
 docs/
   adr/                 # decision records
   screenshots/         # iOS simulator screenshots (gate에서 갱신)
@@ -156,4 +157,3 @@ cd ../project-gtg-flutter-wt-verify
 ## 라이선스
 
 TBD
-

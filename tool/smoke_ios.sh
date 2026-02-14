@@ -12,7 +12,9 @@ mkdir -p docs/screenshots
 flutter pub get >/dev/null
 
 echo "[smoke] build iOS (simulator)"
-flutter build ios --simulator --debug --dart-define=UI_TESTING=true >/dev/null
+flutter build ios --simulator --debug \
+  --dart-define=UI_TESTING=true \
+  --dart-define=SMOKE_SCREENSHOTS=true >/dev/null
 
 APP_PATH="$ROOT_DIR/build/ios/iphonesimulator/Runner.app"
 if [[ ! -d "$APP_PATH" ]]; then

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/gtg_theme.dart';
+import 'root_overlays.dart';
 import 'router.dart';
 
 class GtgApp extends StatefulWidget {
@@ -21,6 +22,9 @@ class _GtgAppState extends State<GtgApp> {
       debugShowCheckedModeBanner: false,
       theme: GtgTheme.light(),
       routerConfig: _router,
+      builder: (context, child) {
+        return RootOverlays(child: child ?? const SizedBox.shrink());
+      },
     );
   }
 }
