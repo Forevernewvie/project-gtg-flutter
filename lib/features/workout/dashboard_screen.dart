@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/models/exercise_log.dart';
+import '../../core/models/exercise_type.dart';
 import '../../core/gtg_gradients.dart';
+import 'state/workout_controller.dart';
+import 'state/workout_stats_providers.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -18,13 +23,13 @@ class DashboardScreen extends StatelessWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: _EmptyQuickLogCard(),
+            child: _QuickLogCard(),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            child: _NextStepCard(),
+            child: _RecentLogsCard(),
           ),
         ),
       ],
@@ -32,9 +37,13 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-class _HeroCard extends StatelessWidget {
+class _HeroCard extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todayTotal = ref.watch(todayTotalSumProvider);
+    final todayTotals = ref.watch(todayTotalsProvider);
+    final activeDays = ref.watch(activeDaysLast14Provider);
+
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: GtgGradients.hero,
@@ -70,7 +79,7 @@ class _HeroCard extends StatelessWidget {
                     Text(
                       '완벽하게 말고, 자주. 한 세트씩만.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Colors.white.withValues(alpha: 0.90),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -90,7 +99,7 @@ class _HeroCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     child: Text(
-                      '활동일 0일',
+                      '활동일 $activeDays일',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -102,7 +111,8 @@ class _HeroCard extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             Text(
-              '0회',
+              '$todayTotal회',
+              key: const Key('dashboard.todayTotalValue'),
               style: Theme.of(context).textTheme.displayMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -112,11 +122,20 @@ class _HeroCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
-                _MetricChip(label: '푸쉬업', value: '0'),
+                _MetricChip(
+                  label: ExerciseType.pushUp.labelKo,
+                  value: '${todayTotals[ExerciseType.pushUp] ?? 0}',
+                ),
                 const SizedBox(width: 10),
-                _MetricChip(label: '풀업', value: '0'),
+                _MetricChip(
+                  label: ExerciseType.pullUp.labelKo,
+                  value: '${todayTotals[ExerciseType.pullUp] ?? 0}',
+                ),
                 const SizedBox(width: 10),
-                _MetricChip(label: '딥스', value: '0'),
+                _MetricChip(
+                  label: ExerciseType.dips.labelKo,
+                  value: '${todayTotals[ExerciseType.dips] ?? 0}',
+                ),
               ],
             ),
           ],
@@ -169,28 +188,187 @@ class _MetricChip extends StatelessWidget {
   }
 }
 
-class _EmptyQuickLogCard extends StatelessWidget {
+class _QuickLogCard extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_QuickLogCard> createState() => _QuickLogCardState();
+}
+
+class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
+  int pushUp = 10;
+  int pullUp = 5;
+  int dips = 8;
+
   @override
   Widget build(BuildContext context) {
+    final workout = ref.watch(workoutControllerProvider);
+    final isReady = workout.hasValue;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              '빠른 입력',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  '빠른 입력',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                TextButton(
+                  onPressed: isReady
+                      ? () async {
+                          await ref
+                              .read(workoutControllerProvider.notifier)
+                              .clearAll();
+                        }
+                      : null,
+                  child: const Text('초기화'),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
-            Text(
-              '첫 세트를 기록하면 오늘 페이스가 여기 표시됩니다.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black.withValues(alpha: 0.60),
-                fontWeight: FontWeight.w600,
+            _QuickLogRow(
+              type: ExerciseType.pushUp,
+              reps: pushUp,
+              onMinus: isReady
+                  ? () => setState(() => pushUp = (pushUp - 1).clamp(1, 999))
+                  : null,
+              onPlus: isReady
+                  ? () => setState(() => pushUp = pushUp + 1)
+                  : null,
+              onRecord: isReady
+                  ? () async {
+                      await ref
+                          .read(workoutControllerProvider.notifier)
+                          .addLog(ExerciseType.pushUp, pushUp);
+                    }
+                  : null,
+            ),
+            const SizedBox(height: 10),
+            _QuickLogRow(
+              type: ExerciseType.pullUp,
+              reps: pullUp,
+              onMinus: isReady
+                  ? () => setState(() => pullUp = (pullUp - 1).clamp(1, 999))
+                  : null,
+              onPlus: isReady
+                  ? () => setState(() => pullUp = pullUp + 1)
+                  : null,
+              onRecord: isReady
+                  ? () async {
+                      await ref
+                          .read(workoutControllerProvider.notifier)
+                          .addLog(ExerciseType.pullUp, pullUp);
+                    }
+                  : null,
+            ),
+            const SizedBox(height: 10),
+            _QuickLogRow(
+              type: ExerciseType.dips,
+              reps: dips,
+              onMinus: isReady
+                  ? () => setState(() => dips = (dips - 1).clamp(1, 999))
+                  : null,
+              onPlus: isReady ? () => setState(() => dips = dips + 1) : null,
+              onRecord: isReady
+                  ? () async {
+                      await ref
+                          .read(workoutControllerProvider.notifier)
+                          .addLog(ExerciseType.dips, dips);
+                    }
+                  : null,
+            ),
+            if (!isReady) ...<Widget>[
+              const SizedBox(height: 12),
+              Text(
+                '기록을 불러오는 중입니다...',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black.withValues(alpha: 0.60),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickLogRow extends StatelessWidget {
+  const _QuickLogRow({
+    required this.type,
+    required this.reps,
+    required this.onMinus,
+    required this.onPlus,
+    required this.onRecord,
+  });
+
+  final ExerciseType type;
+  final int reps;
+  final VoidCallback? onMinus;
+  final VoidCallback? onPlus;
+  final VoidCallback? onRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    final keyBase = switch (type) {
+      ExerciseType.pushUp => 'pushUp',
+      ExerciseType.pullUp => 'pullUp',
+      ExerciseType.dips => 'dips',
+    };
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    type.labelKo,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$reps회',
+                    key: Key('quicklog.$keyBase.value'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.black.withValues(alpha: 0.60),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              key: Key('quicklog.$keyBase.minus'),
+              onPressed: onMinus,
+              icon: const Icon(Icons.remove_rounded),
+            ),
+            IconButton(
+              key: Key('quicklog.$keyBase.plus'),
+              onPressed: onPlus,
+              icon: const Icon(Icons.add_rounded),
+            ),
+            const SizedBox(width: 6),
+            FilledButton(
+              key: Key('quicklog.$keyBase.record'),
+              onPressed: onRecord,
+              child: const Text('기록'),
             ),
           ],
         ),
@@ -199,9 +377,16 @@ class _EmptyQuickLogCard extends StatelessWidget {
   }
 }
 
-class _NextStepCard extends StatelessWidget {
+class _RecentLogsCard extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logs = ref.watch(workoutLogsProvider);
+
+    final recent = <ExerciseLog>[...logs]
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    final top = recent.take(5).toList(growable: false);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
@@ -209,18 +394,81 @@ class _NextStepCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              '데이터 수집',
+              '최근 기록',
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 10),
-            Text(
-              '우선 3일만 기록해보세요. 패턴이 쌓이면 다음 단계를 추천해드릴게요.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black.withValues(alpha: 0.60),
-                fontWeight: FontWeight.w600,
+            if (top.isEmpty)
+              Text(
+                '기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black.withValues(alpha: 0.60),
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            else
+              ...top.map(
+                (log) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _RecentLogRow(log: log),
+                ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecentLogRow extends StatelessWidget {
+  const _RecentLogRow({required this.log});
+
+  final ExerciseLog log;
+
+  @override
+  Widget build(BuildContext context) {
+    final time = TimeOfDay.fromDateTime(log.timestamp);
+    final hh = time.hour.toString().padLeft(2, '0');
+    final mm = time.minute.toString().padLeft(2, '0');
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    log.type.labelKo,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$hh:$mm',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              '${log.reps}회',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
             ),
           ],
         ),
