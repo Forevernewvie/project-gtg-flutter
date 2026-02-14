@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/clock.dart';
 import '../../../core/date_utils.dart';
 import '../../../core/models/exercise_log.dart';
 import '../../../core/models/exercise_type.dart';
@@ -20,7 +21,8 @@ final workoutLogsProvider = Provider<List<ExerciseLog>>((ref) {
 final todayTotalsProvider = Provider<Map<ExerciseType, int>>((ref) {
   final logs = ref.watch(workoutLogsProvider);
   final service = ref.watch(workoutAnalyticsServiceProvider);
-  return service.totalsForDay(logs, DateTime.now());
+  final now = ref.watch(clockProvider).now();
+  return service.totalsForDay(logs, now);
 });
 
 final todayTotalSumProvider = Provider<int>((ref) {
@@ -32,7 +34,7 @@ final activeDaysLast14Provider = Provider<int>((ref) {
   final logs = ref.watch(workoutLogsProvider);
   if (logs.isEmpty) return 0;
 
-  final now = DateTime.now();
+  final now = ref.watch(clockProvider).now();
   final start = startOfDay(now).subtract(const Duration(days: 13));
   final days = <int>{};
 
