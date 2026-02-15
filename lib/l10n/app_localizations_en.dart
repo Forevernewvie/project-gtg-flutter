@@ -58,7 +58,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarSubtitleHeatmap =>
-      'The more you log, the darker it gets. (Monthly heatmap)';
+      'Darker means more logged. Monthly heatmap.';
 
   @override
   String get today => 'Today';
@@ -121,7 +121,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersSubheadline =>
-      'We only schedule within the remaining time today.';
+      'We only schedule within the time left today.';
 
   @override
   String get enableRemindersTitle => 'Enable reminders';
@@ -192,7 +192,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingSubtitle =>
-      'Not perfect, just frequent. Set 1 minute and start.';
+      'Not perfect, just frequent. Start in 1 minute.';
 
   @override
   String get onboardingQuestion => 'Which move will you focus on?';
@@ -239,5 +239,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifBody =>
-      'Just one of push-ups/pull-ups/dips. Keep your rhythm today.';
+      'Do one set: push-ups, pull-ups, or dips. Keep your rhythm today.';
 }

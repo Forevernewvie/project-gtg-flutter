@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarSubtitleHeatmap.
   ///
   /// In en, this message translates to:
-  /// **'The more you log, the darker it gets. (Monthly heatmap)'**
+  /// **'Darker means more logged. Monthly heatmap.'**
   String get calendarSubtitleHeatmap;
 
   /// No description provided for @today.
@@ -311,7 +311,7 @@ abstract class AppLocalizations {
   /// No description provided for @remindersSubheadline.
   ///
   /// In en, this message translates to:
-  /// **'We only schedule within the remaining time today.'**
+  /// **'We only schedule within the time left today.'**
   String get remindersSubheadline;
 
   /// No description provided for @enableRemindersTitle.
@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Not perfect, just frequent. Set 1 minute and start.'**
+  /// **'Not perfect, just frequent. Start in 1 minute.'**
   String get onboardingSubtitle;
 
   /// No description provided for @onboardingQuestion.
@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifBody.
   ///
   /// In en, this message translates to:
-  /// **'Just one of push-ups/pull-ups/dips. Keep your rhythm today.'**
+  /// **'Do one set: push-ups, pull-ups, or dips. Keep your rhythm today.'**
   String get notifBody;
 }
 

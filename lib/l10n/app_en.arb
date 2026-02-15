@@ -26,7 +26,7 @@
   "noLogsHintHome": "No logs yet. Log a set on Home.",
 
   "calendarTitle": "Rhythm Calendar",
-  "calendarSubtitleHeatmap": "The more you log, the darker it gets. (Monthly heatmap)",
+  "calendarSubtitleHeatmap": "Darker means more logged. Monthly heatmap.",
   "today": "Today",
   "prevMonthTooltip": "Previous month",
   "nextMonthTooltip": "Next month",
@@ -55,7 +55,7 @@
   "openExternalFailed": "Couldn't open.",
 
   "remindersHeadline": "Quiet and consistent",
-  "remindersSubheadline": "We only schedule within the remaining time today.",
+  "remindersSubheadline": "We only schedule within the time left today.",
   "enableRemindersTitle": "Enable reminders",
   "enableRemindersOffSubtitle": "Turn it on only when you want.",
   "enableRemindersNoSlotsSubtitle": "No time slots available. Check quiet hours/weekends off.",
@@ -107,7 +107,7 @@
   },
 
   "onboardingLater": "Later",
-  "onboardingSubtitle": "Not perfect, just frequent. Set 1 minute and start.",
+  "onboardingSubtitle": "Not perfect, just frequent. Start in 1 minute.",
   "onboardingQuestion": "Which move will you focus on?",
   "onboardingHint": "Your primary move shows first on Home.",
   "onboardingNext": "Next",
@@ -139,5 +139,5 @@
   },
 
   "notifTitle": "Time for a set",
-  "notifBody": "Just one of push-ups/pull-ups/dips. Keep your rhythm today."
+  "notifBody": "Do one set: push-ups, pull-ups, or dips. Keep your rhythm today."
 }
