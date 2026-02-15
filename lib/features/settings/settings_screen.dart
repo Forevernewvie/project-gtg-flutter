@@ -11,17 +11,17 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _openPrivacyPolicy(BuildContext context) async {
     final uri = Uri.tryParse(AppLinks.privacyPolicyUrl);
     if (uri == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('링크가 올바르지 않습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('링크가 올바르지 않습니다.')));
       return;
     }
 
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('브라우저를 열 수 없습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('브라우저를 열 수 없습니다.')));
     }
   }
 

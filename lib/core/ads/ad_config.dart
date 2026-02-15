@@ -45,4 +45,3 @@ abstract final class AdConfig {
     return bannerUnitIdAndroid;
   }
 }
-

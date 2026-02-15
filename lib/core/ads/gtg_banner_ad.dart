@@ -139,4 +139,3 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
     );
   }
 }
-

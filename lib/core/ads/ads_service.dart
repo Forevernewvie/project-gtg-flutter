@@ -19,12 +19,11 @@ class AdsService {
     return _initFuture!;
   }
 
-  BannerAd createBannerAd({
-    required AdSize size,
-    BannerAdListener? listener,
-  }) {
+  BannerAd createBannerAd({required AdSize size, BannerAdListener? listener}) {
     if (!isEnabled) {
-      throw StateError('AdsService.createBannerAd called when ads are disabled.');
+      throw StateError(
+        'AdsService.createBannerAd called when ads are disabled.',
+      );
     }
     if (!_initialized) {
       throw StateError(
@@ -40,4 +39,3 @@ class AdsService {
     );
   }
 }
-

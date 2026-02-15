@@ -5,4 +5,3 @@ abstract final class AppLinks {
         'https://raw.githubusercontent.com/Forevernewvie/project-gtg-flutter/main/docs/privacy_policy.md',
   );
 }
-
