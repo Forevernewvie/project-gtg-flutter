@@ -24,6 +24,32 @@ if (isReleaseRequested && !keystorePropertiesFile.exists()) {
     )
 }
 
+val admobTestAppIdAndroid = "ca-app-pub-3940256099942544~3347511713"
+
+fun readLocalProperty(name: String): String? {
+    val local = rootProject.file("local.properties")
+    if (!local.exists()) return null
+
+    val props = Properties()
+    props.load(FileInputStream(local))
+    return props.getProperty(name)
+}
+
+val admobAppIdAndroid = System.getenv("ADMOB_APP_ID_ANDROID")
+    ?.trim()
+    ?.takeIf { it.isNotEmpty() }
+    ?: readLocalProperty("ADMOB_APP_ID_ANDROID")
+        ?.trim()
+        ?.takeIf { it.isNotEmpty() }
+    ?: ""
+
+if (isReleaseRequested && admobAppIdAndroid.isBlank()) {
+    throw GradleException(
+        "Missing AdMob App ID for release. " +
+            "Set env ADMOB_APP_ID_ANDROID or local.properties ADMOB_APP_ID_ANDROID.",
+    )
+}
+
 android {
     namespace = "com.forevernewvie.projectgtg"
     compileSdk = flutter.compileSdkVersion
@@ -79,8 +105,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Debug uses Google's test App ID.
+            manifestPlaceholders["ADMOB_APP_ID"] = admobTestAppIdAndroid
+        }
         release {
             // Signed via android/key.properties (gitignored). Release builds must fail if missing.
+            manifestPlaceholders["ADMOB_APP_ID"] = admobAppIdAndroid
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
