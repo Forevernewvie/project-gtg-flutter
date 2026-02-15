@@ -1,4 +1,4 @@
-package chart.project_gtg
+package com.forevernewvie.projectgtg
 
 import io.flutter.embedding.android.FlutterActivity
 
