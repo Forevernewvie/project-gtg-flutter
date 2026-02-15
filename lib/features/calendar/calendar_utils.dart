@@ -1,7 +1,3 @@
-String monthLabelKo(DateTime month) {
-  return '${month.year}년 ${month.month}월';
-}
-
 int daysInMonth(DateTime month) {
   // Day 0 of next month is the last day of current month.
   return DateTime(month.year, month.month + 1, 0).day;

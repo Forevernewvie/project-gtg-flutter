@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/gtg_gradients.dart';
+import '../l10n/app_localizations.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
@@ -12,6 +13,8 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return DecoratedBox(
       decoration: const BoxDecoration(gradient: GtgGradients.pageBackground),
       child: Scaffold(
@@ -27,18 +30,18 @@ class AppShell extends StatelessWidget {
                 child: NavigationBar(
                   selectedIndex: navigationShell.currentIndex,
                   onDestinationSelected: navigationShell.goBranch,
-                  destinations: const <NavigationDestination>[
+                  destinations: <NavigationDestination>[
                     NavigationDestination(
-                      icon: Icon(Icons.home_rounded),
-                      label: '홈',
+                      icon: const Icon(Icons.home_rounded),
+                      label: l10n.navHome,
                     ),
                     NavigationDestination(
-                      icon: Icon(Icons.calendar_month_rounded),
-                      label: '캘린더',
+                      icon: const Icon(Icons.calendar_month_rounded),
+                      label: l10n.navCalendar,
                     ),
                     NavigationDestination(
-                      icon: Icon(Icons.tune_rounded),
-                      label: '설정',
+                      icon: const Icon(Icons.tune_rounded),
+                      label: l10n.navSettings,
                     ),
                   ],
                 ),

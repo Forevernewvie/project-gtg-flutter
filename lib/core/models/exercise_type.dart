@@ -9,14 +9,6 @@ extension ExerciseTypeX on ExerciseType {
     };
   }
 
-  String get labelKo {
-    return switch (this) {
-      ExerciseType.pushUp => '푸쉬업',
-      ExerciseType.pullUp => '풀업',
-      ExerciseType.dips => '딥스',
-    };
-  }
-
   static ExerciseType? fromKey(String value) {
     return switch (value) {
       'pushUp' => ExerciseType.pushUp,

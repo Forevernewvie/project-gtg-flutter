@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
 import '../../core/gtg_gradients.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/exercise_type_l10n.dart';
 import 'state/workout_controller.dart';
 import 'state/workout_stats_providers.dart';
 
@@ -40,6 +42,8 @@ class DashboardScreen extends ConsumerWidget {
 class _HeroCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     final todayTotal = ref.watch(todayTotalSumProvider);
     final todayTotals = ref.watch(todayTotalsProvider);
     final activeDays = ref.watch(activeDaysLast14Provider);
@@ -68,7 +72,7 @@ class _HeroCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      '오늘의 루틴',
+                      l10n.dashboardTitle,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             color: Colors.white,
@@ -77,7 +81,7 @@ class _HeroCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '완벽하게 말고, 자주. 한 세트씩만.',
+                      l10n.dashboardSubtitle,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.90),
                         fontWeight: FontWeight.w600,
@@ -99,7 +103,7 @@ class _HeroCard extends ConsumerWidget {
                       vertical: 6,
                     ),
                     child: Text(
-                      '활동일 $activeDays일',
+                      l10n.activeDaysPill(activeDays),
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -111,7 +115,7 @@ class _HeroCard extends ConsumerWidget {
             ),
             const SizedBox(height: 18),
             Text(
-              '$todayTotal회',
+              l10n.repsWithUnit(todayTotal),
               key: const Key('dashboard.todayTotalValue'),
               style: Theme.of(context).textTheme.displayMedium?.copyWith(
                 color: Colors.white,
@@ -123,17 +127,17 @@ class _HeroCard extends ConsumerWidget {
             Row(
               children: <Widget>[
                 _MetricChip(
-                  label: ExerciseType.pushUp.labelKo,
+                  label: ExerciseType.pushUp.label(l10n),
                   value: '${todayTotals[ExerciseType.pushUp] ?? 0}',
                 ),
                 const SizedBox(width: 10),
                 _MetricChip(
-                  label: ExerciseType.pullUp.labelKo,
+                  label: ExerciseType.pullUp.label(l10n),
                   value: '${todayTotals[ExerciseType.pullUp] ?? 0}',
                 ),
                 const SizedBox(width: 10),
                 _MetricChip(
-                  label: ExerciseType.dips.labelKo,
+                  label: ExerciseType.dips.label(l10n),
                   value: '${todayTotals[ExerciseType.dips] ?? 0}',
                 ),
               ],
@@ -200,6 +204,8 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final workout = ref.watch(workoutControllerProvider);
     final isReady = workout.hasValue;
 
@@ -213,7 +219,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  '빠른 입력',
+                  l10n.quickLogTitle,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
@@ -226,7 +232,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
                               .clearAll();
                         }
                       : null,
-                  child: const Text('초기화'),
+                  child: Text(l10n.reset),
                 ),
               ],
             ),
@@ -285,7 +291,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
             if (!isReady) ...<Widget>[
               const SizedBox(height: 12),
               Text(
-                '기록을 불러오는 중입니다...',
+                l10n.loadingLogs,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.black.withValues(alpha: 0.60),
                   fontWeight: FontWeight.w600,
@@ -316,6 +322,8 @@ class _QuickLogRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final keyBase = switch (type) {
       ExerciseType.pushUp => 'pushUp',
       ExerciseType.pullUp => 'pullUp',
@@ -337,14 +345,14 @@ class _QuickLogRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    type.labelKo,
+                    type.label(l10n),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$reps회',
+                    l10n.repsWithUnit(reps),
                     key: Key('quicklog.$keyBase.value'),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.black.withValues(alpha: 0.60),
@@ -368,7 +376,7 @@ class _QuickLogRow extends StatelessWidget {
             FilledButton(
               key: Key('quicklog.$keyBase.record'),
               onPressed: onRecord,
-              child: const Text('기록'),
+              child: Text(l10n.record),
             ),
           ],
         ),
@@ -380,6 +388,8 @@ class _QuickLogRow extends StatelessWidget {
 class _RecentLogsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     final logs = ref.watch(workoutLogsProvider);
 
     final recent = <ExerciseLog>[...logs]
@@ -394,7 +404,7 @@ class _RecentLogsCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              '최근 기록',
+              l10n.recentLogsTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
@@ -402,7 +412,7 @@ class _RecentLogsCard extends ConsumerWidget {
             const SizedBox(height: 10),
             if (top.isEmpty)
               Text(
-                '기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.',
+                l10n.noLogsHint,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.black.withValues(alpha: 0.60),
                   fontWeight: FontWeight.w600,
@@ -429,6 +439,8 @@ class _RecentLogRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final time = TimeOfDay.fromDateTime(log.timestamp);
     final hh = time.hour.toString().padLeft(2, '0');
     final mm = time.minute.toString().padLeft(2, '0');
@@ -448,7 +460,7 @@ class _RecentLogRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    log.type.labelKo,
+                    log.type.label(l10n),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -465,7 +477,7 @@ class _RecentLogRow extends StatelessWidget {
               ),
             ),
             Text(
-              '${log.reps}회',
+              l10n.repsWithUnit(log.reps),
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),

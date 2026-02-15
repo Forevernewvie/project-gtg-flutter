@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/gtg_gradients.dart';
 import '../../core/models/exercise_type.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/exercise_type_l10n.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
@@ -25,6 +27,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return DecoratedBox(
       decoration: const BoxDecoration(gradient: GtgGradients.pageBackground),
       child: SafeArea(
@@ -39,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        'PROJECT GTG',
+                        l10n.appTitle,
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.w900),
                       ),
@@ -53,13 +57,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               if (!context.mounted) return;
                               setState(() => _busy = false);
                             },
-                      child: const Text('나중에'),
+                      child: Text(l10n.onboardingLater),
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.',
+                  l10n.onboardingSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.black.withValues(alpha: 0.60),
                     fontWeight: FontWeight.w600,
@@ -67,14 +71,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  '주로 어떤 동작을 할까요?',
+                  l10n.onboardingQuestion,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.',
+                  l10n.onboardingHint,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.black.withValues(alpha: 0.60),
                     fontWeight: FontWeight.w600,
@@ -88,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ? null
                       : () => setState(() => _selected = ExerciseType.pushUp),
                   accent: const Color(0xFF1B77D3),
-                  subtitle: '가장 빠른 루틴. 어디서든 시작',
+                  subtitle: l10n.onboardingPushUpSubtitle,
                 ),
                 const SizedBox(height: 10),
                 _PickCard(
@@ -98,7 +102,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ? null
                       : () => setState(() => _selected = ExerciseType.pullUp),
                   accent: const Color(0xFF26A07A),
-                  subtitle: '상체 당기기. 폼이 핵심',
+                  subtitle: l10n.onboardingPullUpSubtitle,
                 ),
                 const SizedBox(height: 10),
                 _PickCard(
@@ -108,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ? null
                       : () => setState(() => _selected = ExerciseType.dips),
                   accent: const Color(0xFFF0772C),
-                  subtitle: '푸쉬 라인 강화. 어깨 각도 주의',
+                  subtitle: l10n.onboardingDipsSubtitle,
                 ),
                 const Spacer(),
                 if (_busy) ...<Widget>[
@@ -132,7 +136,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         borderRadius: BorderRadius.circular(999),
                       ),
                     ),
-                    child: const Text('다음'),
+                    child: Text(l10n.onboardingNext),
                   ),
                 ),
               ],
@@ -161,6 +165,8 @@ class _PickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final borderColor = selected
         ? accent
         : Colors.black.withValues(alpha: 0.08);
@@ -200,7 +206,7 @@ class _PickCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      type.labelKo,
+                      type.label(l10n),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),

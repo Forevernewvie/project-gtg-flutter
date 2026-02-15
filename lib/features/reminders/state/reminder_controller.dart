@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../core/clock.dart';
 import '../../../core/models/reminder_settings.dart';
 import '../../../data/persistence/persistence_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import 'reminder_dependencies.dart';
 
 final reminderControllerProvider =
@@ -98,12 +100,26 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
     final now = ref.read(clockProvider).now();
     final times = planner.planForToday(now: now, settings: settings);
 
+    final (title, body) = await _loadNotificationStrings();
+
     await ref
         .read(reminderNotificationClientProvider)
-        .scheduleBatch(
-          times: times,
-          title: '한 세트 타이밍',
-          body: '푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.',
-        );
+        .scheduleBatch(times: times, title: title, body: body);
+  }
+
+  Future<(String, String)> _loadNotificationStrings() async {
+    try {
+      final locale = WidgetsBinding.instance.platformDispatcher.locale;
+      final l10n = await AppLocalizations.delegate.load(locale);
+      return (l10n.notifTitle, l10n.notifBody);
+    } catch (_) {
+      try {
+        final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+        return (l10n.notifTitle, l10n.notifBody);
+      } catch (_) {
+        // Best-effort fallback.
+        return ('Time for a set', 'Log one set to keep your rhythm today.');
+      }
+    }
   }
 }

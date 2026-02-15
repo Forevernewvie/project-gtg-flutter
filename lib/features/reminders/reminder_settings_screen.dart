@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/clock.dart';
 import '../../core/models/reminder_settings.dart';
 import '../../core/gtg_colors.dart';
+import '../../l10n/app_localizations.dart';
 import 'state/reminder_controller.dart';
 import 'state/reminder_providers.dart';
 
@@ -22,6 +23,8 @@ class _ReminderSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final asyncSettings = ref.watch(reminderControllerProvider);
     final settings = asyncSettings.asData?.value ?? ReminderSettings.defaults;
     final plannedTimes = ref.watch(plannedReminderTimesProvider);
@@ -29,19 +32,19 @@ class _ReminderSettingsScreenState
     final nextTime = plannedTimes.isNotEmpty ? plannedTimes.first : null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('리마인더')),
+      appBar: AppBar(title: Text(l10n.remindersTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
         children: <Widget>[
           Text(
-            '조용하게, 꾸준히',
+            l10n.remindersHeadline,
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 6),
           Text(
-            '반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.',
+            l10n.remindersSubheadline,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.black.withValues(alpha: 0.60),
               fontWeight: FontWeight.w600,
@@ -61,7 +64,7 @@ class _ReminderSettingsScreenState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              '리마인더 켜기',
+                              l10n.enableRemindersTitle,
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.w900),
                             ),
@@ -115,7 +118,7 @@ class _ReminderSettingsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    '주기',
+                    l10n.scheduleSectionTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -125,10 +128,10 @@ class _ReminderSettingsScreenState
                     children: <Widget>[
                       Expanded(
                         child: _DropdownField<int>(
-                          label: '반복 간격',
+                          label: l10n.intervalLabel,
                           value: settings.intervalMinutes,
                           items: const <int>[15, 30, 45, 60, 90, 120, 180],
-                          labelFor: (m) => '$m분',
+                          labelFor: l10n.minutesShort,
                           onChanged: (value) async {
                             if (value == null) return;
                             await ref
@@ -142,7 +145,7 @@ class _ReminderSettingsScreenState
                       const SizedBox(width: 12),
                       Expanded(
                         child: _StepperField(
-                          label: '하루 최대',
+                          label: l10n.maxPerDayLabel,
                           value: settings.maxPerDay,
                           min: 1,
                           max: 64,
@@ -169,7 +172,7 @@ class _ReminderSettingsScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    '조용한 시간',
+                    l10n.quietHoursTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -179,7 +182,7 @@ class _ReminderSettingsScreenState
                     children: <Widget>[
                       Expanded(
                         child: _TimeField(
-                          label: '시작',
+                          label: l10n.startLabel,
                           minutes: settings.quietStartMinutes,
                           onPick: (value) async {
                             await ref
@@ -193,7 +196,7 @@ class _ReminderSettingsScreenState
                       const SizedBox(width: 12),
                       Expanded(
                         child: _TimeField(
-                          label: '끝',
+                          label: l10n.endLabel,
                           minutes: settings.quietEndMinutes,
                           onPick: (value) async {
                             await ref
@@ -217,8 +220,8 @@ class _ReminderSettingsScreenState
                             settings.copyWith(skipWeekends: value),
                           );
                     },
-                    title: const Text('주말 쉬기'),
-                    subtitle: const Text('토/일에는 예약하지 않음'),
+                    title: Text(l10n.weekendsOffTitle),
+                    subtitle: Text(l10n.weekendsOffSubtitle),
                   ),
                   const SizedBox(height: 6),
                   DecoratedBox(
@@ -237,7 +240,7 @@ class _ReminderSettingsScreenState
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              '알림은 소리 없이 조용히 표시됩니다.',
+                              l10n.silentNotificationsInfo,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
                                     color: Colors.black.withValues(alpha: 0.70),
@@ -263,11 +266,13 @@ class _ReminderSettingsScreenState
   }
 
   void _showPermissionDeniedSnackBar(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('알림 권한이 필요합니다. 설정에서 허용해주세요.'),
+        content: Text(l10n.permissionDenied),
         action: SnackBarAction(
-          label: '설정',
+          label: l10n.openSettings,
           onPressed: () {
             try {
               AppSettings.openAppSettings(type: AppSettingsType.notification);
@@ -286,16 +291,18 @@ class _ReminderSettingsScreenState
     required DateTime? nextTime,
     required int plannedCount,
   }) {
-    if (!enabled) return '원할 때만 켜고 끌 수 있어요.';
+    final l10n = AppLocalizations.of(context)!;
+
+    if (!enabled) return l10n.enableRemindersOffSubtitle;
     if (nextTime == null) {
-      return '예약할 시간이 없어요. 조용한 시간/주말 쉬기 설정을 확인해주세요.';
+      return l10n.enableRemindersNoSlotsSubtitle;
     }
 
-    final label = _formatNextTime(now, nextTime);
-    return '다음 알림 $label · $plannedCount개 예약됨';
+    final label = _formatNextTime(now, nextTime, l10n);
+    return l10n.enableRemindersNextScheduledSubtitle(label, plannedCount);
   }
 
-  String _formatNextTime(DateTime now, DateTime next) {
+  String _formatNextTime(DateTime now, DateTime next, AppLocalizations l10n) {
     final time = TimeOfDay.fromDateTime(next);
     final hh = time.hour.toString().padLeft(2, '0');
     final mm = time.minute.toString().padLeft(2, '0');
@@ -310,7 +317,7 @@ class _ReminderSettingsScreenState
         tomorrow.month == next.month &&
         tomorrow.day == next.day;
 
-    if (isTomorrow) return '내일 $hh:$mm';
+    if (isTomorrow) return l10n.tomorrowAt('$hh:$mm');
     return '${next.month}/${next.day} $hh:$mm';
   }
 }
@@ -423,6 +430,8 @@ class _TimeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final time = TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
     final hh = time.hour.toString().padLeft(2, '0');
     final mm = time.minute.toString().padLeft(2, '0');
@@ -433,7 +442,7 @@ class _TimeField extends StatelessWidget {
         final picked = await showTimePicker(
           context: context,
           initialTime: time,
-          helpText: '$label 시간 선택',
+          helpText: l10n.pickTimeHelp(label),
         );
         if (picked == null) return;
         onPick(picked.hour * 60 + picked.minute);

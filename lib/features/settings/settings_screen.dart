@@ -4,16 +4,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ads/gtg_banner_ad.dart';
 import '../../core/app_links.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
     final uri = Uri.tryParse(AppLinks.privacyPolicyUrl);
     if (uri == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('링크가 올바르지 않습니다.')));
+      ).showSnackBar(SnackBar(content: Text(l10n.invalidLink)));
       return;
     }
 
@@ -21,17 +24,19 @@ class SettingsScreen extends StatelessWidget {
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('브라우저를 열 수 없습니다.')));
+      ).showSnackBar(SnackBar(content: Text(l10n.cannotOpenBrowser)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
       children: <Widget>[
         Text(
-          '설정',
+          l10n.settingsTitle,
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900),
@@ -42,16 +47,16 @@ class SettingsScreen extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.notifications_active_rounded),
-                title: const Text('리마인더'),
-                subtitle: const Text('반복 주기, 조용한 시간, 주말 쉬기'),
+                title: Text(l10n.remindersTitle),
+                subtitle: Text(l10n.remindersSubtitle),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => context.push('/settings/reminders'),
               ),
               Divider(height: 1, color: Colors.black.withValues(alpha: 0.06)),
               ListTile(
                 leading: const Icon(Icons.list_alt_rounded),
-                title: const Text('전체 기록'),
-                subtitle: const Text('날짜별/종목별로 모아보기'),
+                title: Text(l10n.allLogsTitle),
+                subtitle: Text(l10n.allLogsSubtitle),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => context.push('/settings/logs'),
               ),
@@ -64,15 +69,15 @@ class SettingsScreen extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.info_outline_rounded),
-                title: const Text('앱 정보'),
-                subtitle: const Text('PROJECT GTG'),
+                title: Text(l10n.aboutTitle),
+                subtitle: Text(l10n.appTitle),
                 onTap: () {},
               ),
               Divider(height: 1, color: Colors.black.withValues(alpha: 0.06)),
               ListTile(
                 leading: const Icon(Icons.privacy_tip_outlined),
-                title: const Text('개인정보 처리방침'),
-                subtitle: const Text('광고/데이터 처리 안내'),
+                title: Text(l10n.privacyPolicyTitle),
+                subtitle: Text(l10n.privacyPolicySubtitle),
                 trailing: const Icon(Icons.open_in_new_rounded),
                 onTap: () => _openPrivacyPolicy(context),
               ),

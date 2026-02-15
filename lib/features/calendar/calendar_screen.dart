@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/clock.dart';
 import '../../core/date_utils.dart';
 import '../../core/gtg_colors.dart';
+import '../../core/l10n/gtg_date_formatters.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/exercise_type_l10n.dart';
 import '../workout/state/workout_stats_providers.dart';
 import 'calendar_utils.dart';
 
@@ -45,6 +48,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final logs = ref.watch(workoutLogsProvider);
     final service = ref.watch(workoutAnalyticsServiceProvider);
 
@@ -96,13 +101,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '리듬 캘린더',
+                        l10n.calendarTitle,
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        '기록이 쌓일수록 더 진해집니다. (월간 히트맵)',
+                        l10n.calendarSubtitleHeatmap,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.black.withValues(alpha: 0.60),
                           fontWeight: FontWeight.w600,
@@ -114,7 +119,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 TextButton.icon(
                   onPressed: _jumpToToday,
                   icon: const Icon(Icons.my_location_rounded, size: 18),
-                  label: const Text('오늘'),
+                  label: Text(l10n.today),
                 ),
               ],
             ),
@@ -133,18 +138,21 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            monthLabelKo(_visibleMonth),
+                            GtgDateFormatters.monthLabel(
+                              _visibleMonth,
+                              l10n.localeName,
+                            ),
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.w900),
                           ),
                         ),
                         IconButton(
-                          tooltip: '이전 달',
+                          tooltip: l10n.prevMonthTooltip,
                           onPressed: () => _goToMonth(-1),
                           icon: const Icon(Icons.chevron_left_rounded),
                         ),
                         IconButton(
-                          tooltip: '다음 달',
+                          tooltip: l10n.nextMonthTooltip,
                           onPressed: () => _goToMonth(1),
                           icon: const Icon(Icons.chevron_right_rounded),
                         ),
@@ -153,13 +161,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     const SizedBox(height: 8),
                     Row(
                       children: <Widget>[
-                        _MiniStatChip(label: '이번 달 누적', value: '$monthSum회'),
+                        _MiniStatChip(
+                          label: l10n.monthTotalLabel,
+                          value: l10n.repsWithUnit(monthSum),
+                        ),
                         const SizedBox(width: 10),
-                        _MiniStatChip(label: '활동일', value: '$activeDays일'),
+                        _MiniStatChip(
+                          label: l10n.activeDaysLabel,
+                          value: l10n.daysWithUnit(activeDays),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 14),
-                    const _WeekdayRow(),
+                    _WeekdayRow(
+                      labels: GtgDateFormatters.weekdayLabelsSunFirst(
+                        l10n.localeName,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     _MonthHeatmap(
                       monthStart: monthStart,
@@ -185,7 +203,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      _formatSelectedDateKo(selectedDay),
+                      GtgDateFormatters.monthDayWithWeekday(
+                        selectedDay,
+                        l10n.localeName,
+                      ),
                       key: const Key('calendar.selectedDateLabel'),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
@@ -193,7 +214,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '하루 누적 $selectedSum회',
+                      l10n.dayTotal(selectedSum),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.black.withValues(alpha: 0.60),
                         fontWeight: FontWeight.w700,
@@ -203,17 +224,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     Row(
                       children: <Widget>[
                         _MiniStatChip(
-                          label: ExerciseType.pushUp.labelKo,
+                          label: ExerciseType.pushUp.label(l10n),
                           value: '${selectedTotals[ExerciseType.pushUp] ?? 0}',
                         ),
                         const SizedBox(width: 10),
                         _MiniStatChip(
-                          label: ExerciseType.pullUp.labelKo,
+                          label: ExerciseType.pullUp.label(l10n),
                           value: '${selectedTotals[ExerciseType.pullUp] ?? 0}',
                         ),
                         const SizedBox(width: 10),
                         _MiniStatChip(
-                          label: ExerciseType.dips.labelKo,
+                          label: ExerciseType.dips.label(l10n),
                           value: '${selectedTotals[ExerciseType.dips] ?? 0}',
                         ),
                       ],
@@ -221,7 +242,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     const SizedBox(height: 14),
                     if (selectedSorted.isEmpty)
                       Text(
-                        '이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.',
+                        l10n.noLogsForDay,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.black.withValues(alpha: 0.60),
                           fontWeight: FontWeight.w600,
@@ -243,20 +264,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       ],
     );
   }
-
-  String _formatSelectedDateKo(DateTime date) {
-    const weekdays = <String>['일', '월', '화', '수', '목', '금', '토'];
-    final weekday = weekdays[date.weekday % 7];
-    return '${date.month}월 ${date.day}일 ($weekday)';
-  }
 }
 
 class _WeekdayRow extends StatelessWidget {
-  const _WeekdayRow();
+  const _WeekdayRow({required this.labels});
+
+  final List<String> labels;
 
   @override
   Widget build(BuildContext context) {
-    const labels = <String>['일', '월', '화', '수', '목', '금', '토'];
     return Row(
       children: <Widget>[
         for (final label in labels)
@@ -424,6 +440,8 @@ class _DayLogRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final time = TimeOfDay.fromDateTime(log.timestamp);
     final hh = time.hour.toString().padLeft(2, '0');
     final mm = time.minute.toString().padLeft(2, '0');
@@ -443,7 +461,7 @@ class _DayLogRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    log.type.labelKo,
+                    log.type.label(l10n),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -460,7 +478,7 @@ class _DayLogRow extends StatelessWidget {
               ),
             ),
             Text(
-              '${log.reps}회',
+              l10n.repsWithUnit(log.reps),
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),

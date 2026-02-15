@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/ads/gtg_banner_ad.dart';
 import '../../core/date_utils.dart';
+import '../../core/l10n/gtg_date_formatters.dart';
 import '../../core/models/exercise_log.dart';
-import '../../core/models/exercise_type.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/exercise_type_l10n.dart';
 import '../workout/state/workout_stats_providers.dart';
 
 class AllLogsScreen extends ConsumerWidget {
@@ -12,6 +14,8 @@ class AllLogsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     final logs = ref.watch(workoutLogsProvider);
     final sorted = <ExerciseLog>[...logs]
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -26,7 +30,7 @@ class AllLogsScreen extends ConsumerWidget {
       ..sort((a, b) => b.compareTo(a));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('전체 기록')),
+      appBar: AppBar(title: Text(l10n.allLogsTitle)),
       bottomNavigationBar: const GtgBannerAd(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
       ),
@@ -38,7 +42,7 @@ class AllLogsScreen extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
                 child: Text(
-                  '기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.',
+                  l10n.noLogsHintHome,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.black.withValues(alpha: 0.60),
                     fontWeight: FontWeight.w600,
@@ -80,8 +84,10 @@ class _DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final total = logs.fold<int>(0, (sum, log) => sum + log.reps);
-    final label = _formatDateKo(day);
+    final label = GtgDateFormatters.monthDayWithWeekday(day, l10n.localeName);
 
     return Row(
       children: <Widget>[
@@ -102,7 +108,7 @@ class _DayHeader extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Text(
-              '$total회',
+              l10n.repsWithUnit(total),
               style: Theme.of(
                 context,
               ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w900),
@@ -111,12 +117,6 @@ class _DayHeader extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _formatDateKo(DateTime date) {
-    const weekdays = <String>['일', '월', '화', '수', '목', '금', '토'];
-    final weekday = weekdays[date.weekday % 7];
-    return '${date.month}월 ${date.day}일 ($weekday)';
   }
 }
 
@@ -127,6 +127,8 @@ class _LogRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final time = TimeOfDay.fromDateTime(log.timestamp);
     final hh = time.hour.toString().padLeft(2, '0');
     final mm = time.minute.toString().padLeft(2, '0');
@@ -146,7 +148,7 @@ class _LogRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    log.type.labelKo,
+                    log.type.label(l10n),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -163,7 +165,7 @@ class _LogRow extends StatelessWidget {
               ),
             ),
             Text(
-              '${log.reps}회',
+              l10n.repsWithUnit(log.reps),
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
