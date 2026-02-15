@@ -18,10 +18,41 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
 
     // If reminders are enabled, refresh today's schedule on app load.
     if (settings.enabled) {
+      final hasPermission = await ref
+          .read(reminderPermissionClientProvider)
+          .hasPermission();
+      if (!hasPermission) {
+        final updated = settings.copyWith(enabled: false);
+        await persistence.saveReminderSettings(updated);
+        await ref.read(reminderNotificationClientProvider).cancelAll();
+        return updated;
+      }
+
       await _reschedule(settings);
     }
 
     return settings;
+  }
+
+  /// Called when the app returns to foreground.
+  ///
+  /// Keeps reminder state in sync when users toggle permissions in iOS Settings.
+  Future<void> onAppForeground() async {
+    final current = state.asData?.value;
+    if (current == null || !current.enabled) return;
+
+    final hasPermission = await ref
+        .read(reminderPermissionClientProvider)
+        .hasPermission();
+    if (!hasPermission) {
+      final updated = current.copyWith(enabled: false);
+      state = AsyncData(updated);
+      await ref.read(persistenceProvider).saveReminderSettings(updated);
+      await ref.read(reminderNotificationClientProvider).cancelAll();
+      return;
+    }
+
+    await _reschedule(current);
   }
 
   Future<bool> setEnabled(bool enabled) async {

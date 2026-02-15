@@ -7,6 +7,7 @@ import '../core/env.dart';
 import '../core/gtg_gradients.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
+import '../features/reminders/state/reminder_controller.dart';
 
 class RootOverlays extends ConsumerStatefulWidget {
   const RootOverlays({super.key, required this.child});
@@ -17,13 +18,15 @@ class RootOverlays extends ConsumerStatefulWidget {
   ConsumerState<RootOverlays> createState() => _RootOverlaysState();
 }
 
-class _RootOverlaysState extends ConsumerState<RootOverlays> {
+class _RootOverlaysState extends ConsumerState<RootOverlays>
+    with WidgetsBindingObserver {
   Timer? _timer;
   bool _showSplash = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     final allowSplash =
         !Env.isTestRuntime && (!Env.uiTesting || Env.smokeScreenshots);
@@ -40,8 +43,18 @@ class _RootOverlaysState extends ConsumerState<RootOverlays> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (Env.isTestRuntime) return;
+    if (state != AppLifecycleState.resumed) return;
+
+    // Keep reminders in sync when users change permissions in iOS Settings.
+    unawaited(ref.read(reminderControllerProvider.notifier).onAppForeground());
   }
 
   void _skipSplash() {

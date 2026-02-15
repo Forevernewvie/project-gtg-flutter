@@ -27,6 +27,22 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
   }
 
   @override
+  Future<bool> hasPermission() async {
+    await _ensureInitialized();
+
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+
+    final status = await ios?.checkPermissions();
+    if (status == null) return false;
+
+    return status.isEnabled &&
+        (status.isAlertEnabled || status.isProvisionalEnabled);
+  }
+
+  @override
   Future<bool> requestPermission() async {
     await _ensureInitialized();
 

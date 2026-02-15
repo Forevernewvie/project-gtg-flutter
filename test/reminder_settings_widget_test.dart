@@ -84,6 +84,32 @@ void main() {
     expect(notifications.cancelCalls, 1);
     expect(find.text('알림 권한이 필요합니다. 설정에서 허용해주세요.'), findsOneWidget);
   });
+
+  testWidgets('revoked permission disables reminders on load', (tester) async {
+    final persistence = _MemoryPersistence(
+      reminderSettings: ReminderSettings.defaults.copyWith(enabled: true),
+    );
+    final permission = _SpyPermissionClient(granted: false);
+    final notifications = _SpyNotificationClient();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          persistenceProvider.overrideWithValue(persistence),
+          reminderPermissionClientProvider.overrideWithValue(permission),
+          reminderNotificationClientProvider.overrideWithValue(notifications),
+          clockProvider.overrideWithValue(
+            _FixedClock(DateTime(2026, 2, 15, 10, 0)),
+          ),
+        ],
+        child: const MaterialApp(home: ReminderSettingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(permission.hasCalls, 1);
+    expect(notifications.cancelCalls, 1);
+  });
 }
 
 class _FixedClock implements Clock {
@@ -112,7 +138,14 @@ class _SpyPermissionClient implements ReminderPermissionClient {
   _SpyPermissionClient({required this.granted});
 
   final bool granted;
+  int hasCalls = 0;
   int calls = 0;
+
+  @override
+  Future<bool> hasPermission() async {
+    hasCalls++;
+    return granted;
+  }
 
   @override
   Future<bool> requestPermission() async {

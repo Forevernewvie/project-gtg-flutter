@@ -21,7 +21,7 @@ void main() {
     expect(times[1], DateTime(2026, 2, 14, 12, 0));
   });
 
-  test('quiet time spanning midnight filters out late-night times', () {
+  test('quiet time spanning midnight rolls over to tomorrow when needed', () {
     const planner = ReminderPlanner();
     const settings = ReminderSettings(
       enabled: true,
@@ -35,7 +35,8 @@ void main() {
     final now = DateTime(2026, 2, 14, 22, 30);
     final times = planner.planForToday(now: now, settings: settings);
 
-    expect(times, isEmpty);
+    expect(times, isNotEmpty);
+    expect(times.first, DateTime(2026, 2, 15, 7, 0));
   });
 
   test('skipWeekends returns empty on Saturday', () {

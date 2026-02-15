@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/clock.dart';
 import '../../core/models/reminder_settings.dart';
 import '../../core/gtg_colors.dart';
 import 'state/reminder_controller.dart';
@@ -24,6 +25,8 @@ class _ReminderSettingsScreenState
     final asyncSettings = ref.watch(reminderControllerProvider);
     final settings = asyncSettings.asData?.value ?? ReminderSettings.defaults;
     final plannedTimes = ref.watch(plannedReminderTimesProvider);
+    final now = ref.watch(clockProvider).now();
+    final nextTime = plannedTimes.isNotEmpty ? plannedTimes.first : null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('리마인더')),
@@ -64,9 +67,12 @@ class _ReminderSettingsScreenState
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              settings.enabled
-                                  ? '오늘 남은 알림 ${plannedTimes.length}개 예약됨'
-                                  : '원할 때만 켜고 끌 수 있어요.',
+                              _buildEnabledSubtitle(
+                                now: now,
+                                enabled: settings.enabled,
+                                nextTime: nextTime,
+                                plannedCount: plannedTimes.length,
+                              ),
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
                                     color: Colors.black.withValues(alpha: 0.60),
@@ -272,6 +278,40 @@ class _ReminderSettingsScreenState
         ),
       ),
     );
+  }
+
+  String _buildEnabledSubtitle({
+    required DateTime now,
+    required bool enabled,
+    required DateTime? nextTime,
+    required int plannedCount,
+  }) {
+    if (!enabled) return '원할 때만 켜고 끌 수 있어요.';
+    if (nextTime == null) {
+      return '예약할 시간이 없어요. 조용한 시간/주말 쉬기 설정을 확인해주세요.';
+    }
+
+    final label = _formatNextTime(now, nextTime);
+    return '다음 알림 $label · $plannedCount개 예약됨';
+  }
+
+  String _formatNextTime(DateTime now, DateTime next) {
+    final time = TimeOfDay.fromDateTime(next);
+    final hh = time.hour.toString().padLeft(2, '0');
+    final mm = time.minute.toString().padLeft(2, '0');
+
+    final sameDay =
+        now.year == next.year && now.month == next.month && now.day == next.day;
+    if (sameDay) return '$hh:$mm';
+
+    final tomorrow = now.add(const Duration(days: 1));
+    final isTomorrow =
+        tomorrow.year == next.year &&
+        tomorrow.month == next.month &&
+        tomorrow.day == next.day;
+
+    if (isTomorrow) return '내일 $hh:$mm';
+    return '${next.month}/${next.day} $hh:$mm';
   }
 }
 
