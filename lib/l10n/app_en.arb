@@ -1,0 +1,143 @@
+{
+  "@@locale": "en",
+  "appTitle": "PROJECT GTG",
+
+  "navHome": "Home",
+  "navCalendar": "Calendar",
+  "navSettings": "Settings",
+
+  "dashboardTitle": "Today's Routine",
+  "dashboardSubtitle": "Not perfect, just frequent. One set at a time.",
+  "activeDaysPill": "Active {count} days",
+  "@activeDaysPill": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "quickLogTitle": "Quick Log",
+  "reset": "Reset",
+  "record": "Log",
+  "loadingLogs": "Loading logs...",
+  "recentLogsTitle": "Recent Logs",
+  "noLogsHint": "No logs yet. Log your first set above.",
+  "noLogsHintHome": "No logs yet. Log a set on Home.",
+
+  "calendarTitle": "Rhythm Calendar",
+  "calendarSubtitleHeatmap": "The more you log, the darker it gets. (Monthly heatmap)",
+  "today": "Today",
+  "prevMonthTooltip": "Previous month",
+  "nextMonthTooltip": "Next month",
+  "monthTotalLabel": "Month total",
+  "activeDaysLabel": "Active days",
+  "dayTotal": "Day total {count} reps",
+  "@dayTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noLogsForDay": "No logs for this day. Log a set on Home.",
+
+  "settingsTitle": "Settings",
+  "remindersTitle": "Reminders",
+  "remindersSubtitle": "Interval, quiet hours, weekends off",
+  "allLogsTitle": "All Logs",
+  "allLogsSubtitle": "Browse by date and exercise",
+  "aboutTitle": "About",
+  "privacyPolicyTitle": "Privacy Policy",
+  "privacyPolicySubtitle": "Ads and data usage",
+  "invalidLink": "Invalid link.",
+  "cannotOpenBrowser": "Couldn't open the browser.",
+  "openExternalFailed": "Couldn't open.",
+
+  "remindersHeadline": "Quiet and consistent",
+  "remindersSubheadline": "We only schedule within the remaining time today.",
+  "enableRemindersTitle": "Enable reminders",
+  "enableRemindersOffSubtitle": "Turn it on only when you want.",
+  "enableRemindersNoSlotsSubtitle": "No time slots available. Check quiet hours/weekends off.",
+  "enableRemindersNextScheduledSubtitle": "Next {time} · {count} scheduled",
+  "@enableRemindersNextScheduledSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleSectionTitle": "Schedule",
+  "intervalLabel": "Interval",
+  "minutesShort": "{count} min",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "maxPerDayLabel": "Max per day",
+  "quietHoursTitle": "Quiet hours",
+  "startLabel": "Start",
+  "endLabel": "End",
+  "weekendsOffTitle": "Weekends off",
+  "weekendsOffSubtitle": "No schedules on Sat/Sun",
+  "silentNotificationsInfo": "Notifications are silent.",
+  "permissionDenied": "Notification permission is required. Enable it in Settings.",
+  "openSettings": "Settings",
+  "pickTimeHelp": "Select {label} time",
+  "@pickTimeHelp": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "tomorrowAt": "Tomorrow {time}",
+  "@tomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "onboardingLater": "Later",
+  "onboardingSubtitle": "Not perfect, just frequent. Set 1 minute and start.",
+  "onboardingQuestion": "Which move will you focus on?",
+  "onboardingHint": "Your primary move shows first on Home.",
+  "onboardingNext": "Next",
+  "onboardingPushUpSubtitle": "Fastest routine. Start anywhere.",
+  "onboardingPullUpSubtitle": "Pulling strength. Form matters.",
+  "onboardingDipsSubtitle": "Push strength. Watch your shoulders.",
+
+  "splashTapToSkip": "Tap to skip",
+
+  "exercisePushUp": "Push-ups",
+  "exercisePullUp": "Pull-ups",
+  "exerciseDips": "Dips",
+
+  "repsWithUnit": "{count} reps",
+  "@repsWithUnit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysWithUnit": "{count} days",
+  "@daysWithUnit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "notifTitle": "Time for a set",
+  "notifBody": "Just one of push-ups/pull-ups/dips. Keep your rhythm today."
+}

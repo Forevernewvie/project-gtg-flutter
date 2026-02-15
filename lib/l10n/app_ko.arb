@@ -1,0 +1,143 @@
+{
+  "@@locale": "ko",
+  "appTitle": "PROJECT GTG",
+
+  "navHome": "홈",
+  "navCalendar": "캘린더",
+  "navSettings": "설정",
+
+  "dashboardTitle": "오늘의 루틴",
+  "dashboardSubtitle": "완벽하게 말고, 자주. 한 세트씩만.",
+  "activeDaysPill": "활동일 {count}일",
+  "@activeDaysPill": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "quickLogTitle": "빠른 입력",
+  "reset": "초기화",
+  "record": "기록",
+  "loadingLogs": "기록을 불러오는 중입니다...",
+  "recentLogsTitle": "최근 기록",
+  "noLogsHint": "기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.",
+  "noLogsHintHome": "기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.",
+
+  "calendarTitle": "리듬 캘린더",
+  "calendarSubtitleHeatmap": "기록이 쌓일수록 더 진해집니다. (월간 히트맵)",
+  "today": "오늘",
+  "prevMonthTooltip": "이전 달",
+  "nextMonthTooltip": "다음 달",
+  "monthTotalLabel": "이번 달 누적",
+  "activeDaysLabel": "활동일",
+  "dayTotal": "하루 누적 {count}회",
+  "@dayTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noLogsForDay": "이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.",
+
+  "settingsTitle": "설정",
+  "remindersTitle": "리마인더",
+  "remindersSubtitle": "반복 주기, 조용한 시간, 주말 쉬기",
+  "allLogsTitle": "전체 기록",
+  "allLogsSubtitle": "날짜별/종목별로 모아보기",
+  "aboutTitle": "앱 정보",
+  "privacyPolicyTitle": "개인정보 처리방침",
+  "privacyPolicySubtitle": "광고/데이터 처리 안내",
+  "invalidLink": "링크가 올바르지 않습니다.",
+  "cannotOpenBrowser": "브라우저를 열 수 없습니다.",
+  "openExternalFailed": "열 수 없습니다.",
+
+  "remindersHeadline": "조용하게, 꾸준히",
+  "remindersSubheadline": "반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.",
+  "enableRemindersTitle": "리마인더 켜기",
+  "enableRemindersOffSubtitle": "원할 때만 켜고 끌 수 있어요.",
+  "enableRemindersNoSlotsSubtitle": "예약할 시간이 없어요. 조용한 시간/주말 쉬기 설정을 확인해주세요.",
+  "enableRemindersNextScheduledSubtitle": "다음 알림 {time} · {count}개 예약됨",
+  "@enableRemindersNextScheduledSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleSectionTitle": "주기",
+  "intervalLabel": "반복 간격",
+  "minutesShort": "{count}분",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "maxPerDayLabel": "하루 최대",
+  "quietHoursTitle": "조용한 시간",
+  "startLabel": "시작",
+  "endLabel": "끝",
+  "weekendsOffTitle": "주말 쉬기",
+  "weekendsOffSubtitle": "토/일에는 예약하지 않음",
+  "silentNotificationsInfo": "알림은 소리 없이 조용히 표시됩니다.",
+  "permissionDenied": "알림 권한이 필요합니다. 설정에서 허용해주세요.",
+  "openSettings": "설정",
+  "pickTimeHelp": "{label} 시간 선택",
+  "@pickTimeHelp": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "tomorrowAt": "내일 {time}",
+  "@tomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "onboardingLater": "나중에",
+  "onboardingSubtitle": "완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.",
+  "onboardingQuestion": "주로 어떤 동작을 할까요?",
+  "onboardingHint": "기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.",
+  "onboardingNext": "다음",
+  "onboardingPushUpSubtitle": "가장 빠른 루틴. 어디서든 시작",
+  "onboardingPullUpSubtitle": "상체 당기기. 폼이 핵심",
+  "onboardingDipsSubtitle": "푸쉬 라인 강화. 어깨 각도 주의",
+
+  "splashTapToSkip": "탭하여 스킵",
+
+  "exercisePushUp": "푸쉬업",
+  "exercisePullUp": "풀업",
+  "exerciseDips": "딥스",
+
+  "repsWithUnit": "{count}회",
+  "@repsWithUnit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysWithUnit": "{count}일",
+  "@daysWithUnit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "notifTitle": "한 세트 타이밍",
+  "notifBody": "푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요."
+}
