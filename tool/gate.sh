@@ -18,3 +18,6 @@ flutter test --dart-define=UI_TESTING=true
 
 echo "[gate] iOS smoke"
 "$ROOT_DIR/tool/smoke_ios.sh"
+
+echo "[gate] android build (debug apk)"
+flutter build apk --debug >/dev/null
