@@ -38,8 +38,9 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
     final status = await ios?.checkPermissions();
     if (status == null) return false;
 
-    return status.isEnabled &&
-        (status.isAlertEnabled || status.isProvisionalEnabled);
+    // `isEnabled` maps to iOS "Authorized", while "Provisional" is reported
+    // separately. Either should be treated as "permission granted".
+    return status.isEnabled || status.isProvisionalEnabled;
   }
 
   @override
