@@ -4,6 +4,20 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+# Load local-only env (NOT in git). This avoids re-exporting variables every run.
+load_env_file() {
+  local path="$1"
+  if [[ -f "$path" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$path"
+    set +a
+  fi
+}
+
+load_env_file "$HOME/.project-gtg/release.env"
+load_env_file "$ROOT_DIR/.env.local"
+
 KEY_PROPS="$ROOT_DIR/android/key.properties"
 if [[ ! -f "$KEY_PROPS" ]]; then
   echo "[release] Missing android/key.properties (gitignored)."
