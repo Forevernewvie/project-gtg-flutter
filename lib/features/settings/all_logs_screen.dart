@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/ads/gtg_banner_ad.dart';
 import '../../core/date_utils.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
@@ -26,6 +27,9 @@ class AllLogsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('전체 기록')),
+      bottomNavigationBar: const GtgBannerAd(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
         children: <Widget>[

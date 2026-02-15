@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/ads/gtg_banner_ad.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -50,6 +52,8 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: 12),
+        const GtgBannerAd(),
       ],
     );
   }
