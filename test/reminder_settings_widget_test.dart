@@ -11,6 +11,8 @@ import 'package:project_gtg/features/reminders/services/reminder_notification_cl
 import 'package:project_gtg/features/reminders/services/reminder_permission_client.dart';
 import 'package:project_gtg/features/reminders/state/reminder_dependencies.dart';
 
+import 'test_app.dart';
+
 void main() {
   testWidgets('enabling reminders requests permission and schedules', (
     tester,
@@ -31,7 +33,7 @@ void main() {
             _FixedClock(DateTime(2026, 2, 15, 10, 0)),
           ),
         ],
-        child: const MaterialApp(home: ReminderSettingsScreen()),
+        child: testApp(const ReminderSettingsScreen()),
       ),
     );
     await tester.pumpAndSettle();
@@ -71,7 +73,7 @@ void main() {
             _FixedClock(DateTime(2026, 2, 15, 10, 0)),
           ),
         ],
-        child: const MaterialApp(home: ReminderSettingsScreen()),
+        child: testApp(const ReminderSettingsScreen()),
       ),
     );
     await tester.pumpAndSettle();
@@ -102,7 +104,7 @@ void main() {
             _FixedClock(DateTime(2026, 2, 15, 10, 0)),
           ),
         ],
-        child: const MaterialApp(home: ReminderSettingsScreen()),
+        child: testApp(const ReminderSettingsScreen()),
       ),
     );
     await tester.pumpAndSettle();

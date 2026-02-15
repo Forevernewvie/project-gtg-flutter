@@ -43,7 +43,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [persistenceProvider.overrideWithValue(persistence)],
-        child: const GtgApp(),
+        child: const GtgApp(locale: Locale('ko')),
       ),
     );
     await tester.pumpAndSettle();

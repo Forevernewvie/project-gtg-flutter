@@ -6,7 +6,9 @@ import 'package:project_gtg/app/gtg_app.dart';
 
 void main() {
   testWidgets('app shows bottom navigation destinations', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: GtgApp()));
+    await tester.pumpWidget(
+      const ProviderScope(child: GtgApp(locale: Locale('ko'))),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('홈'), findsOneWidget);

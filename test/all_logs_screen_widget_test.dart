@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +5,8 @@ import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/features/settings/all_logs_screen.dart';
 import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
+
+import 'test_app.dart';
 
 void main() {
   testWidgets('all logs groups by day and shows totals', (tester) async {
@@ -39,7 +40,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [workoutLogsProvider.overrideWithValue(logs)],
-        child: const MaterialApp(home: AllLogsScreen()),
+        child: testApp(const AllLogsScreen()),
       ),
     );
     await tester.pumpAndSettle();
@@ -51,9 +52,9 @@ void main() {
     expect(find.text('15회'), findsOneWidget);
     expect(find.text('7회'), findsOneWidget);
 
-    expect(find.text(ExerciseType.pushUp.labelKo), findsWidgets);
-    expect(find.text(ExerciseType.pullUp.labelKo), findsOneWidget);
-    expect(find.text(ExerciseType.dips.labelKo), findsOneWidget);
+    expect(find.text('푸쉬업'), findsWidgets);
+    expect(find.text('풀업'), findsOneWidget);
+    expect(find.text('딥스'), findsOneWidget);
 
     expect(find.text('10회'), findsOneWidget);
     expect(find.text('5회'), findsOneWidget);

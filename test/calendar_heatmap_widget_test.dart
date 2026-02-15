@@ -77,7 +77,7 @@ void main() {
           persistenceProvider.overrideWithValue(persistence),
           clockProvider.overrideWithValue(FixedClock(now)),
         ],
-        child: const GtgApp(),
+        child: const GtgApp(locale: Locale('ko')),
       ),
     );
     await tester.pumpAndSettle();

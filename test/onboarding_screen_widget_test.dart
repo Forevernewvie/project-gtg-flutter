@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/features/onboarding/onboarding_screen.dart';
+
+import 'test_app.dart';
 
 void main() {
   testWidgets('onboarding selects primary exercise and calls onComplete', (
@@ -12,8 +13,8 @@ void main() {
     var skipCalls = 0;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: OnboardingScreen(
+      testApp(
+        OnboardingScreen(
           initialExercise: ExerciseType.pushUp,
           onComplete: (primary) async => completedWith = primary,
           onSkip: () async => skipCalls++,
@@ -22,7 +23,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(ExerciseType.pullUp.labelKo));
+    await tester.tap(find.text('풀업'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('다음'));
@@ -36,8 +37,8 @@ void main() {
     var skipCalls = 0;
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: OnboardingScreen(
+      testApp(
+        OnboardingScreen(
           initialExercise: ExerciseType.pushUp,
           onComplete: (_) async {},
           onSkip: () async => skipCalls++,
