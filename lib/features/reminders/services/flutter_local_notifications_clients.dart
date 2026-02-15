@@ -16,12 +16,15 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
 
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
-    await _plugin.initialize(settings: const InitializationSettings(iOS: ios));
+    await _plugin.initialize(
+      settings: const InitializationSettings(android: android, iOS: ios),
+    );
 
     _initialized = true;
   }
@@ -61,6 +64,57 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
   }
 }
 
+class AndroidReminderPermissionClient implements ReminderPermissionClient {
+  AndroidReminderPermissionClient({FlutterLocalNotificationsPlugin? plugin})
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+
+  final FlutterLocalNotificationsPlugin _plugin;
+  bool _initialized = false;
+
+  Future<void> _ensureInitialized() async {
+    if (_initialized) return;
+
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const ios = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+    await _plugin.initialize(
+      settings: const InitializationSettings(android: android, iOS: ios),
+    );
+
+    _initialized = true;
+  }
+
+  @override
+  Future<bool> hasPermission() async {
+    await _ensureInitialized();
+
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    return await android?.areNotificationsEnabled() ?? false;
+  }
+
+  @override
+  Future<bool> requestPermission() async {
+    await _ensureInitialized();
+
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    final granted = await android?.requestNotificationsPermission();
+    if (granted != null) return granted;
+
+    return hasPermission();
+  }
+}
+
 class FlutterReminderNotificationClient implements ReminderNotificationClient {
   FlutterReminderNotificationClient({FlutterLocalNotificationsPlugin? plugin})
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
@@ -79,12 +133,15 @@ class FlutterReminderNotificationClient implements ReminderNotificationClient {
       // Best-effort; fall back to timezone's default local location.
     }
 
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const ios = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
-    await _plugin.initialize(settings: const InitializationSettings(iOS: ios));
+    await _plugin.initialize(
+      settings: const InitializationSettings(android: android, iOS: ios),
+    );
 
     _initialized = true;
   }
@@ -121,9 +178,19 @@ class FlutterReminderNotificationClient implements ReminderNotificationClient {
         body: body,
         scheduledDate: tz.TZDateTime.from(scheduled, tz.local),
         notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'gtg_reminders',
+            'GTG Reminders',
+            channelDescription: 'PROJECT GTG routine reminders',
+            importance: Importance.defaultImportance,
+            priority: Priority.defaultPriority,
+            playSound: false,
+            enableVibration: false,
+          ),
           iOS: DarwinNotificationDetails(presentSound: false),
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        // Avoid exact alarms permission (Android 12+) by using inexact scheduling.
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     }
   }

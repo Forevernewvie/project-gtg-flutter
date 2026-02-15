@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/env.dart';
@@ -16,7 +18,15 @@ final reminderPermissionClientProvider = Provider<ReminderPermissionClient>((
   if (Env.useFakes) {
     return const FakeReminderPermissionClient(granted: true);
   }
-  return IosReminderPermissionClient();
+
+  if (Platform.isIOS) {
+    return IosReminderPermissionClient();
+  }
+  if (Platform.isAndroid) {
+    return AndroidReminderPermissionClient();
+  }
+
+  return const FakeReminderPermissionClient(granted: false);
 });
 
 final reminderNotificationClientProvider = Provider<ReminderNotificationClient>(
