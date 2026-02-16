@@ -95,6 +95,21 @@ def _fit_font(
     return best
 
 
+def _draw_text_centered(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    *,
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
+    center_x: int,
+    center_y: int,
+    fill: tuple[int, int, int] | tuple[int, int, int, int],
+) -> None:
+    bbox = draw.textbbox((0, 0), text, font=font)
+    x = int(round(center_x - ((bbox[0] + bbox[2]) / 2.0)))
+    y = int(round(center_y - ((bbox[1] + bbox[3]) / 2.0)))
+    draw.text((x, y), text, fill=fill, font=font)
+
+
 def _draw_brand_frame(icon: Image.Image) -> None:
     draw = ImageDraw.Draw(icon)
 
@@ -129,13 +144,14 @@ def _draw_text_lockup(icon: Image.Image, *, include_subtext: bool) -> None:
         max_h=text_max_h,
         bold=True,
     )
-    gtg_bbox = draw.textbbox((0, 0), TEXT, font=gtg_font)
-    gtg_w = gtg_bbox[2] - gtg_bbox[0]
-    gtg_h = gtg_bbox[3] - gtg_bbox[1]
-
-    gtg_x = (SIZE - gtg_w) // 2
-    gtg_y = int(SIZE * 0.34)
-    draw.text((gtg_x, gtg_y), TEXT, fill=WHITE, font=gtg_font)
+    _draw_text_centered(
+        draw,
+        TEXT,
+        font=gtg_font,
+        center_x=SIZE // 2,
+        center_y=int(SIZE * 0.44),
+        fill=WHITE,
+    )
 
     if not include_subtext:
         return
@@ -165,12 +181,14 @@ def _draw_text_lockup(icon: Image.Image, *, include_subtext: bool) -> None:
         bold=True,
         max_size=86,
     )
-    subtitle_bbox = draw.textbbox((0, 0), SUBTEXT, font=subtitle_font)
-    subtitle_w = subtitle_bbox[2] - subtitle_bbox[0]
-    subtitle_h = subtitle_bbox[3] - subtitle_bbox[1]
-    subtitle_x = (SIZE - subtitle_w) // 2
-    subtitle_y = strip_y + (strip_h - subtitle_h) // 2 - int(SIZE * 0.002)
-    draw.text((subtitle_x, subtitle_y), SUBTEXT, fill=(255, 255, 255, 235), font=subtitle_font)
+    _draw_text_centered(
+        draw,
+        SUBTEXT,
+        font=subtitle_font,
+        center_x=SIZE // 2,
+        center_y=strip_y + strip_h // 2,
+        fill=(255, 255, 255, 235),
+    )
 
 
 def _draw_adaptive_foreground(fg: Image.Image) -> None:
