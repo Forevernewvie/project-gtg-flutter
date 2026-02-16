@@ -1,12 +1,13 @@
-# PROJECT GTG (Flutter iOS)
+# PROJECT GTG (Flutter iOS/Android)
 
-GTG(Grease the Groove) 스타일의 푸쉬업/풀업/딥스 루틴을 “자주, 한 세트씩” 기록하고, 일/주/월 통계와 캘린더 히트맵으로 확인하는 iOS 로컬 전용 앱입니다.
+GTG(Grease the Groove) 스타일의 푸쉬업/풀업/딥스 루틴을 “자주, 한 세트씩” 기록하고, 일/주/월 통계와 캘린더 히트맵으로 확인하는 모바일 로컬 전용 앱입니다. (iOS/Android)
 
 ## 목적
 
 - 운동을 “계획”보다 “실행”으로 연결한다: 홈에서 바로 기록, 바로 누적 확인
 - 하루/주/월 추세를 빠르게 보여준다: 숫자 + 캘린더(월간 히트맵)
 - 백엔드 없이도 신뢰 가능한 로컬 저장(Atomic write + 손상 파일 격리)
+- 서버/계정 없이 가볍게 사용한다: 앱 삭제 시 로컬 기록도 함께 삭제됨
 
 ## 주요 기능 (MVP)
 
@@ -17,6 +18,7 @@ GTG(Grease the Groove) 스타일의 푸쉬업/풀업/딥스 루틴을 “자주,
 - 설정: 리마인더 / 전체 기록
 - 온보딩: 주 종목 선택(첫 실행 시)
 - 스플래시: 네이티브 런치 + 인앱 2초 오버레이(탭 스킵)
+- Android 릴리즈: AAB 서명 빌드 스크립트 제공
 
 ## Badges
 
@@ -37,6 +39,7 @@ GTG(Grease the Groove) 스타일의 푸쉬업/풀업/딥스 루틴을 “자주,
 - Routing: `go_router`
 - Local storage: JSON file (atomic write + corrupted quarantine)
 - Testing: `flutter_test` (unit + widget), iOS smoke(스크립트)
+- Ads: `google_mobile_ads` (배너, 로컬/릴리즈 분리 설정)
 
 ## 프로젝트 구조
 
@@ -55,6 +58,9 @@ docs/
 tool/
   gate.sh              # verify worktree gate runner
   smoke_ios.sh         # iOS simulator smoke + screenshots
+  setup_android_signing.sh # 로컬 서명 파일 생성 (gitignored)
+  setup_release_env.sh     # 로컬 릴리즈 env 생성 (gitignored)
+  release_android.sh       # Android AAB 릴리즈 빌드
 test/
   *_test.dart          # unit/widget tests
 ```
@@ -65,6 +71,7 @@ test/
 
 - Flutter SDK (stable)
 - Xcode (iOS 빌드/시뮬레이터)
+- Android Studio + Android SDK (Android 빌드/에뮬레이터)
 - CocoaPods (권장: 최신 버전)
 
 ### 설치
@@ -79,6 +86,12 @@ flutter pub get
 flutter run -d "iPhone 16"
 ```
 
+### 실행 (Android)
+
+```bash
+flutter run -d emulator-5554
+```
+
 ### 환경 변수 / 플래그
 
 권한 팝업/OS 호출을 막기 위한 테스트 플래그:
@@ -86,6 +99,12 @@ flutter run -d "iPhone 16"
 ```bash
 flutter run --dart-define=UI_TESTING=true
 ```
+
+## 데이터 저장 정책
+
+- 운동 기록/설정은 디바이스 로컬에 저장됩니다.
+- 서버 동기화는 제공하지 않습니다.
+- 앱 삭제 시 로컬 데이터는 삭제될 수 있습니다.
 
 ## 사용 방법
 
@@ -145,6 +164,34 @@ cd ../project-gtg-flutter-wt-verify
 ```
 
 스크린샷은 `docs/screenshots/`에 저장되며, Gate 통과 시 커밋됩니다.
+
+### Android 릴리즈(AAB) 빌드
+
+1) 서명 파일 생성(최초 1회):
+
+```bash
+./tool/setup_android_signing.sh
+```
+
+2) 광고 포함 릴리즈를 사용할 경우 로컬 env 설정:
+
+```bash
+./tool/setup_release_env.sh
+```
+
+3) 릴리즈 빌드:
+
+```bash
+ADS_ENABLED=false ./tool/release_android.sh
+```
+
+성공 산출물:
+
+- `build/app/outputs/bundle/release/app-release.aab`
+
+주의:
+
+- `android/key.properties`, `~/.project-gtg/*`, `.env.local`은 시크릿 파일이며 커밋 금지입니다.
 
 ### XcodeGen 규칙
 
