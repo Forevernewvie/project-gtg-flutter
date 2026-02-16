@@ -22,6 +22,18 @@ echo "[setup] Keystore: $KEYSTORE_PATH"
 echo "[setup] key.properties: $KEY_PROPS_PATH"
 echo
 
+if git ls-files --error-unmatch "android/key.properties" >/dev/null 2>&1; then
+  echo "[setup] ERROR: android/key.properties is tracked by git. Refusing to continue."
+  echo "[setup] This file must never be committed."
+  exit 1
+fi
+
+if ! git check-ignore -q "android/key.properties"; then
+  echo "[setup] ERROR: android/key.properties is not ignored by git. Refusing to continue."
+  echo "[setup] Ensure android/key.properties is gitignored before proceeding."
+  exit 1
+fi
+
 if [[ ! -f "$KEYSTORE_PATH" ]]; then
   echo "[setup] Keystore not found. Creating a new upload keystore (interactive)."
   echo "[setup] IMPORTANT: Save your passwords safely. Do not share them."
@@ -63,4 +75,3 @@ echo
 echo "[setup] OK."
 echo "[setup] Next:"
 echo "  ./tool/release_android.sh"
-
