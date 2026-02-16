@@ -116,11 +116,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     ],
                   ),
                 ),
-                TextButton.icon(
-                  onPressed: _jumpToToday,
-                  icon: const Icon(Icons.my_location_rounded, size: 18),
-                  label: Text(l10n.today),
-                ),
+                TextButton(onPressed: _jumpToToday, child: Text(l10n.today)),
               ],
             ),
           ),
