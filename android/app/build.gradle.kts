@@ -43,7 +43,13 @@ val admobAppIdAndroid = System.getenv("ADMOB_APP_ID_ANDROID")
         ?.takeIf { it.isNotEmpty() }
     ?: ""
 
-if (isReleaseRequested && admobAppIdAndroid.isBlank()) {
+val adsEnabled = (System.getenv("ADS_ENABLED")
+    ?.trim()
+    ?.lowercase()
+    ?.takeIf { it.isNotEmpty() }
+    ?: "true") !in setOf("false", "0")
+
+if (isReleaseRequested && adsEnabled && admobAppIdAndroid.isBlank()) {
     throw GradleException(
         "Missing AdMob App ID for release. " +
             "Set env ADMOB_APP_ID_ANDROID or local.properties ADMOB_APP_ID_ANDROID.",
@@ -111,7 +117,8 @@ android {
         }
         release {
             // Signed via android/key.properties (gitignored). Release builds must fail if missing.
-            manifestPlaceholders["ADMOB_APP_ID"] = admobAppIdAndroid
+            manifestPlaceholders["ADMOB_APP_ID"] =
+                if (adsEnabled) admobAppIdAndroid else admobTestAppIdAndroid
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
