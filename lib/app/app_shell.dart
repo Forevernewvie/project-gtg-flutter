@@ -18,6 +18,7 @@ class AppShell extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(gradient: GtgGradients.pageBackground),
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         body: SafeArea(bottom: false, child: navigationShell),
         bottomNavigationBar: SafeArea(
           top: false,

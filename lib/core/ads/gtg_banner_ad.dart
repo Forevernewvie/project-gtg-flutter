@@ -133,15 +133,28 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
         final boundedAdWidth = adWidth > availableWidth
             ? availableWidth.toDouble()
             : adWidth;
+        final adHeight = _adSize!.height.toDouble();
+        final safeBottom = MediaQuery.paddingOf(context).bottom;
+        final totalHeight =
+            resolvedPadding.top +
+            resolvedPadding.bottom +
+            safeBottom +
+            adHeight;
 
-        return SafeArea(
-          top: false,
+        return SizedBox(
+          height: totalHeight,
           child: Padding(
-            padding: widget.padding,
-            child: Center(
+            padding: EdgeInsets.only(
+              left: resolvedPadding.left,
+              top: resolvedPadding.top,
+              right: resolvedPadding.right,
+              bottom: resolvedPadding.bottom + safeBottom,
+            ),
+            child: Align(
+              alignment: Alignment.center,
               child: SizedBox(
                 width: boundedAdWidth,
-                height: _adSize!.height.toDouble(),
+                height: adHeight,
                 child: AdWidget(ad: _ad!),
               ),
             ),

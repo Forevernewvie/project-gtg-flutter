@@ -12,7 +12,9 @@ abstract final class GtgTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: Colors.transparent,
+      // Route pages pushed above AppShell need an explicit surface color.
+      // Transparent here can render as black on some Android navigators.
+      scaffoldBackgroundColor: GtgColors.backgroundTop,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
