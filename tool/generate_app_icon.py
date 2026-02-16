@@ -156,44 +156,36 @@ def _draw_text_lockup(icon: Image.Image, *, include_subtext: bool) -> None:
     if not include_subtext:
         return
 
-    # Keep subtitle in a dedicated high-contrast strip so readability survives downscaling.
-    strip_margin_x = int(SIZE * 0.17)
-    strip_h = int(SIZE * 0.115)
-    strip_y = int(SIZE * 0.69)
-    strip_radius = int(SIZE * 0.052)
-    draw.rounded_rectangle(
-        [strip_margin_x, strip_y, SIZE - strip_margin_x, strip_y + strip_h],
-        radius=strip_radius,
-        fill=(12, 61, 118, 205),
-    )
-    draw.rounded_rectangle(
-        [strip_margin_x, strip_y, SIZE - strip_margin_x, strip_y + strip_h],
-        radius=strip_radius,
-        outline=(255, 255, 255, 76),
-        width=int(SIZE * 0.006),
-    )
-
     subtitle_font = _fit_font(
         draw,
         SUBTEXT,
-        max_w=int(SIZE * 0.62),
+        max_w=int(SIZE * 0.66),
         max_h=int(SIZE * 0.050),
         bold=True,
-        max_size=86,
+        max_size=92,
+    )
+
+    subtitle_center_y = int(SIZE * 0.74)
+    # Shadow-only treatment to keep text readable without a surrounding badge.
+    _draw_text_centered(
+        draw,
+        SUBTEXT,
+        font=subtitle_font,
+        center_x=SIZE // 2,
+        center_y=subtitle_center_y + int(SIZE * 0.004),
+        fill=(0, 0, 0, 68),
     )
     _draw_text_centered(
         draw,
         SUBTEXT,
         font=subtitle_font,
         center_x=SIZE // 2,
-        center_y=strip_y + strip_h // 2,
-        fill=(255, 255, 255, 235),
+        center_y=subtitle_center_y,
+        fill=(255, 255, 255, 224),
     )
 
 
 def _draw_adaptive_foreground(fg: Image.Image) -> None:
-    draw = ImageDraw.Draw(fg)
-
     _draw_text_lockup(fg, include_subtext=True)
 
 
