@@ -159,10 +159,10 @@ def _draw_text_lockup(icon: Image.Image, *, include_subtext: bool) -> None:
     subtitle_font = _fit_font(
         draw,
         SUBTEXT,
-        max_w=int(SIZE * 0.66),
-        max_h=int(SIZE * 0.050),
+        max_w=int(SIZE * 0.6732),
+        max_h=int(SIZE * 0.051),
         bold=True,
-        max_size=92,
+        max_size=94,
     )
 
     subtitle_center_y = int(SIZE * 0.74)
