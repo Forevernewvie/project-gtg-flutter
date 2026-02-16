@@ -110,11 +110,18 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
           return const SizedBox.shrink();
         }
 
-        final width = maxWidth.floor();
-        if (_loadedForWidth != width && !_loading) {
+        final resolvedPadding = widget.padding.resolve(
+          Directionality.of(context),
+        );
+        final availableWidth = (maxWidth - resolvedPadding.horizontal).floor();
+        if (availableWidth <= 0) {
+          return const SizedBox.shrink();
+        }
+
+        if (_loadedForWidth != availableWidth && !_loading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
-            _loadForWidth(width);
+            _loadForWidth(availableWidth);
           });
         }
 
@@ -122,13 +129,18 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
           return const SizedBox.shrink();
         }
 
+        final adWidth = _adSize!.width.toDouble();
+        final boundedAdWidth = adWidth > availableWidth
+            ? availableWidth.toDouble()
+            : adWidth;
+
         return SafeArea(
           top: false,
           child: Padding(
             padding: widget.padding,
             child: Center(
               child: SizedBox(
-                width: _adSize!.width.toDouble(),
+                width: boundedAdWidth,
                 height: _adSize!.height.toDouble(),
                 child: AdWidget(ad: _ad!),
               ),
