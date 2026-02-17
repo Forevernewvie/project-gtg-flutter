@@ -10,6 +10,14 @@ import '../features/onboarding/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
 import '../features/reminders/state/reminder_controller.dart';
 
+bool shouldShowInAppSplash({
+  required bool isTestRuntime,
+  required bool uiTesting,
+  required bool smokeScreenshots,
+}) {
+  return !isTestRuntime && (!uiTesting || smokeScreenshots);
+}
+
 class RootOverlays extends ConsumerStatefulWidget {
   const RootOverlays({super.key, required this.child});
 
@@ -29,8 +37,11 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    final allowSplash =
-        !Env.isTestRuntime && (!Env.uiTesting || Env.smokeScreenshots);
+    final allowSplash = shouldShowInAppSplash(
+      isTestRuntime: Env.isTestRuntime,
+      uiTesting: Env.uiTesting,
+      smokeScreenshots: Env.smokeScreenshots,
+    );
     if (!allowSplash) {
       _showSplash = false;
       return;
