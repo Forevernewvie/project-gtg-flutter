@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/env.dart';
 import '../reminder_planner.dart';
 import '../services/flutter_local_notifications_clients.dart';
+import '../services/reminder_message_provider.dart';
 import '../services/reminder_notification_client.dart';
 import '../services/reminder_permission_client.dart';
 
@@ -37,3 +38,7 @@ final reminderNotificationClientProvider = Provider<ReminderNotificationClient>(
     return FlutterReminderNotificationClient();
   },
 );
+
+final reminderMessageProvider = Provider<ReminderMessageProvider>((ref) {
+  return LocalizedReminderMessageProvider();
+});
