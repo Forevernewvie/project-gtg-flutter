@@ -124,41 +124,57 @@ class _ReminderSettingsScreenState
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: _DropdownField<int>(
-                          label: l10n.intervalLabel,
-                          value: settings.intervalMinutes,
-                          items: const <int>[15, 30, 45, 60, 90, 120, 180],
-                          labelFor: l10n.minutesShort,
-                          onChanged: (value) async {
-                            if (value == null) return;
-                            await ref
-                                .read(reminderControllerProvider.notifier)
-                                .updateSettings(
-                                  settings.copyWith(intervalMinutes: value),
-                                );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _StepperField(
-                          label: l10n.maxPerDayLabel,
-                          value: settings.maxPerDay,
-                          min: 1,
-                          max: 64,
-                          onChanged: (value) async {
-                            await ref
-                                .read(reminderControllerProvider.notifier)
-                                .updateSettings(
-                                  settings.copyWith(maxPerDay: value),
-                                );
-                          },
-                        ),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isCompact = constraints.maxWidth < 360;
+
+                      final intervalField = _DropdownField<int>(
+                        label: l10n.intervalLabel,
+                        value: settings.intervalMinutes,
+                        items: const <int>[15, 30, 45, 60, 90, 120, 180],
+                        labelFor: l10n.minutesShort,
+                        onChanged: (value) async {
+                          if (value == null) return;
+                          await ref
+                              .read(reminderControllerProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(intervalMinutes: value),
+                              );
+                        },
+                      );
+
+                      final maxPerDayField = _StepperField(
+                        label: l10n.maxPerDayLabel,
+                        value: settings.maxPerDay,
+                        min: 1,
+                        max: 64,
+                        onChanged: (value) async {
+                          await ref
+                              .read(reminderControllerProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(maxPerDay: value),
+                              );
+                        },
+                      );
+
+                      if (isCompact) {
+                        return Column(
+                          children: <Widget>[
+                            intervalField,
+                            const SizedBox(height: 12),
+                            maxPerDayField,
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        children: <Widget>[
+                          Expanded(child: intervalField),
+                          const SizedBox(width: 12),
+                          Expanded(child: maxPerDayField),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -178,36 +194,52 @@ class _ReminderSettingsScreenState
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: _TimeField(
-                          label: l10n.startLabel,
-                          minutes: settings.quietStartMinutes,
-                          onPick: (value) async {
-                            await ref
-                                .read(reminderControllerProvider.notifier)
-                                .updateSettings(
-                                  settings.copyWith(quietStartMinutes: value),
-                                );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _TimeField(
-                          label: l10n.endLabel,
-                          minutes: settings.quietEndMinutes,
-                          onPick: (value) async {
-                            await ref
-                                .read(reminderControllerProvider.notifier)
-                                .updateSettings(
-                                  settings.copyWith(quietEndMinutes: value),
-                                );
-                          },
-                        ),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isCompact = constraints.maxWidth < 360;
+
+                      final startField = _TimeField(
+                        label: l10n.startLabel,
+                        minutes: settings.quietStartMinutes,
+                        onPick: (value) async {
+                          await ref
+                              .read(reminderControllerProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(quietStartMinutes: value),
+                              );
+                        },
+                      );
+
+                      final endField = _TimeField(
+                        label: l10n.endLabel,
+                        minutes: settings.quietEndMinutes,
+                        onPick: (value) async {
+                          await ref
+                              .read(reminderControllerProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(quietEndMinutes: value),
+                              );
+                        },
+                      );
+
+                      if (isCompact) {
+                        return Column(
+                          children: <Widget>[
+                            startField,
+                            const SizedBox(height: 12),
+                            endField,
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        children: <Widget>[
+                          Expanded(child: startField),
+                          const SizedBox(width: 12),
+                          Expanded(child: endField),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   SwitchListTile(
@@ -395,6 +427,8 @@ class _StepperField extends StatelessWidget {
         children: <Widget>[
           IconButton(
             onPressed: canMinus ? () => onChanged(value - 1) : null,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             icon: const Icon(Icons.remove_rounded),
           ),
           Expanded(
@@ -409,6 +443,8 @@ class _StepperField extends StatelessWidget {
           ),
           IconButton(
             onPressed: canPlus ? () => onChanged(value + 1) : null,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             icon: const Icon(Icons.add_rounded),
           ),
         ],
