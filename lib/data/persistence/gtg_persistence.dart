@@ -1,3 +1,4 @@
+import '../../core/env.dart';
 import '../../core/logging/app_logger.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/reminder_settings.dart';
@@ -23,9 +24,9 @@ class GtgPersistence {
     IsarDatabase? isarDatabase,
     IsarPersistence? isarPersistence,
     AppLogger? logger,
-    bool enableIsarMigration = true,
+    bool? enableIsarMigration,
   }) : _logger = logger ?? const DebugAppLogger(),
-       _enableIsarMigration = enableIsarMigration {
+       _enableIsarMigration = enableIsarMigration ?? !Env.isTestRuntime {
     final resolvedDirectoryProvider =
         directoryProvider ?? DefaultDirectoryProvider();
 

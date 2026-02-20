@@ -174,6 +174,7 @@ void main() {
       final persistence = GtgPersistence(
         directoryProvider: dirProvider,
         logger: logger,
+        enableIsarMigration: true,
         isarPersistence: _InMemoryIsarPersistence(
           store: memoryStore,
           database: IsarDatabase(
@@ -213,6 +214,7 @@ void main() {
       final restarted = GtgPersistence(
         directoryProvider: dirProvider,
         logger: logger,
+        enableIsarMigration: true,
         isarPersistence: _InMemoryIsarPersistence(
           store: memoryStore,
           database: IsarDatabase(
@@ -266,6 +268,7 @@ void main() {
     final persistence = GtgPersistence(
       directoryProvider: dirProvider,
       logger: logger,
+      enableIsarMigration: true,
       isarPersistence: _ThrowingIsarPersistence(
         IsarDatabase(directoryProvider: dirProvider, databaseName: 'unused'),
       ),
