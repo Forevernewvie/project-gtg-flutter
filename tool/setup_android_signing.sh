@@ -50,6 +50,8 @@ else
   echo "[setup] Keystore already exists. Skipping keystore creation."
 fi
 
+chmod 600 "$KEYSTORE_PATH" || true
+
 echo
 echo "[setup] Writing android/key.properties (input hidden)."
 read -rs -p "storePassword: " STORE_PASSWORD

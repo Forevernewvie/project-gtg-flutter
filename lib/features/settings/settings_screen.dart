@@ -16,7 +16,9 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final uri = Uri.tryParse(AppLinks.privacyPolicyUrl);
-    if (uri == null) {
+    if (uri == null ||
+        uri.scheme.toLowerCase() != 'https' ||
+        uri.host.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.invalidLink)));
