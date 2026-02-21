@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/gtg_colors.dart';
 import '../../core/gtg_gradients.dart';
 import '../../core/models/exercise_type.dart';
 import '../../l10n/app_localizations.dart';
@@ -28,9 +29,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final brightness = Theme.of(context).brightness;
 
     return DecoratedBox(
-      decoration: const BoxDecoration(gradient: GtgGradients.pageBackground),
+      decoration: BoxDecoration(
+        gradient: GtgGradients.pageBackground(Theme.of(context).brightness),
+      ),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -65,7 +69,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Text(
                   l10n.onboardingSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.black.withValues(alpha: 0.60),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -80,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Text(
                   l10n.onboardingHint,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.black.withValues(alpha: 0.60),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -91,7 +95,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onTap: _busy
                       ? null
                       : () => setState(() => _selected = ExerciseType.pushUp),
-                  accent: const Color(0xFF1B77D3),
+                  accent: GtgColors.accentFor(brightness),
                   subtitle: l10n.onboardingPushUpSubtitle,
                 ),
                 const SizedBox(height: 10),
@@ -101,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onTap: _busy
                       ? null
                       : () => setState(() => _selected = ExerciseType.pullUp),
-                  accent: const Color(0xFF26A07A),
+                  accent: GtgColors.successFor(brightness),
                   subtitle: l10n.onboardingPullUpSubtitle,
                 ),
                 const SizedBox(height: 10),
@@ -111,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onTap: _busy
                       ? null
                       : () => setState(() => _selected = ExerciseType.dips),
-                  accent: const Color(0xFFF0772C),
+                  accent: GtgColors.textSecondaryFor(brightness),
                   subtitle: l10n.onboardingDipsSubtitle,
                 ),
                 const Spacer(),
@@ -166,11 +170,11 @@ class _PickCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final borderColor = selected
-        ? accent
-        : Colors.black.withValues(alpha: 0.08);
-    final bg = selected ? accent.withValues(alpha: 0.08) : Colors.white;
+    final borderColor = selected ? accent : colorScheme.outlineVariant;
+    final bg = selected ? accent.withValues(alpha: 0.12) : colorScheme.surface;
 
     return InkWell(
       onTap: onTap,
@@ -180,13 +184,15 @@ class _PickCard extends StatelessWidget {
           color: bg,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: borderColor, width: selected ? 1.5 : 1),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
-            ),
-          ],
+          boxShadow: isDark
+              ? const <BoxShadow>[]
+              : <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -215,7 +221,7 @@ class _PickCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black.withValues(alpha: 0.60),
+                        color: colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -231,9 +237,7 @@ class _PickCard extends StatelessWidget {
                   color: selected ? accent : Colors.transparent,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: selected
-                        ? accent
-                        : Colors.black.withValues(alpha: 0.20),
+                    color: selected ? accent : colorScheme.outlineVariant,
                     width: 1.5,
                   ),
                 ),

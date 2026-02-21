@@ -85,6 +85,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsTitle => '설정';
 
   @override
+  String get settingsThemeTitle => '테마';
+
+  @override
+  String get settingsThemeSubtitle => '앱 화면 스타일을 선택하세요. 즉시 적용됩니다.';
+
+  @override
+  String get settingsThemeSystem => '시스템';
+
+  @override
+  String get settingsThemeLight => '라이트';
+
+  @override
+  String get settingsThemeDark => '다크';
+
+  @override
   String get remindersTitle => '리마인더';
 
   @override

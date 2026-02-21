@@ -125,7 +125,9 @@ class _InAppSplash extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: DecoratedBox(
-          decoration: const BoxDecoration(gradient: GtgGradients.hero),
+          decoration: BoxDecoration(
+            gradient: GtgGradients.hero(Theme.of(context).brightness),
+          ),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),

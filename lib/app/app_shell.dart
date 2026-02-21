@@ -16,7 +16,9 @@ class AppShell extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return DecoratedBox(
-      decoration: const BoxDecoration(gradient: GtgGradients.pageBackground),
+      decoration: BoxDecoration(
+        gradient: GtgGradients.pageBackground(Theme.of(context).brightness),
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(bottom: false, child: navigationShell),
