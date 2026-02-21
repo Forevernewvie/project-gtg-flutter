@@ -47,7 +47,7 @@ val adsEnabled = (System.getenv("ADS_ENABLED")
     ?.trim()
     ?.lowercase()
     ?.takeIf { it.isNotEmpty() }
-    ?: "true") !in setOf("false", "0")
+    ?: "false") !in setOf("false", "0")
 
 if (isReleaseRequested && adsEnabled && admobAppIdAndroid.isBlank()) {
     throw GradleException(

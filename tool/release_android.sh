@@ -4,6 +4,10 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+# integration_test can generate stale Android registrant files under app/src;
+# keep release builds deterministic by removing it before Gradle runs.
+rm -f "$ROOT_DIR/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java"
+
 # Load local-only env (NOT in git). This avoids re-exporting variables every run.
 load_env_file() {
   local path="$1"

@@ -13,7 +13,7 @@ abstract final class AdConfig {
 
   static const bool adsEnabled = bool.fromEnvironment(
     'ADS_ENABLED',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const String bannerUnitIdAndroid = String.fromEnvironment(
