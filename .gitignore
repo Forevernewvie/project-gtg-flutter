@@ -13,7 +13,9 @@
 migrate_working_dir/
 
 # Local-only env (never commit secrets)
-.env.local
+.env
+.env.*
+!.env.example
 
 # IntelliJ related
 *.iml
