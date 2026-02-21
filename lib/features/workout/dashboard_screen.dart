@@ -50,7 +50,7 @@ class _HeroCard extends ConsumerWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: GtgGradients.hero,
+        gradient: GtgGradients.hero(Theme.of(context).brightness),
         borderRadius: BorderRadius.circular(22),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -334,7 +334,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
               Text(
                 l10n.loadingLogs,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black.withValues(alpha: 0.60),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -373,9 +373,9 @@ class _QuickLogRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.03),
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -396,7 +396,7 @@ class _QuickLogRow extends StatelessWidget {
                     l10n.repsWithUnit(reps),
                     key: Key('quicklog.$keyBase.value'),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black.withValues(alpha: 0.60),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -455,7 +455,7 @@ class _RecentLogsCard extends ConsumerWidget {
               Text(
                 l10n.noLogsHint,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black.withValues(alpha: 0.60),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               )
@@ -488,9 +488,9 @@ class _RecentLogRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.03),
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -510,7 +510,7 @@ class _RecentLogRow extends StatelessWidget {
                   Text(
                     '$hh:$mm',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black.withValues(alpha: 0.55),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

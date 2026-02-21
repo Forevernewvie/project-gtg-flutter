@@ -3,6 +3,7 @@ import '../../core/logging/app_logger.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/reminder_settings.dart';
 import '../../core/models/user_preferences.dart';
+import '../../core/models/app_theme_preference.dart';
 import '../isar/isar_database.dart';
 import '../isar/isar_persistence.dart';
 import 'directory_provider.dart';
@@ -122,6 +123,28 @@ class GtgPersistence {
     }
 
     await _saveUserPreferencesToJson(preferences);
+  }
+
+  /// Loads app theme preference with a system-default fallback.
+  Future<AppThemePreference> loadAppThemePreference() async {
+    final raw = await _fileStore.readJson(
+      PersistenceConstants.themePreferenceFileName,
+    );
+
+    if (raw is String) {
+      return AppThemePreference.fromRaw(raw);
+    }
+
+    final map = _tryMap(raw);
+    return AppThemePreference.fromRaw(map?['themeMode']);
+  }
+
+  /// Persists app theme preference independently from feature data storage mode.
+  Future<void> saveAppThemePreference(AppThemePreference preference) async {
+    await _fileStore.writeJson(
+      PersistenceConstants.themePreferenceFileName,
+      <String, Object?>{'themeMode': preference.key},
+    );
   }
 
   /// Releases Isar database resources when callers need deterministic cleanup.

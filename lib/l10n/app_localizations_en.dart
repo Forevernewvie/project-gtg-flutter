@@ -87,6 +87,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
+  String get settingsThemeTitle => 'Theme';
+
+  @override
+  String get settingsThemeSubtitle =>
+      'Choose app appearance. Applied immediately.';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
   String get remindersTitle => 'Reminders';
 
   @override

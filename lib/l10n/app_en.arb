@@ -43,6 +43,11 @@
   "noLogsForDay": "No logs for this day. Log a set on Home.",
 
   "settingsTitle": "Settings",
+  "settingsThemeTitle": "Theme",
+  "settingsThemeSubtitle": "Choose app appearance. Applied immediately.",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
   "remindersTitle": "Reminders",
   "remindersSubtitle": "Interval, quiet hours, weekends off",
   "allLogsTitle": "All Logs",

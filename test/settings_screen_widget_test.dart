@@ -122,7 +122,14 @@ void main() {
       UrlLauncherPlatform.instance = fakeLauncher;
       addTearDown(() => UrlLauncherPlatform.instance = originalLauncher);
 
-      await tester.pumpWidget(testApp(const Scaffold(body: SettingsScreen())));
+      final persistence = _MemoryPersistence();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [persistenceProvider.overrideWithValue(persistence)],
+          child: testApp(const Scaffold(body: SettingsScreen())),
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ListTile, '개인정보 처리방침'));

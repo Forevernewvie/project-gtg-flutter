@@ -43,6 +43,11 @@
   "noLogsForDay": "이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.",
 
   "settingsTitle": "설정",
+  "settingsThemeTitle": "테마",
+  "settingsThemeSubtitle": "앱 화면 스타일을 선택하세요. 즉시 적용됩니다.",
+  "settingsThemeSystem": "시스템",
+  "settingsThemeLight": "라이트",
+  "settingsThemeDark": "다크",
   "remindersTitle": "리마인더",
   "remindersSubtitle": "반복 주기, 조용한 시간, 주말 쉬기",
   "allLogsTitle": "전체 기록",

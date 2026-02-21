@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/clock.dart';
 import '../../core/models/reminder_settings.dart';
-import '../../core/gtg_colors.dart';
 import '../../l10n/app_localizations.dart';
 import 'state/reminder_controller.dart';
 import 'state/reminder_providers.dart';
@@ -46,7 +45,7 @@ class _ReminderSettingsScreenState
           Text(
             l10n.remindersSubheadline,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black.withValues(alpha: 0.60),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -78,7 +77,9 @@ class _ReminderSettingsScreenState
                               ),
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    color: Colors.black.withValues(alpha: 0.60),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -258,10 +259,10 @@ class _ReminderSettingsScreenState
                   const SizedBox(height: 6),
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.03),
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: Colors.black.withValues(alpha: 0.06),
+                        color: Theme.of(context).colorScheme.outlineVariant,
                       ),
                     ),
                     child: Padding(
@@ -275,7 +276,9 @@ class _ReminderSettingsScreenState
                               l10n.silentNotificationsInfo,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    color: Colors.black.withValues(alpha: 0.70),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -485,9 +488,11 @@ class _TimeField extends StatelessWidget {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.03),
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -500,7 +505,7 @@ class _TimeField extends StatelessWidget {
                     Text(
                       label,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: Colors.black.withValues(alpha: 0.60),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -509,7 +514,7 @@ class _TimeField extends StatelessWidget {
                       '$hh:$mm',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
-                        color: GtgColors.textPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],

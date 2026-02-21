@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/clock.dart';
 import '../../core/date_utils.dart';
-import '../../core/gtg_colors.dart';
 import '../../core/l10n/gtg_date_formatters.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
@@ -109,7 +108,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       Text(
                         l10n.calendarSubtitleHeatmap,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.black.withValues(alpha: 0.60),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -212,7 +211,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     Text(
                       l10n.dayTotal(selectedSum),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black.withValues(alpha: 0.60),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -240,7 +239,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       Text(
                         l10n.noLogsForDay,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.black.withValues(alpha: 0.60),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
                         ),
                       )
@@ -277,7 +276,7 @@ class _WeekdayRow extends StatelessWidget {
               child: Text(
                 label,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.black.withValues(alpha: 0.60),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -332,12 +331,21 @@ class _MonthHeatmap extends StatelessWidget {
             final total = dayTotals[key] ?? 0;
             final isSelected = isSameDay(date, selectedDay);
 
-            final bg = _heatColor(total, maxTotal, accent);
+            final bg = _heatColor(
+              total,
+              maxTotal,
+              accent,
+              Theme.of(context).colorScheme.surfaceContainerHigh,
+            );
             final border = isSelected
                 ? Border.all(color: accent, width: 2)
-                : Border.all(color: Colors.black.withValues(alpha: 0.06));
+                : Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  );
 
-            final textColor = total == 0 ? GtgColors.textPrimary : Colors.white;
+            final textColor = total == 0
+                ? Theme.of(context).colorScheme.onSurface
+                : Colors.white;
 
             return SizedBox(
               width: cellSize,
@@ -370,9 +378,9 @@ class _MonthHeatmap extends StatelessWidget {
     );
   }
 
-  Color _heatColor(int total, int max, Color accent) {
+  Color _heatColor(int total, int max, Color accent, Color baseColor) {
     if (total <= 0 || max <= 0) {
-      return Colors.black.withValues(alpha: 0.03);
+      return baseColor;
     }
 
     final ratio = total / max;
@@ -398,9 +406,11 @@ class _MiniStatChip extends StatelessWidget {
     return Expanded(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.03),
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -410,7 +420,7 @@ class _MiniStatChip extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.black.withValues(alpha: 0.60),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -444,9 +454,9 @@ class _DayLogRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.03),
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -466,7 +476,7 @@ class _DayLogRow extends StatelessWidget {
                   Text(
                     '$hh:$mm',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black.withValues(alpha: 0.55),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
