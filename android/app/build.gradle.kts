@@ -115,6 +115,10 @@ android {
             // Debug uses Google's test App ID.
             manifestPlaceholders["ADMOB_APP_ID"] = admobTestAppIdAndroid
         }
+        getByName("profile") {
+            // Keep profile builds runnable for local performance tracing without requiring secrets.
+            manifestPlaceholders["ADMOB_APP_ID"] = admobTestAppIdAndroid
+        }
         release {
             // Signed via android/key.properties (gitignored). Release builds must fail if missing.
             manifestPlaceholders["ADMOB_APP_ID"] =

@@ -21,6 +21,8 @@ class GtgApp extends ConsumerStatefulWidget {
 
 class _GtgAppState extends ConsumerState<GtgApp> {
   late final GoRouter _router = createRouter();
+  late final ThemeData _lightTheme = GtgTheme.light();
+  late final ThemeData _darkTheme = GtgTheme.dark();
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +36,8 @@ class _GtgAppState extends ConsumerState<GtgApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
-      theme: GtgTheme.light(),
-      darkTheme: GtgTheme.dark(),
+      theme: _lightTheme,
+      darkTheme: _darkTheme,
       themeMode: themePreference.themeMode,
       routerConfig: _router,
       builder: (context, child) {
