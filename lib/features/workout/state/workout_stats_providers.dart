@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/clock.dart';
@@ -16,6 +18,12 @@ final workoutAnalyticsServiceProvider = Provider<WorkoutAnalyticsService>((
 final workoutLogsProvider = Provider<List<ExerciseLog>>((ref) {
   return ref.watch(workoutControllerProvider).asData?.value.logs ??
       const <ExerciseLog>[];
+});
+
+final sortedWorkoutLogsProvider = Provider<List<ExerciseLog>>((ref) {
+  final sorted = List<ExerciseLog>.of(ref.watch(workoutLogsProvider))
+    ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  return UnmodifiableListView<ExerciseLog>(sorted);
 });
 
 final todayTotalsProvider = Provider<Map<ExerciseType, int>>((ref) {

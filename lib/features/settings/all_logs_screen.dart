@@ -16,62 +16,72 @@ class AllLogsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
 
-    final logs = ref.watch(workoutLogsProvider);
-    final sorted = <ExerciseLog>[...logs]
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final sortedLogs = ref.watch(sortedWorkoutLogsProvider);
 
     final groups = <DateTime, List<ExerciseLog>>{};
-    for (final log in sorted) {
+    for (final log in sortedLogs) {
       final day = startOfDay(log.timestamp);
-      groups.putIfAbsent(day, () => <ExerciseLog>[]).add(log);
+      (groups[day] ??= <ExerciseLog>[]).add(log);
     }
 
-    final days = groups.keys.toList(growable: false)
-      ..sort((a, b) => b.compareTo(a));
+    final sections = groups.entries.toList(growable: false);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.allLogsTitle)),
       bottomNavigationBar: const GtgBannerAd(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
-        children: <Widget>[
-          if (sorted.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-                child: Text(
-                  l10n.noLogsHintHome,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
+      body: sortedLogs.isEmpty
+          ? ListView(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
+              children: <Widget>[
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                    child: Text(
+                      l10n.noLogsHintHome,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             )
-          else
-            for (final day in days) ...<Widget>[
-              _DayHeader(day: day, logs: groups[day] ?? const <ExerciseLog>[]),
-              const SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          : ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
+              itemCount: sections.length,
+              itemBuilder: (context, index) {
+                final section = sections[index];
+                final logs = section.value;
+                final isLast = index == sections.length - 1;
+
+                return Padding(
+                  padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
                   child: Column(
                     children: <Widget>[
-                      for (final log in groups[day] ?? const <ExerciseLog>[])
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _LogRow(log: log),
+                      _DayHeader(day: section.key, logs: logs),
+                      const SizedBox(height: 10),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                          child: Column(
+                            children: <Widget>[
+                              for (final log in logs)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _LogRow(log: log),
+                                ),
+                            ],
+                          ),
                         ),
+                      ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-        ],
-      ),
+                );
+              },
+            ),
     );
   }
 }

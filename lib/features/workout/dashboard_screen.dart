@@ -19,19 +19,19 @@ class DashboardScreen extends ConsumerWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-            child: _HeroCard(),
+            child: const _HeroCard(),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-            child: _QuickLogCard(),
+            child: const _QuickLogCard(),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            child: _RecentLogsCard(),
+            child: const _RecentLogsCard(),
           ),
         ),
       ],
@@ -40,6 +40,7 @@ class DashboardScreen extends ConsumerWidget {
 }
 
 class _HeroCard extends ConsumerWidget {
+  const _HeroCard();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -234,6 +235,7 @@ class _MetricChip extends StatelessWidget {
 }
 
 class _QuickLogCard extends ConsumerStatefulWidget {
+  const _QuickLogCard();
   @override
   ConsumerState<_QuickLogCard> createState() => _QuickLogCardState();
 }
@@ -427,16 +429,14 @@ class _QuickLogRow extends StatelessWidget {
 }
 
 class _RecentLogsCard extends ConsumerWidget {
+  const _RecentLogsCard();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
 
-    final logs = ref.watch(workoutLogsProvider);
+    final sortedLogs = ref.watch(sortedWorkoutLogsProvider);
 
-    final recent = <ExerciseLog>[...logs]
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-    final top = recent.take(5).toList(growable: false);
+    final top = sortedLogs.take(5).toList(growable: false);
 
     return Card(
       child: Padding(

@@ -49,7 +49,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final logs = ref.watch(workoutLogsProvider);
+    final logs = ref.watch(sortedWorkoutLogsProvider);
     final service = ref.watch(workoutAnalyticsServiceProvider);
 
     final monthStart = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
@@ -83,7 +83,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final selectedSorted = <ExerciseLog>[
       for (final l in logs)
         if (isSameDay(l.timestamp, selectedDay)) l,
-    ]..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    ];
 
     final colorScheme = Theme.of(context).colorScheme;
 
