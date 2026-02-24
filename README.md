@@ -1,214 +1,205 @@
 # PROJECT GTG (Flutter)
 
-## 1) Project Overview
-PROJECT GTG is a local-first GTG (Grease The Groove) workout app for iOS and Android.
-It focuses on fast repetition logging for Push-ups, Pull-ups, and Dips, plus lightweight progress visibility through dashboard and calendar views.
+A local-first GTG (Grease The Groove) workout app focused on frequent, low-fatigue training.
+The app currently targets Push-up, Pull-up, and Dip logging with calendar visibility, reminders, and theme/localization support.
 
-Current navigation structure:
-- Home
+## TL;DR (Run in 3 Steps)
+
+```bash
+git clone https://github.com/Forevernewvie/project-gtg-flutter.git
+cd project-gtg-flutter
+flutter pub get
+flutter run -d emulator-5554 --debug
+```
+
+If `emulator-5554` is not available, run `flutter devices` and replace the device id.
+
+## What This App Includes (Current State)
+
+- Onboarding overlay for first launch (primary exercise selection)
+- Home dashboard
+  - Quick logging for Push-up / Pull-up / Dip
+  - Daily totals and active-day summary
+  - Recent logs preview
 - Calendar
+  - Monthly heatmap
+  - Selected-day timeline/details
 - Settings
-  - Reminder Settings (nested route)
-  - All Logs (nested route)
+  - Theme mode selector: System / Light / Dark
+  - Reminder settings page
+  - All logs page
+  - Privacy policy external link
+- Reminders
+  - Enable/disable
+  - Interval
+  - Max reminders/day
+  - Quiet hours
+  - Skip weekends
+- Localization
+  - English (`en`)
+  - Korean (`ko`)
 
-Onboarding and splash are handled as root overlays.
+## Navigation Structure
 
-## 2) Feature Highlights
-### Onboarding
-- First-run onboarding asks for a primary exercise.
-- Supports skip and complete flows.
-- Triggered by persisted user preference (`hasCompletedOnboarding`).
+- `/home`
+- `/calendar`
+- `/settings`
+  - `/settings/reminders`
+  - `/settings/logs`
 
-### Home quick logging (Push-up / Pull-up / Dip)
-- Per-exercise +/- steppers and one-tap log action.
-- Immediate persistence through Riverpod controller.
-- Reset action clears all logs.
+Router lives in `/lib/app/router.dart` and uses `go_router` with `StatefulShellRoute`.
 
-### Stats (daily/weekly/monthly)
-- Analytics service supports day/week/month totals.
-- Current UI surfaces:
-  - Daily totals on Home hero card.
-  - Active days in the last 14 days.
-  - Monthly total and active days in Calendar.
+## Tech Stack
 
-### Calendar heatmap + day timeline
-- Monthly heatmap grid with intensity by logged reps.
-- Tap a day to view day total, per-exercise totals, and time-sorted entries.
-- Month navigation and "Today" jump are included.
-
-### Reminder controls + smart reminder area
-- Enable/disable reminders with permission-aware behavior.
-- Controls: interval, max per day, quiet hours (start/end), skip weekends.
-- Smart scheduling summary shows next planned reminder and count.
-
-### History list/edit/undo
-- All Logs screen provides grouped day-by-day history view.
-- Current UI supports browsing only; explicit edit/undo actions are not exposed in this release.
-
-### Settings (Theme mode: System/Light/Dark, etc.)
-- Theme selector: System / Light / Dark.
-- Reminder and All Logs entry points.
-- Privacy policy external link handling and fallback snackbar.
-
-## 3) Tech Stack and Architecture
-- Framework: Flutter (Dart)
-- State management: `flutter_riverpod` (AsyncNotifier + Provider)
-- Navigation: `go_router` (`StatefulShellRoute`)
-- Localization: `flutter_localizations` + ARB + generated localizations
-- Local notifications: `flutter_local_notifications`
-- Local storage:
-  - Preferred backend: Isar (`isar_community`)
-  - Fallback/backend migration source: JSON file store
+- Flutter + Dart
+- State management: `flutter_riverpod`
+- Navigation: `go_router`
+- Persistence: `isar_community` (with JSON compatibility path)
+- Notifications: `flutter_local_notifications`
 - Ads: `google_mobile_ads`
+- Localization: ARB + generated `AppLocalizations`
 
-High-level layout:
-- `lib/app`: app shell, router, root overlays
-- `lib/core`: models, theme, env, utilities
-- `lib/data`: persistence (Isar + JSON fallback)
-- `lib/features`: onboarding, workout, calendar, reminders, settings
-- `test`: unit/widget/layout compatibility tests
-- `tool`: gate, smoke, release helpers
+## Project Layout
 
-## 4) Theme System (GTG Light/Dark)
-Theme is configured at app root and applied via `ThemeMode`.
+```text
+lib/
+  app/          # app root, router, shell, overlays
+  core/         # theme, models, env, shared utils
+  data/         # persistence layer (Isar + JSON)
+  features/     # onboarding, workout, calendar, reminders, settings
+  l10n/         # ARB + generated localization files
 
-Primary files:
-- `lib/core/gtg_colors.dart` (GTG light/dark tokens)
-- `lib/core/gtg_gradients.dart` (light/dark gradients)
-- `lib/core/gtg_theme.dart` (ThemeData for light/dark)
-- `lib/app/gtg_app.dart` (`theme`, `darkTheme`, `themeMode` wiring)
-- `lib/features/settings/settings_screen.dart` (System/Light/Dark selector)
-- `lib/features/settings/state/theme_preference_controller.dart` (state)
-- `lib/core/models/app_theme_preference.dart` (enum/model)
+test/            # unit/widget/layout tests
+integration_test/# flow-level integration tests
+tool/            # gate/release/security helper scripts
+```
 
-Persistence behavior:
-- Theme mode is saved in `theme_preference.json` via `GtgPersistence`.
-- Selection is restored on app restart.
+## Theme System (GTG Light/Dark)
 
-## 5) Localization Status (EN/KO)
-Current localization setup supports:
-- `en`
-- `ko`
+- Theme definitions: `/lib/core/gtg_theme.dart`
+- Color tokens: `/lib/core/gtg_colors.dart`
+- Gradients: `/lib/core/gtg_gradients.dart`
+- App wiring: `/lib/app/gtg_app.dart`
+- Settings selector: `/lib/features/settings/settings_screen.dart`
+- Persistence controller: `/lib/features/settings/state/theme_preference_controller.dart`
 
-Source files:
-- `lib/l10n/app_en.arb`
-- `lib/l10n/app_ko.arb`
+Theme choice is persisted and restored on next app launch.
 
-Generated output:
-- `lib/l10n/app_localizations.dart`
-- `lib/l10n/app_localizations_en.dart`
-- `lib/l10n/app_localizations_ko.dart`
+## Localization
 
-Regenerate localizations after ARB changes:
+Source ARB files:
+- `/lib/l10n/app_en.arb`
+- `/lib/l10n/app_ko.arb`
+
+After editing ARB files:
+
 ```bash
 flutter gen-l10n
 ```
 
-## 6) Getting Started (prerequisites, install, run)
-### Prerequisites
-- Flutter SDK (stable)
-- Xcode + CocoaPods (for iOS)
-- Android SDK / Android Studio (for Android)
+## Local Quality Gates (Same Intent as CI)
 
-### Install dependencies
 ```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter
-flutter pub get
-```
-
-### Run (Android emulator)
-```bash
-flutter run -d emulator-5554 --debug
-```
-
-### Run (iOS simulator)
-```bash
-flutter run -d "iPhone 16" --debug
-```
-
-## 7) Quality Gates
-Run these before commit:
-```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter
 dart format --set-exit-if-changed .
 flutter analyze
 flutter test
+flutter test integration_test -d emulator-5554
 ```
 
-Optional consolidated gate:
+One-shot gate script:
+
 ```bash
 ./tool/gate.sh
 ```
 
-## 8) Build & Install
-Build debug APK:
-```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter
-flutter build apk --debug
-```
+## Build & Install
 
-Install debug APK to emulator/device:
+### Debug APK
+
 ```bash
+flutter build apk --debug
 flutter install -d emulator-5554 --debug \
   --use-application-binary build/app/outputs/flutter-apk/app-debug.apk
 ```
 
-Uninstall only (if needed):
+### Android Release AAB
+
+Recommended script:
+
 ```bash
-flutter install -d emulator-5554 --debug --uninstall-only
+./tool/release_android.sh
 ```
 
-## 9) Repository Workflow
-Use feature branches prefixed with `codex/`.
+Release prerequisites are validated by the script, including:
+- `android/key.properties`
+- keystore file path
+- ad-related env vars (when ads are enabled)
 
-Recommended flow:
+Direct build command (if your release env is already set):
+
 ```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter
+flutter build appbundle --release
+```
+
+## Security & Secrets Basics
+
+- Do not commit `.env*`, keystore files, or signing secrets.
+- Keep `android/key.properties` local-only (gitignored).
+- Use `/tool/security/` scripts and CI secret scanning before release.
+
+## Recommended Git Workflow
+
+```bash
 git switch main
 git pull --ff-only
-git switch -c codex/feature/<task-name>
+git switch -c codex/<task-name>
 
-# implement changes
+# make changes
 
 dart format --set-exit-if-changed .
 flutter analyze
 flutter test
 
+# optional integration test
+flutter test integration_test -d emulator-5554
+
 git add <files>
-git commit -m "feat(scope): summary"
-git push -u origin codex/feature/<task-name>
+git commit -m "type(scope): summary"
+git push -u origin codex/<task-name>
 ```
 
-PR guidance:
-- Open PR from `codex/...` -> `main`
-- Ensure checks pass
-- Merge after review
+Then open a PR to `main`.
 
-## 10) Troubleshooting
-### Build artifacts or dependency drift
+## Troubleshooting
+
+### Build cache / dependency issues
+
 ```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter
 flutter clean
 flutter pub get
 ```
 
-### iOS pods issues
+### iOS CocoaPods issues
+
 ```bash
-cd /Users/jaebinchoi/Desktop/project-gtg-flutter/ios
+cd ios
 pod install
+cd ..
 ```
 
-### Emulator install issues
-- Verify device list: `flutter devices`
-- Reinstall debug APK:
-  ```bash
-  flutter install -d emulator-5554 --debug --uninstall-only
-  flutter install -d emulator-5554 --debug
-  ```
+### Device not detected
 
-## 11) Changelog Snapshot
-Recent major updates reflected in current codebase:
-- Added GTG dual theme system (Light/Dark) and Settings theme selector with persistence.
-- Introduced Isar-first persistence with safe JSON-to-Isar migration and JSON fallback.
-- Expanded QA coverage for persistence, reminders, onboarding, layout compatibility, and widget smoke paths.
-- Hardened test/runtime behavior (test runtime detection, scheduling sync checks, formatting/analyze/test gates).
+```bash
+flutter devices
+```
+
+### Reinstall app on emulator
+
+```bash
+flutter install -d emulator-5554 --debug --uninstall-only
+flutter install -d emulator-5554 --debug
+```
+
+## License
+
+Internal/private project (`publish_to: none`).
