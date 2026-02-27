@@ -15,73 +15,117 @@ class AllLogsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-
     final sortedLogs = ref.watch(sortedWorkoutLogsProvider);
 
-    final groups = <DateTime, List<ExerciseLog>>{};
-    for (final log in sortedLogs) {
-      final day = startOfDay(log.timestamp);
-      (groups[day] ??= <ExerciseLog>[]).add(log);
+    if (sortedLogs.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.allLogsTitle)),
+        bottomNavigationBar: const GtgBannerAd(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
+          children: <Widget>[_EmptyStateCard(message: l10n.noLogsHintHome)],
+        ),
+      );
     }
 
-    final sections = groups.entries.toList(growable: false);
+    final sections = _groupLogsByDay(sortedLogs);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.allLogsTitle)),
       bottomNavigationBar: const GtgBannerAd(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
       ),
-      body: sortedLogs.isEmpty
-          ? ListView(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
-              children: <Widget>[
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-                    child: Text(
-                      l10n.noLogsHintHome,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
-              itemCount: sections.length,
-              itemBuilder: (context, index) {
-                final section = sections[index];
-                final logs = section.value;
-                final isLast = index == sections.length - 1;
+      body: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
+        itemCount: sections.length,
+        itemBuilder: (context, index) {
+          final section = sections[index];
+          final isLast = index == sections.length - 1;
 
-                return Padding(
-                  padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
-                  child: Column(
-                    children: <Widget>[
-                      _DayHeader(day: section.key, logs: logs),
-                      const SizedBox(height: 10),
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-                          child: Column(
-                            children: <Widget>[
-                              for (final log in logs)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: _LogRow(log: log),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+          return Padding(
+            padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+            child: _DaySectionCard(section: section),
+          );
+        },
+      ),
+    );
+  }
+
+  List<_DaySection> _groupLogsByDay(List<ExerciseLog> sortedLogs) {
+    final groups = <DateTime, List<ExerciseLog>>{};
+    for (final log in sortedLogs) {
+      final day = startOfDay(log.timestamp);
+      (groups[day] ??= <ExerciseLog>[]).add(log);
+    }
+
+    return groups.entries
+        .map(
+          (entry) => _DaySection(
+            day: entry.key,
+            logs: List<ExerciseLog>.unmodifiable(entry.value),
+          ),
+        )
+        .toList(growable: false);
+  }
+}
+
+class _DaySection {
+  const _DaySection({required this.day, required this.logs});
+
+  final DateTime day;
+  final List<ExerciseLog> logs;
+}
+
+class _EmptyStateCard extends StatelessWidget {
+  const _EmptyStateCard({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Text(
+          message,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DaySectionCard extends StatelessWidget {
+  const _DaySectionCard({required this.section});
+
+  final _DaySection section;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        _DayHeader(day: section.day, logs: section.logs),
+        const SizedBox(height: 10),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+            child: Column(
+              children: <Widget>[
+                for (final log in section.logs)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _LogRow(log: log),
                   ),
-                );
-              },
+              ],
             ),
+          ),
+        ),
+      ],
     );
   }
 }
