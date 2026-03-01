@@ -38,113 +38,124 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        l10n.appTitle,
-                        style: Theme.of(context).textTheme.headlineSmall
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              l10n.appTitle,
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: _busy
+                                ? null
+                                : () async {
+                                    setState(() => _busy = true);
+                                    await widget.onSkip();
+                                    if (!context.mounted) return;
+                                    setState(() => _busy = false);
+                                  },
+                            child: Text(l10n.onboardingLater),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        l10n.onboardingSubtitle,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        l10n.onboardingQuestion,
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w900),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: _busy
-                          ? null
-                          : () async {
-                              setState(() => _busy = true);
-                              await widget.onSkip();
-                              if (!context.mounted) return;
-                              setState(() => _busy = false);
-                            },
-                      child: Text(l10n.onboardingLater),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.onboardingSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Text(
-                  l10n.onboardingQuestion,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.onboardingHint,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _PickCard(
-                  type: ExerciseType.pushUp,
-                  selected: _selected == ExerciseType.pushUp,
-                  onTap: _busy
-                      ? null
-                      : () => setState(() => _selected = ExerciseType.pushUp),
-                  accent: GtgColors.accentFor(brightness),
-                  subtitle: l10n.onboardingPushUpSubtitle,
-                ),
-                const SizedBox(height: 10),
-                _PickCard(
-                  type: ExerciseType.pullUp,
-                  selected: _selected == ExerciseType.pullUp,
-                  onTap: _busy
-                      ? null
-                      : () => setState(() => _selected = ExerciseType.pullUp),
-                  accent: GtgColors.successFor(brightness),
-                  subtitle: l10n.onboardingPullUpSubtitle,
-                ),
-                const SizedBox(height: 10),
-                _PickCard(
-                  type: ExerciseType.dips,
-                  selected: _selected == ExerciseType.dips,
-                  onTap: _busy
-                      ? null
-                      : () => setState(() => _selected = ExerciseType.dips),
-                  accent: GtgColors.textSecondaryFor(brightness),
-                  subtitle: l10n.onboardingDipsSubtitle,
-                ),
-                const Spacer(),
-                if (_busy) ...<Widget>[
-                  const LinearProgressIndicator(minHeight: 3),
-                  const SizedBox(height: 12),
-                ],
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: _busy
-                        ? null
-                        : () async {
-                            setState(() => _busy = true);
-                            await widget.onComplete(_selected);
-                            if (!context.mounted) return;
-                            setState(() => _busy = false);
-                          },
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.onboardingHint,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    child: Text(l10n.onboardingNext),
+                      const SizedBox(height: 12),
+                      _PickCard(
+                        type: ExerciseType.pushUp,
+                        selected: _selected == ExerciseType.pushUp,
+                        onTap: _busy
+                            ? null
+                            : () => setState(
+                                () => _selected = ExerciseType.pushUp,
+                              ),
+                        accent: GtgColors.accentFor(brightness),
+                        subtitle: l10n.onboardingPushUpSubtitle,
+                      ),
+                      const SizedBox(height: 10),
+                      _PickCard(
+                        type: ExerciseType.pullUp,
+                        selected: _selected == ExerciseType.pullUp,
+                        onTap: _busy
+                            ? null
+                            : () => setState(
+                                () => _selected = ExerciseType.pullUp,
+                              ),
+                        accent: GtgColors.successFor(brightness),
+                        subtitle: l10n.onboardingPullUpSubtitle,
+                      ),
+                      const SizedBox(height: 10),
+                      _PickCard(
+                        type: ExerciseType.dips,
+                        selected: _selected == ExerciseType.dips,
+                        onTap: _busy
+                            ? null
+                            : () =>
+                                  setState(() => _selected = ExerciseType.dips),
+                        accent: GtgColors.textSecondaryFor(brightness),
+                        subtitle: l10n.onboardingDipsSubtitle,
+                      ),
+                      const SizedBox(height: 24),
+                      if (_busy) ...<Widget>[
+                        const LinearProgressIndicator(minHeight: 3),
+                        const SizedBox(height: 12),
+                      ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: _busy
+                              ? null
+                              : () async {
+                                  setState(() => _busy = true);
+                                  await widget.onComplete(_selected);
+                                  if (!context.mounted) return;
+                                  setState(() => _busy = false);
+                                },
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          child: Text(l10n.onboardingNext),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
