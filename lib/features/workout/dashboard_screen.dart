@@ -165,7 +165,7 @@ class _HeroHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = constraints.maxWidth < 340;
+        final isCompact = constraints.maxWidth < 360;
 
         if (isCompact) {
           return Column(
@@ -258,16 +258,9 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  l10n.quickLogTitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                TextButton(
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final resetButton = TextButton(
                   onPressed: isReady
                       ? () async {
                           await ref
@@ -276,8 +269,34 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
                         }
                       : null,
                   child: Text(l10n.reset),
-                ),
-              ],
+                );
+
+                final title = Text(
+                  l10n.quickLogTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                );
+
+                if (constraints.maxWidth < 360) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      title,
+                      const SizedBox(height: 6),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: resetButton,
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[title, resetButton],
+                );
+              },
             ),
             const SizedBox(height: 10),
             _QuickLogRow(
@@ -381,47 +400,79 @@ class _QuickLogRow extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxWidth < 360;
+
+            final controlsChildren = <Widget>[
+              IconButton(
+                key: Key('quicklog.$keyBase.minus'),
+                onPressed: onMinus,
+                icon: const Icon(Icons.remove_rounded),
+              ),
+              IconButton(
+                key: Key('quicklog.$keyBase.plus'),
+                onPressed: onPlus,
+                icon: const Icon(Icons.add_rounded),
+              ),
+              FilledButton(
+                key: Key('quicklog.$keyBase.record'),
+                onPressed: onRecord,
+                child: Text(l10n.record),
+              ),
+            ];
+
+            final controls = isCompact
+                ? Wrap(spacing: 6, runSpacing: 6, children: controlsChildren)
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      controlsChildren[0],
+                      controlsChildren[1],
+                      const SizedBox(width: 6),
+                      controlsChildren[2],
+                    ],
+                  );
+
+            final labelSection = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  type.label(l10n),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.repsWithUnit(reps),
+                  key: Key('quicklog.$keyBase.value'),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            );
+
+            if (isCompact) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    type.label(l10n),
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.repsWithUnit(reps),
-                    key: Key('quicklog.$keyBase.value'),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  labelSection,
+                  const SizedBox(height: 8),
+                  controls,
                 ],
-              ),
-            ),
-            IconButton(
-              key: Key('quicklog.$keyBase.minus'),
-              onPressed: onMinus,
-              icon: const Icon(Icons.remove_rounded),
-            ),
-            IconButton(
-              key: Key('quicklog.$keyBase.plus'),
-              onPressed: onPlus,
-              icon: const Icon(Icons.add_rounded),
-            ),
-            const SizedBox(width: 6),
-            FilledButton(
-              key: Key('quicklog.$keyBase.record'),
-              onPressed: onRecord,
-              child: Text(l10n.record),
-            ),
-          ],
+              );
+            }
+
+            return Row(
+              children: <Widget>[
+                Expanded(child: labelSection),
+                controls,
+              ],
+            );
+          },
         ),
       ),
     );
