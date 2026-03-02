@@ -18,6 +18,7 @@
   },
 
   "quickLogTitle": "빠른 입력",
+  "quickLogHelper": "횟수를 조정한 뒤 기록을 누르세요.",
   "reset": "초기화",
   "record": "기록",
   "loadingLogs": "기록을 불러오는 중입니다...",
@@ -26,7 +27,7 @@
   "noLogsHintHome": "기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.",
 
   "calendarTitle": "리듬 캘린더",
-  "calendarSubtitleHeatmap": "기록이 쌓일수록 더 진해집니다. (월간 히트맵)",
+  "calendarSubtitleHeatmap": "색이 진할수록 횟수가 많습니다. (월간 히트맵)",
   "today": "오늘",
   "prevMonthTooltip": "이전 달",
   "nextMonthTooltip": "다음 달",
@@ -49,7 +50,7 @@
   "settingsThemeLight": "라이트",
   "settingsThemeDark": "다크",
   "remindersTitle": "리마인더",
-  "remindersSubtitle": "반복 주기, 조용한 시간, 주말 쉬기",
+  "remindersSubtitle": "반복 주기, 방해 금지 시간, 주말 제외를 설정합니다",
   "allLogsTitle": "전체 기록",
   "allLogsSubtitle": "날짜별/종목별로 모아보기",
   "aboutTitle": "앱 정보",

@@ -35,6 +35,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get quickLogTitle => '빠른 입력';
 
   @override
+  String get quickLogHelper => '횟수를 조정한 뒤 기록을 누르세요.';
+
+  @override
   String get reset => '초기화';
 
   @override
@@ -56,7 +59,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get calendarTitle => '리듬 캘린더';
 
   @override
-  String get calendarSubtitleHeatmap => '기록이 쌓일수록 더 진해집니다. (월간 히트맵)';
+  String get calendarSubtitleHeatmap => '색이 진할수록 횟수가 많습니다. (월간 히트맵)';
 
   @override
   String get today => '오늘';
@@ -103,7 +106,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remindersTitle => '리마인더';
 
   @override
-  String get remindersSubtitle => '반복 주기, 조용한 시간, 주말 쉬기';
+  String get remindersSubtitle => '반복 주기, 방해 금지 시간, 주말 제외를 설정합니다';
 
   @override
   String get allLogsTitle => '전체 기록';

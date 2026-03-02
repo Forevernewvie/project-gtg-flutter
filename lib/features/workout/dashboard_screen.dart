@@ -81,7 +81,14 @@ class _HeroCard extends ConsumerWidget {
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
+            Text(
+              l10n.quickLogHelper,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             Row(
               children: <Widget>[
                 _MetricChip(
@@ -297,6 +304,14 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
                   children: <Widget>[title, resetButton],
                 );
               },
+            ),
+            const SizedBox(height: 6),
+            Text(
+              l10n.quickLogHelper,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 10),
             _QuickLogRow(

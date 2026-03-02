@@ -18,6 +18,7 @@
   },
 
   "quickLogTitle": "Quick Log",
+  "quickLogHelper": "Adjust reps, then tap Record.",
   "reset": "Reset",
   "record": "Log",
   "loadingLogs": "Loading logs...",
@@ -26,7 +27,7 @@
   "noLogsHintHome": "No logs yet. Log a set on Home.",
 
   "calendarTitle": "Rhythm Calendar",
-  "calendarSubtitleHeatmap": "Darker means more logged. Monthly heatmap.",
+  "calendarSubtitleHeatmap": "Darker cells mean more reps. Monthly heatmap.",
   "today": "Today",
   "prevMonthTooltip": "Previous month",
   "nextMonthTooltip": "Next month",
@@ -49,7 +50,7 @@
   "settingsThemeLight": "Light",
   "settingsThemeDark": "Dark",
   "remindersTitle": "Reminders",
-  "remindersSubtitle": "Interval, quiet hours, weekends off",
+  "remindersSubtitle": "Set interval, quiet hours, and weekends off",
   "allLogsTitle": "All Logs",
   "allLogsSubtitle": "Browse by date and exercise",
   "aboutTitle": "About",
