@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Quick Log'**
   String get quickLogTitle;
 
+  /// No description provided for @quickLogHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust reps, then tap Record.'**
+  String get quickLogHelper;
+
   /// No description provided for @reset.
   ///
   /// In en, this message translates to:
@@ -191,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarSubtitleHeatmap.
   ///
   /// In en, this message translates to:
-  /// **'Darker means more logged. Monthly heatmap.'**
+  /// **'Darker cells mean more reps. Monthly heatmap.'**
   String get calendarSubtitleHeatmap;
 
   /// No description provided for @today.
@@ -281,7 +287,7 @@ abstract class AppLocalizations {
   /// No description provided for @remindersSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Interval, quiet hours, weekends off'**
+  /// **'Set interval, quiet hours, and weekends off'**
   String get remindersSubtitle;
 
   /// No description provided for @allLogsTitle.

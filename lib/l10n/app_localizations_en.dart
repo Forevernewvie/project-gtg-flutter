@@ -36,6 +36,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickLogTitle => 'Quick Log';
 
   @override
+  String get quickLogHelper => 'Adjust reps, then tap Record.';
+
+  @override
   String get reset => 'Reset';
 
   @override
@@ -58,7 +61,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarSubtitleHeatmap =>
-      'Darker means more logged. Monthly heatmap.';
+      'Darker cells mean more reps. Monthly heatmap.';
 
   @override
   String get today => 'Today';
@@ -106,7 +109,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersTitle => 'Reminders';
 
   @override
-  String get remindersSubtitle => 'Interval, quiet hours, weekends off';
+  String get remindersSubtitle => 'Set interval, quiet hours, and weekends off';
 
   @override
   String get allLogsTitle => 'All Logs';
