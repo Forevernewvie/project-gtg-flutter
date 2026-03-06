@@ -14,6 +14,9 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final width = MediaQuery.sizeOf(context).width;
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final compactNavigation = width < 360 || textScale >= 1.4;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -33,6 +36,9 @@ class AppShell extends StatelessWidget {
                 child: NavigationBar(
                   selectedIndex: navigationShell.currentIndex,
                   onDestinationSelected: navigationShell.goBranch,
+                  labelBehavior: compactNavigation
+                      ? NavigationDestinationLabelBehavior.alwaysHide
+                      : null,
                   destinations: <NavigationDestination>[
                     NavigationDestination(
                       icon: const Icon(Icons.home_rounded),
