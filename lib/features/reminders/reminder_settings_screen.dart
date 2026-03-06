@@ -8,6 +8,7 @@ import '../../l10n/app_localizations.dart';
 import 'state/reminder_controller.dart';
 import 'state/reminder_providers.dart';
 
+/// Displays reminder controls and schedule tuning without changing reminder business logic.
 class ReminderSettingsScreen extends ConsumerStatefulWidget {
   const ReminderSettingsScreen({super.key});
 
@@ -18,8 +19,11 @@ class ReminderSettingsScreen extends ConsumerStatefulWidget {
 
 class _ReminderSettingsScreenState
     extends ConsumerState<ReminderSettingsScreen> {
+  static const double _compactFormBreakpoint = 360;
+
   bool _busy = false;
 
+  /// Builds reminder settings sections (toggle, schedule, quiet hours) from reactive state.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -53,61 +57,81 @@ class _ReminderSettingsScreenState
           Card(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textScale = MediaQuery.textScalerOf(context).scale(1);
+                  final useCompactToggle =
+                      constraints.maxWidth < _compactFormBreakpoint ||
+                      textScale >= 1.3;
+                  final description = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              l10n.enableRemindersTitle,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w900),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _buildEnabledSubtitle(
-                                now: now,
-                                enabled: settings.enabled,
-                                nextTime: nextTime,
-                                plannedCount: plannedTimes.length,
-                              ),
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
+                      Text(
+                        l10n.enableRemindersTitle,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _buildEnabledSubtitle(
+                          now: now,
+                          enabled: settings.enabled,
+                          nextTime: nextTime,
+                          plannedCount: plannedTimes.length,
+                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Switch(
-                        key: const Key('reminders.enabledSwitch'),
-                        value: settings.enabled,
-                        onChanged: _busy
-                            ? null
-                            : (value) async {
-                                setState(() => _busy = true);
-                                final ok = await ref
-                                    .read(reminderControllerProvider.notifier)
-                                    .setEnabled(value);
-                                if (!context.mounted) return;
-                                setState(() => _busy = false);
-                                if (!ok) _showPermissionDeniedSnackBar(context);
-                              },
-                      ),
                     ],
-                  ),
-                  if (_busy) ...<Widget>[
-                    const SizedBox(height: 10),
-                    const LinearProgressIndicator(minHeight: 3),
-                  ],
-                ],
+                  );
+                  final toggle = Switch(
+                    key: const Key('reminders.enabledSwitch'),
+                    value: settings.enabled,
+                    onChanged: _busy
+                        ? null
+                        : (value) async {
+                            setState(() => _busy = true);
+                            final ok = await ref
+                                .read(reminderControllerProvider.notifier)
+                                .setEnabled(value);
+                            if (!context.mounted) return;
+                            setState(() => _busy = false);
+                            if (!ok) _showPermissionDeniedSnackBar(context);
+                          },
+                  );
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (useCompactToggle)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            description,
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: toggle,
+                            ),
+                          ],
+                        )
+                      else
+                        Row(
+                          children: <Widget>[
+                            Expanded(child: description),
+                            const SizedBox(width: 12),
+                            toggle,
+                          ],
+                        ),
+                      if (_busy) ...<Widget>[
+                        const SizedBox(height: 10),
+                        const LinearProgressIndicator(minHeight: 3),
+                      ],
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -127,7 +151,8 @@ class _ReminderSettingsScreenState
                   const SizedBox(height: 10),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final isCompact = constraints.maxWidth < 360;
+                      final isCompact =
+                          constraints.maxWidth < _compactFormBreakpoint;
 
                       final intervalField = _DropdownField<int>(
                         label: l10n.intervalLabel,
@@ -197,7 +222,8 @@ class _ReminderSettingsScreenState
                   const SizedBox(height: 10),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final isCompact = constraints.maxWidth < 360;
+                      final isCompact =
+                          constraints.maxWidth < _compactFormBreakpoint;
 
                       final startField = _TimeField(
                         label: l10n.startLabel,
@@ -243,18 +269,68 @@ class _ReminderSettingsScreenState
                     },
                   ),
                   const SizedBox(height: 12),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: settings.skipWeekends,
-                    onChanged: (value) async {
-                      await ref
-                          .read(reminderControllerProvider.notifier)
-                          .updateSettings(
-                            settings.copyWith(skipWeekends: value),
-                          );
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final textScale = MediaQuery.textScalerOf(
+                        context,
+                      ).scale(1);
+                      final useCompactToggle =
+                          constraints.maxWidth < _compactFormBreakpoint ||
+                          textScale >= 1.3;
+                      final description = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            l10n.weekendsOffTitle,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w900),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n.weekendsOffSubtitle,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
+                      );
+                      final toggle = Switch(
+                        value: settings.skipWeekends,
+                        onChanged: (value) async {
+                          await ref
+                              .read(reminderControllerProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(skipWeekends: value),
+                              );
+                        },
+                      );
+
+                      if (useCompactToggle) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            description,
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: toggle,
+                            ),
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        children: <Widget>[
+                          Expanded(child: description),
+                          const SizedBox(width: 12),
+                          toggle,
+                        ],
+                      );
                     },
-                    title: Text(l10n.weekendsOffTitle),
-                    subtitle: Text(l10n.weekendsOffSubtitle),
                   ),
                   const SizedBox(height: 6),
                   DecoratedBox(
@@ -300,6 +376,7 @@ class _ReminderSettingsScreenState
     );
   }
 
+  /// Shows a snackbar when notification permission is denied and offers app-settings shortcut.
   void _showPermissionDeniedSnackBar(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
@@ -320,6 +397,7 @@ class _ReminderSettingsScreenState
     );
   }
 
+  /// Computes reminder status subtitle from enablement, next trigger, and planned slot count.
   String _buildEnabledSubtitle({
     required DateTime now,
     required bool enabled,
@@ -337,6 +415,7 @@ class _ReminderSettingsScreenState
     return l10n.enableRemindersNextScheduledSubtitle(label, plannedCount);
   }
 
+  /// Formats next reminder timestamp using today/tomorrow/date-aware microcopy.
   String _formatNextTime(DateTime now, DateTime next, AppLocalizations l10n) {
     final time = TimeOfDay.fromDateTime(next);
     final hh = time.hour.toString().padLeft(2, '0');
@@ -357,6 +436,7 @@ class _ReminderSettingsScreenState
   }
 }
 
+/// Reusable dropdown field for schedule values with outlined input styling.
 class _DropdownField<T> extends StatelessWidget {
   const _DropdownField({
     required this.label,
@@ -372,6 +452,7 @@ class _DropdownField<T> extends StatelessWidget {
   final String Function(T) labelFor;
   final ValueChanged<T?> onChanged;
 
+  /// Builds a labeled dropdown input that expands to avoid compact-layout overflow.
   @override
   Widget build(BuildContext context) {
     return InputDecorator(
@@ -386,6 +467,7 @@ class _DropdownField<T> extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
+          isExpanded: true,
           items: [
             for (final item in items)
               DropdownMenuItem<T>(value: item, child: Text(labelFor(item))),
@@ -397,6 +479,7 @@ class _DropdownField<T> extends StatelessWidget {
   }
 }
 
+/// Reusable numeric stepper field for bounded integer configuration.
 class _StepperField extends StatelessWidget {
   const _StepperField({
     required this.label,
@@ -412,6 +495,7 @@ class _StepperField extends StatelessWidget {
   final int max;
   final ValueChanged<int> onChanged;
 
+  /// Builds a minus/value/plus control with guard rails for min/max boundaries.
   @override
   Widget build(BuildContext context) {
     final canMinus = value > min;
@@ -456,6 +540,7 @@ class _StepperField extends StatelessWidget {
   }
 }
 
+/// Reusable time picker field for quiet-hour boundaries.
 class _TimeField extends StatelessWidget {
   const _TimeField({
     required this.label,
@@ -467,6 +552,7 @@ class _TimeField extends StatelessWidget {
   final int minutes;
   final ValueChanged<int> onPick;
 
+  /// Builds tappable time tile and writes picked minutes back through callback.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

@@ -51,6 +51,37 @@ abstract final class GtgTheme {
     final baseTextTheme = isDark
         ? Typography.whiteCupertino
         : Typography.blackCupertino;
+    final textTheme = baseTextTheme
+        .apply(bodyColor: onSurface, displayColor: onSurface)
+        .copyWith(
+          displayLarge: baseTextTheme.displayLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -1.4,
+          ),
+          displayMedium: baseTextTheme.displayMedium?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -1.1,
+          ),
+          headlineSmall: baseTextTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.6,
+          ),
+          titleLarge: baseTextTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.4,
+          ),
+          titleMedium: baseTextTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.2,
+          ),
+          bodyLarge: baseTextTheme.bodyLarge?.copyWith(height: 1.22),
+          bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.25),
+          bodySmall: baseTextTheme.bodySmall?.copyWith(height: 1.3),
+          labelLarge: baseTextTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.1,
+          ),
+        );
 
     return ThemeData(
       useMaterial3: true,
@@ -62,12 +93,14 @@ abstract final class GtgTheme {
         foregroundColor: onSurface,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
+        titleTextStyle: textTheme.titleLarge,
       ),
       dividerTheme: DividerThemeData(color: border, thickness: 1, space: 1),
       navigationBarTheme: NavigationBarThemeData(
-        height: 64,
-        backgroundColor: surface.withValues(alpha: isDark ? 0.96 : 0.92),
-        indicatorColor: warningSurface,
+        height: 68,
+        backgroundColor: surface.withValues(alpha: isDark ? 0.94 : 0.88),
+        indicatorColor: accent.withValues(alpha: isDark ? 0.26 : 0.14),
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return IconThemeData(color: accent);
@@ -89,7 +122,7 @@ abstract final class GtgTheme {
         margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: border),
         ),
       ),
@@ -101,19 +134,19 @@ abstract final class GtgTheme {
           fontWeight: FontWeight.w700,
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 10,
+          horizontal: 14,
+          vertical: 12,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: accent, width: 1.2),
         ),
       ),
@@ -122,6 +155,9 @@ abstract final class GtgTheme {
           backgroundColor: accent,
           foregroundColor: onAccent,
           textStyle: const TextStyle(fontWeight: FontWeight.w800),
+          minimumSize: const Size(0, 46),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(999),
           ),
@@ -131,7 +167,24 @@ abstract final class GtgTheme {
         style: TextButton.styleFrom(
           foregroundColor: accent,
           textStyle: const TextStyle(fontWeight: FontWeight.w700),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
         ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          foregroundColor: onSurface,
+          minimumSize: const Size(42, 42),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+      listTileTheme: ListTileThemeData(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        iconColor: onSurfaceVariant,
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -168,10 +221,7 @@ abstract final class GtgTheme {
           ),
         ),
       ),
-      textTheme: baseTextTheme.apply(
-        bodyColor: onSurface,
-        displayColor: onSurface,
-      ),
+      textTheme: textTheme,
     );
   }
 }
