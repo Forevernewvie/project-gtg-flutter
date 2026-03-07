@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +10,18 @@ import 'package:project_gtg/features/workout/state/workout_stats_providers.dart'
 import 'test_app.dart';
 
 void main() {
+  void configureCompactAccessibleSurface(WidgetTester tester) {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 568);
+    tester.platformDispatcher.textScaleFactorTestValue = 1.6;
+  }
+
+  void resetSurface(WidgetTester tester) {
+    tester.view.resetPhysicalSize();
+    tester.view.resetDevicePixelRatio();
+    tester.platformDispatcher.clearTextScaleFactorTestValue();
+  }
+
   testWidgets('all logs groups by day and shows totals', (tester) async {
     final logs = <ExerciseLog>[
       ExerciseLog(
@@ -62,5 +75,39 @@ void main() {
     expect(find.text('4회'), findsOneWidget);
 
     expect(find.textContaining('기록이 아직 없습니다'), findsNothing);
+  });
+
+  testWidgets('all logs stays readable on compact screens with large text', (
+    tester,
+  ) async {
+    addTearDown(() => resetSurface(tester));
+    configureCompactAccessibleSurface(tester);
+
+    final logs = <ExerciseLog>[
+      ExerciseLog(
+        id: '1',
+        type: ExerciseType.pushUp,
+        reps: 10,
+        timestamp: DateTime(2026, 2, 14, 13, 36),
+      ),
+      ExerciseLog(
+        id: '2',
+        type: ExerciseType.pullUp,
+        reps: 5,
+        timestamp: DateTime(2026, 2, 14, 14, 0),
+      ),
+    ];
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [workoutLogsProvider.overrideWithValue(logs)],
+        child: testApp(const AllLogsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.textContaining('2월 14일'), findsOneWidget);
+    expect(find.text('15회'), findsOneWidget);
   });
 }

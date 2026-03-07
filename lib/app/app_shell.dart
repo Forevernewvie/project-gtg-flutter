@@ -17,12 +17,7 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
-    final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final compactNavigation = GtgUi.useCompactLayout(
-      width: width,
-      textScale: textScale,
-      textScaleThreshold: GtgUi.accessibilityTextScale,
-    );
+    final compactNavigation = width < GtgUi.collapsedNavigationWidth;
 
     return DecoratedBox(
       decoration: BoxDecoration(

@@ -1,5 +1,6 @@
 /// Shared UI tokens and responsive rules used by GTG screens.
 abstract final class GtgUi {
+  static const double collapsedNavigationWidth = 340;
   static const double compactWidth = 360;
   static const double compactActionWidth = 420;
   static const double compactDetailWidth = 300;
