@@ -5,6 +5,7 @@ import '../../core/ads/gtg_banner_ad.dart';
 import '../../core/date_utils.dart';
 import '../../core/l10n/gtg_date_formatters.dart';
 import '../../core/models/exercise_log.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/exercise_type_l10n.dart';
 import '../workout/state/workout_stats_providers.dart';
@@ -12,6 +13,7 @@ import '../workout/state/workout_stats_providers.dart';
 class AllLogsScreen extends ConsumerWidget {
   const AllLogsScreen({super.key});
 
+  /// Builds grouped workout history while keeping empty-state and ad layout stable.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -53,6 +55,7 @@ class AllLogsScreen extends ConsumerWidget {
     );
   }
 
+  /// Groups logs by calendar day so the list stays stable and scannable.
   List<_DaySection> _groupLogsByDay(List<ExerciseLog> sortedLogs) {
     final groups = <DateTime, List<ExerciseLog>>{};
     for (final log in sortedLogs) {
@@ -83,6 +86,7 @@ class _EmptyStateCard extends StatelessWidget {
 
   final String message;
 
+  /// Builds the empty-state card shown before any workout has been logged.
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -105,6 +109,7 @@ class _DaySectionCard extends StatelessWidget {
 
   final _DaySection section;
 
+  /// Builds one day section with header summary and its grouped log rows.
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -136,6 +141,7 @@ class _DayHeader extends StatelessWidget {
   final DateTime day;
   final List<ExerciseLog> logs;
 
+  /// Builds the day heading and moves the total pill under the title when needed.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -162,7 +168,12 @@ class _DayHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = constraints.maxWidth < 340;
+        final textScale = MediaQuery.textScalerOf(context).scale(1);
+        final isCompact = GtgUi.useCompactLayout(
+          width: constraints.maxWidth,
+          textScale: textScale,
+          widthThreshold: GtgUi.collapsedNavigationWidth,
+        );
 
         if (isCompact) {
           return Column(
@@ -203,6 +214,7 @@ class _LogRow extends StatelessWidget {
 
   final ExerciseLog log;
 
+  /// Builds a responsive history row that stacks value content on constrained layouts.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -228,7 +240,13 @@ class _LogRow extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isCompact = constraints.maxWidth < 300;
+            final textScale = MediaQuery.textScalerOf(context).scale(1);
+            final isCompact = GtgUi.useCompactLayout(
+              width: constraints.maxWidth,
+              textScale: textScale,
+              widthThreshold: GtgUi.compactDetailWidth,
+              textScaleThreshold: GtgUi.accessibilityTextScale,
+            );
 
             if (isCompact) {
               return Column(

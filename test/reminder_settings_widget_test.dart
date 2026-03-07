@@ -14,6 +14,18 @@ import 'package:project_gtg/features/reminders/state/reminder_dependencies.dart'
 import 'test_app.dart';
 
 void main() {
+  void configureCompactAccessibleSurface(WidgetTester tester) {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(320, 568);
+    tester.platformDispatcher.textScaleFactorTestValue = 1.6;
+  }
+
+  void resetSurface(WidgetTester tester) {
+    tester.view.resetPhysicalSize();
+    tester.view.resetDevicePixelRatio();
+    tester.platformDispatcher.clearTextScaleFactorTestValue();
+  }
+
   testWidgets('enabling reminders requests permission and schedules', (
     tester,
   ) async {
@@ -112,6 +124,47 @@ void main() {
     expect(permission.hasCalls, 1);
     expect(notifications.cancelCalls, 1);
   });
+
+  testWidgets(
+    'reminder settings stays usable on compact screens with large text',
+    (tester) async {
+      addTearDown(() => resetSurface(tester));
+      configureCompactAccessibleSurface(tester);
+
+      final persistence = _MemoryPersistence(
+        reminderSettings: ReminderSettings.defaults.copyWith(enabled: true),
+      );
+      final permission = _SpyPermissionClient(granted: true);
+      final notifications = _SpyNotificationClient();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            persistenceProvider.overrideWithValue(persistence),
+            reminderPermissionClientProvider.overrideWithValue(permission),
+            reminderNotificationClientProvider.overrideWithValue(notifications),
+            clockProvider.overrideWithValue(
+              _FixedClock(DateTime(2026, 2, 15, 10, 0)),
+            ),
+          ],
+          child: testApp(const ReminderSettingsScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('reminders.enabledSwitch')), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('조용한 시간'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('조용한 시간'), findsOneWidget);
+      expect(find.text('주말 쉬기'), findsOneWidget);
+    },
+  );
 }
 
 class _FixedClock implements Clock {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/gtg_colors.dart';
 import '../../core/gtg_gradients.dart';
 import '../../core/models/exercise_type.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/exercise_type_l10n.dart';
 
@@ -26,6 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   late ExerciseType _selected = widget.initialExercise;
   bool _busy = false;
 
+  /// Builds the onboarding flow and adapts header/actions for small or scaled layouts.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -47,16 +49,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              l10n.appTitle,
-                              style: Theme.of(context).textTheme.headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                          TextButton(
+                      LayoutBuilder(
+                        builder: (context, headerConstraints) {
+                          final textScale = MediaQuery.textScalerOf(
+                            context,
+                          ).scale(1);
+                          final useCompactHeader = GtgUi.useCompactLayout(
+                            width: headerConstraints.maxWidth,
+                            textScale: textScale,
+                          );
+
+                          final title = Text(
+                            l10n.appTitle,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.w900),
+                          );
+                          final skipButton = TextButton(
                             onPressed: _busy
                                 ? null
                                 : () async {
@@ -66,8 +74,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     setState(() => _busy = false);
                                   },
                             child: Text(l10n.onboardingLater),
-                          ),
-                        ],
+                          );
+
+                          if (useCompactHeader) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                title,
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: skipButton,
+                                ),
+                              ],
+                            );
+                          }
+
+                          return Row(
+                            children: <Widget>[
+                              Expanded(child: title),
+                              skipButton,
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 6),
                       Text(
@@ -178,6 +207,7 @@ class _PickCard extends StatelessWidget {
   final Color accent;
   final String subtitle;
 
+  /// Builds one selectable onboarding card with compact status affordance.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
