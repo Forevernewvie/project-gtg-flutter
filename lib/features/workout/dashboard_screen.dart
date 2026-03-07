@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/gtg_gradients.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
-import '../../core/gtg_gradients.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/exercise_type_l10n.dart';
+import 'presentation/exercise_ui_style.dart';
 import 'state/workout_controller.dart';
 import 'state/workout_stats_providers.dart';
 
+/// Collects dashboard-specific layout and input guard rails in one place.
+abstract final class _DashboardPolicy {
+  static const double heroRadius = 28;
+  static const int minQuickLogReps = 1;
+  static const int maxQuickLogReps = 999;
+  static const Map<ExerciseType, int> defaultDraftReps = <ExerciseType, int>{
+    ExerciseType.pushUp: 10,
+    ExerciseType.pullUp: 5,
+    ExerciseType.dips: 8,
+  };
+}
+
+/// Renders the home dashboard with hero metrics, quick logging, and recent history.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
+  /// Builds the dashboard sections inside one vertically scrolling surface.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomScrollView(
@@ -42,8 +58,11 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
+/// Highlights today's progress and recent momentum in one glanceable hero card.
 class _HeroCard extends ConsumerWidget {
   const _HeroCard();
+
+  /// Builds the dashboard hero and adapts exercise chips for compact widths.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -55,7 +74,7 @@ class _HeroCard extends ConsumerWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(_DashboardPolicy.heroRadius),
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: colorScheme.primary.withValues(alpha: 0.18),
@@ -70,11 +89,11 @@ class _HeroCard extends ConsumerWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(_DashboardPolicy.heroRadius),
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: GtgGradients.hero(Theme.of(context).brightness),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(_DashboardPolicy.heroRadius),
             border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
           ),
           child: Stack(
@@ -134,21 +153,21 @@ class _HeroCard extends ConsumerWidget {
                           _MetricChip(
                             label: ExerciseType.pushUp.label(l10n),
                             value: '${todayTotals[ExerciseType.pushUp] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.pushUp),
+                            icon: ExerciseUiStyle.icon(ExerciseType.pushUp),
                           ),
                           _MetricChip(
                             label: ExerciseType.pullUp.label(l10n),
                             value: '${todayTotals[ExerciseType.pullUp] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.pullUp),
+                            icon: ExerciseUiStyle.icon(ExerciseType.pullUp),
                           ),
                           _MetricChip(
                             label: ExerciseType.dips.label(l10n),
                             value: '${todayTotals[ExerciseType.dips] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.dips),
+                            icon: ExerciseUiStyle.icon(ExerciseType.dips),
                           ),
                         ];
 
-                        if (constraints.maxWidth < 360) {
+                        if (GtgUi.isCompactWidth(constraints.maxWidth)) {
                           return Column(
                             children: <Widget>[
                               for (
@@ -190,6 +209,7 @@ class _HeroCard extends ConsumerWidget {
   }
 }
 
+/// Renders the hero title block and the rolling streak pill.
 class _HeroHeader extends StatelessWidget {
   const _HeroHeader({
     required this.title,
@@ -201,6 +221,7 @@ class _HeroHeader extends StatelessWidget {
   final String subtitle;
   final String activeDaysLabel;
 
+  /// Builds a responsive header row that can stack when space gets tight.
   @override
   Widget build(BuildContext context) {
     final titleWidget = Column(
@@ -231,7 +252,7 @@ class _HeroHeader extends StatelessWidget {
     final activeDaysPill = DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.20),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(GtgUi.pillRadius),
         border: Border.all(color: Colors.white.withValues(alpha: 0.28)),
       ),
       child: Padding(
@@ -263,7 +284,7 @@ class _HeroHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = constraints.maxWidth < 360;
+        final isCompact = GtgUi.isCompactWidth(constraints.maxWidth);
 
         if (isCompact) {
           return Column(
@@ -289,6 +310,7 @@ class _HeroHeader extends StatelessWidget {
   }
 }
 
+/// Displays one exercise stat inside the hero card.
 class _MetricChip extends StatelessWidget {
   const _MetricChip({
     required this.label,
@@ -300,6 +322,7 @@ class _MetricChip extends StatelessWidget {
   final String value;
   final IconData icon;
 
+  /// Builds a compact stat chip with icon, label, and value.
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -354,17 +377,48 @@ class _MetricChip extends StatelessWidget {
   }
 }
 
+/// Hosts the quick-log draft state and renders the record controls.
 class _QuickLogCard extends ConsumerStatefulWidget {
   const _QuickLogCard();
+
+  /// Creates the state object that manages per-exercise quick-log drafts.
   @override
   ConsumerState<_QuickLogCard> createState() => _QuickLogCardState();
 }
 
 class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
-  int pushUp = 10;
-  int pullUp = 5;
-  int dips = 8;
+  late final Map<ExerciseType, int> _draftReps;
 
+  /// Seeds quick-log drafts from central defaults so exercise presets stay consistent.
+  @override
+  void initState() {
+    super.initState();
+    _draftReps = Map<ExerciseType, int>.of(_DashboardPolicy.defaultDraftReps);
+  }
+
+  /// Returns the current draft repetition count for one exercise type.
+  int _repsFor(ExerciseType type) {
+    return _draftReps[type] ?? _DashboardPolicy.minQuickLogReps;
+  }
+
+  /// Applies bounded repetition changes to one quick-log draft.
+  void _updateReps(ExerciseType type, int nextReps) {
+    setState(() {
+      _draftReps[type] = nextReps.clamp(
+        _DashboardPolicy.minQuickLogReps,
+        _DashboardPolicy.maxQuickLogReps,
+      );
+    });
+  }
+
+  /// Persists one quick-log entry using the current draft value for that exercise.
+  Future<void> _recordExercise(ExerciseType type) async {
+    await ref
+        .read(workoutControllerProvider.notifier)
+        .addLog(type, _repsFor(type));
+  }
+
+  /// Builds the quick-log card while adapting controls for narrow widths.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -434,7 +488,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
                   ],
                 );
 
-                if (constraints.maxWidth < 360) {
+                if (GtgUi.isCompactWidth(constraints.maxWidth)) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -458,60 +512,36 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
                 );
               },
             ),
-            const SizedBox(height: 14),
-            _QuickLogRow(
-              type: ExerciseType.pushUp,
-              reps: pushUp,
-              onMinus: isReady
-                  ? () => setState(() => pushUp = (pushUp - 1).clamp(1, 999))
-                  : null,
-              onPlus: isReady
-                  ? () => setState(() => pushUp = pushUp + 1)
-                  : null,
-              onRecord: isReady
-                  ? () async {
-                      await ref
-                          .read(workoutControllerProvider.notifier)
-                          .addLog(ExerciseType.pushUp, pushUp);
-                    }
-                  : null,
-            ),
-            const SizedBox(height: 10),
-            _QuickLogRow(
-              type: ExerciseType.pullUp,
-              reps: pullUp,
-              onMinus: isReady
-                  ? () => setState(() => pullUp = (pullUp - 1).clamp(1, 999))
-                  : null,
-              onPlus: isReady
-                  ? () => setState(() => pullUp = pullUp + 1)
-                  : null,
-              onRecord: isReady
-                  ? () async {
-                      await ref
-                          .read(workoutControllerProvider.notifier)
-                          .addLog(ExerciseType.pullUp, pullUp);
-                    }
-                  : null,
-            ),
-            const SizedBox(height: 10),
-            _QuickLogRow(
-              type: ExerciseType.dips,
-              reps: dips,
-              onMinus: isReady
-                  ? () => setState(() => dips = (dips - 1).clamp(1, 999))
-                  : null,
-              onPlus: isReady ? () => setState(() => dips = dips + 1) : null,
-              onRecord: isReady
-                  ? () async {
-                      await ref
-                          .read(workoutControllerProvider.notifier)
-                          .addLog(ExerciseType.dips, dips);
-                    }
-                  : null,
-            ),
+            const SizedBox(height: GtgUi.contentSpacing),
+            for (
+              var index = 0;
+              index < ExerciseType.values.length;
+              index++
+            ) ...<Widget>[
+              _QuickLogRow(
+                type: ExerciseType.values[index],
+                reps: _repsFor(ExerciseType.values[index]),
+                onMinus: isReady
+                    ? () => _updateReps(
+                        ExerciseType.values[index],
+                        _repsFor(ExerciseType.values[index]) - 1,
+                      )
+                    : null,
+                onPlus: isReady
+                    ? () => _updateReps(
+                        ExerciseType.values[index],
+                        _repsFor(ExerciseType.values[index]) + 1,
+                      )
+                    : null,
+                onRecord: isReady
+                    ? () => _recordExercise(ExerciseType.values[index])
+                    : null,
+              ),
+              if (index != ExerciseType.values.length - 1)
+                const SizedBox(height: GtgUi.secondarySectionSpacing),
+            ],
             if (!isReady) ...<Widget>[
-              const SizedBox(height: 14),
+              const SizedBox(height: GtgUi.contentSpacing),
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHigh,
@@ -539,6 +569,7 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
   }
 }
 
+/// Renders one exercise row with stepper and record CTA.
 class _QuickLogRow extends StatelessWidget {
   const _QuickLogRow({
     required this.type,
@@ -554,24 +585,20 @@ class _QuickLogRow extends StatelessWidget {
   final VoidCallback? onPlus;
   final VoidCallback? onRecord;
 
+  /// Builds a responsive quick-log row and keeps action targets accessible.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final accent = _exerciseAccent(context, type);
+    final accent = ExerciseUiStyle.accent(context, type);
     final surface = Color.alphaBlend(
       accent.withValues(alpha: 0.08),
       colorScheme.surface,
     );
-
-    final keyBase = switch (type) {
-      ExerciseType.pushUp => 'pushUp',
-      ExerciseType.pullUp => 'pullUp',
-      ExerciseType.dips => 'dips',
-    };
+    final keyBase = type.key;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
+      duration: GtgUi.emphasisAnimationDuration,
       decoration: BoxDecoration(
         color: surface,
         borderRadius: BorderRadius.circular(18),
@@ -581,7 +608,10 @@ class _QuickLogRow extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isCompact = constraints.maxWidth < 420;
+            final isCompact = GtgUi.isCompactWidth(
+              constraints.maxWidth,
+              threshold: GtgUi.compactActionWidth,
+            );
 
             final stepper = DecoratedBox(
               decoration: BoxDecoration(
@@ -649,7 +679,7 @@ class _QuickLogRow extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: Icon(
-                          _exerciseIcon(type),
+                          ExerciseUiStyle.icon(type),
                           color: accent,
                           size: 18,
                         ),
@@ -706,8 +736,11 @@ class _QuickLogRow extends StatelessWidget {
   }
 }
 
+/// Shows the most recent logs in a compact activity feed.
 class _RecentLogsCard extends ConsumerWidget {
   const _RecentLogsCard();
+
+  /// Builds recent activity rows or an empty-state hint when there is no history.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -773,15 +806,17 @@ class _RecentLogsCard extends ConsumerWidget {
   }
 }
 
+/// Renders one compact recent-log row with localized time and reps.
 class _RecentLogRow extends StatelessWidget {
   const _RecentLogRow({required this.log});
 
   final ExerciseLog log;
 
+  /// Builds a responsive row that stacks the reps pill when text size is large.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final accent = _exerciseAccent(context, log.type);
+    final accent = ExerciseUiStyle.accent(context, log.type);
     final colorScheme = Theme.of(context).colorScheme;
 
     final time = TimeOfDay.fromDateTime(log.timestamp);
@@ -802,8 +837,12 @@ class _RecentLogRow extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final textScale = MediaQuery.textScalerOf(context).scale(1);
-            final useCompactRow =
-                constraints.maxWidth < 280 || textScale >= 1.4;
+            final useCompactRow = GtgUi.useCompactLayout(
+              width: constraints.maxWidth,
+              textScale: textScale,
+              widthThreshold: 280,
+              textScaleThreshold: GtgUi.accessibilityTextScale,
+            );
             final leading = Row(
               children: <Widget>[
                 DecoratedBox(
@@ -814,7 +853,7 @@ class _RecentLogRow extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Icon(
-                      _exerciseIcon(log.type),
+                      ExerciseUiStyle.icon(log.type),
                       color: accent,
                       size: 18,
                     ),
@@ -889,12 +928,14 @@ class _RecentLogRow extends StatelessWidget {
   }
 }
 
+/// Paints a soft decorative glow behind the hero without affecting hit testing.
 class _HeroGlow extends StatelessWidget {
   const _HeroGlow({required this.size, required this.color});
 
   final double size;
   final Color color;
 
+  /// Builds a fixed-size circular glow layer.
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
@@ -904,21 +945,4 @@ class _HeroGlow extends StatelessWidget {
       ),
     );
   }
-}
-
-Color _exerciseAccent(BuildContext context, ExerciseType type) {
-  final colorScheme = Theme.of(context).colorScheme;
-  return switch (type) {
-    ExerciseType.pushUp => colorScheme.primary,
-    ExerciseType.pullUp => colorScheme.secondary,
-    ExerciseType.dips => const Color(0xFFF59E0B),
-  };
-}
-
-IconData _exerciseIcon(ExerciseType type) {
-  return switch (type) {
-    ExerciseType.pushUp => Icons.fitness_center_rounded,
-    ExerciseType.pullUp => Icons.vertical_align_top_rounded,
-    ExerciseType.dips => Icons.workspace_premium_rounded,
-  };
 }

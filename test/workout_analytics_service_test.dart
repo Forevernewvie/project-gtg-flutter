@@ -99,4 +99,76 @@ void main() {
     expect(totals[ExerciseType.pushUp], 10);
     expect(service.sumTotals(totals), 10);
   });
+
+  test('summarizeMonth returns heatmap totals and active-day metadata', () {
+    final service = WorkoutAnalyticsService();
+
+    final logs = <ExerciseLog>[
+      ExerciseLog(
+        id: 'a',
+        type: ExerciseType.pushUp,
+        reps: 10,
+        timestamp: DateTime(2026, 2, 3, 9),
+      ),
+      ExerciseLog(
+        id: 'b',
+        type: ExerciseType.pullUp,
+        reps: 4,
+        timestamp: DateTime(2026, 2, 3, 18),
+      ),
+      ExerciseLog(
+        id: 'c',
+        type: ExerciseType.dips,
+        reps: 8,
+        timestamp: DateTime(2026, 2, 14, 8),
+      ),
+      ExerciseLog(
+        id: 'd',
+        type: ExerciseType.dips,
+        reps: 99,
+        timestamp: DateTime(2026, 3, 1, 8),
+      ),
+    ];
+
+    final summary = service.summarizeMonth(logs, DateTime(2026, 2, 1));
+
+    expect(summary.dayTotals[DateTime(2026, 2, 3)], 14);
+    expect(summary.dayTotals[DateTime(2026, 2, 14)], 8);
+    expect(summary.maxTotal, 14);
+    expect(summary.monthSum, 22);
+    expect(summary.activeDays, 2);
+  });
+
+  test('summarizeDay returns totals and latest-first logs for one day', () {
+    final service = WorkoutAnalyticsService();
+
+    final logs = <ExerciseLog>[
+      ExerciseLog(
+        id: 'a',
+        type: ExerciseType.pushUp,
+        reps: 10,
+        timestamp: DateTime(2026, 2, 14, 9),
+      ),
+      ExerciseLog(
+        id: 'b',
+        type: ExerciseType.pullUp,
+        reps: 3,
+        timestamp: DateTime(2026, 2, 14, 18),
+      ),
+      ExerciseLog(
+        id: 'c',
+        type: ExerciseType.dips,
+        reps: 8,
+        timestamp: DateTime(2026, 2, 13, 8),
+      ),
+    ];
+
+    final summary = service.summarizeDay(logs, DateTime(2026, 2, 14, 12));
+
+    expect(summary.totals[ExerciseType.pushUp], 10);
+    expect(summary.totals[ExerciseType.pullUp], 3);
+    expect(summary.totals[ExerciseType.dips], 0);
+    expect(summary.totalReps, 13);
+    expect(summary.logs.map((log) => log.id), <String>['b', 'a']);
+  });
 }

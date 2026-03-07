@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'gtg_colors.dart';
+import 'ui/gtg_ui.dart';
 
 abstract final class GtgTheme {
+  /// Builds the light theme from shared GTG design tokens.
   static ThemeData light() => _build(Brightness.light);
 
+  /// Builds the dark theme from shared GTG design tokens.
   static ThemeData dark() => _build(Brightness.dark);
 
+  /// Composes one theme instance for the requested brightness.
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     final accent = GtgColors.accentFor(brightness);
@@ -122,7 +126,7 @@ abstract final class GtgTheme {
         margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(GtgUi.cardRadius),
           side: BorderSide(color: border),
         ),
       ),
@@ -138,15 +142,15 @@ abstract final class GtgTheme {
           vertical: 12,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(GtgUi.controlRadius + 2),
           borderSide: BorderSide(color: border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(GtgUi.controlRadius + 2),
           borderSide: BorderSide(color: border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(GtgUi.controlRadius + 2),
           borderSide: BorderSide(color: accent, width: 1.2),
         ),
       ),
@@ -159,7 +163,7 @@ abstract final class GtgTheme {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
+            borderRadius: BorderRadius.circular(GtgUi.pillRadius),
           ),
         ),
       ),
@@ -168,7 +172,7 @@ abstract final class GtgTheme {
           foregroundColor: accent,
           textStyle: const TextStyle(fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
+            borderRadius: BorderRadius.circular(GtgUi.pillRadius),
           ),
         ),
       ),
@@ -177,13 +181,15 @@ abstract final class GtgTheme {
           foregroundColor: onSurface,
           minimumSize: const Size(42, 42),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(GtgUi.controlRadius),
           ),
         ),
       ),
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(GtgUi.controlRadius + 4),
+        ),
         iconColor: onSurfaceVariant,
       ),
       switchTheme: SwitchThemeData(
@@ -214,7 +220,9 @@ abstract final class GtgTheme {
             return BorderSide(color: border);
           }),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(GtgUi.pillRadius),
+            ),
           ),
           textStyle: const WidgetStatePropertyAll(
             TextStyle(fontWeight: FontWeight.w700),

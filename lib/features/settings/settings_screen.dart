@@ -5,25 +5,35 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ads/gtg_banner_ad.dart';
 import '../../core/app_links.dart';
+import '../../core/app_link_policy.dart';
+import '../../core/logging/logger_provider.dart';
 import '../../core/models/app_theme_preference.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import 'state/theme_preference_controller.dart';
+
+/// Collects settings-screen layout rules and interaction logging labels.
+abstract final class _SettingsPolicy {
+  static const double compactThemeSegmentMaxWidth = 340;
+  static const String invalidPrivacyUrlLog =
+      'Settings privacy policy URL failed validation.';
+  static const String failedPrivacyLaunchLog =
+      'Settings privacy policy could not be launched.';
+  static const String failedThemePreferenceLog =
+      'Failed to update theme preference from settings.';
+}
 
 /// Renders top-level settings while keeping navigation and feature flows intact.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  static const double _compactThemeSegmentMaxWidth = 340;
-  static const double _highTextScaleThreshold = 1.3;
-
   /// Opens the privacy policy URL after validating secure HTTPS scheme and host.
-  Future<void> _openPrivacyPolicy(BuildContext context) async {
+  Future<void> _openPrivacyPolicy(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
-
-    final uri = Uri.tryParse(AppLinks.privacyPolicyUrl);
-    if (uri == null ||
-        uri.scheme.toLowerCase() != 'https' ||
-        uri.host.isEmpty) {
+    final logger = ref.read(appLoggerProvider);
+    final uri = AppLinkPolicy.parseExternalHttpsUri(AppLinks.privacyPolicyUrl);
+    if (uri == null) {
+      logger.warning(_SettingsPolicy.invalidPrivacyUrlLog);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.invalidLink)));
@@ -32,9 +42,30 @@ class SettingsScreen extends ConsumerWidget {
 
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
+      logger.warning(_SettingsPolicy.failedPrivacyLaunchLog);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(l10n.cannotOpenBrowser)));
+    }
+  }
+
+  /// Persists a theme preference change while keeping failures visible in logs.
+  Future<void> _setThemePreference(
+    WidgetRef ref,
+    AppThemePreference preference,
+  ) async {
+    try {
+      await ref
+          .read(themePreferenceControllerProvider.notifier)
+          .setPreference(preference);
+    } catch (error, stackTrace) {
+      ref
+          .read(appLoggerProvider)
+          .error(
+            _SettingsPolicy.failedThemePreferenceLog,
+            error: error,
+            stackTrace: stackTrace,
+          );
     }
   }
 
@@ -187,8 +218,8 @@ class SettingsScreen extends ConsumerWidget {
                         ).scale(1);
                         final useVerticalSegments =
                             constraints.maxWidth <
-                                _compactThemeSegmentMaxWidth ||
-                            textScale >= _highTextScaleThreshold;
+                                _SettingsPolicy.compactThemeSegmentMaxWidth ||
+                            textScale >= GtgUi.largeTextScale;
 
                         return SizedBox(
                           width: double.infinity,
@@ -218,12 +249,10 @@ class SettingsScreen extends ConsumerWidget {
                                 ? null
                                 : (selection) async {
                                     if (selection.isEmpty) return;
-                                    await ref
-                                        .read(
-                                          themePreferenceControllerProvider
-                                              .notifier,
-                                        )
-                                        .setPreference(selection.first);
+                                    await _setThemePreference(
+                                      ref,
+                                      selection.first,
+                                    );
                                   },
                           ),
                         );
@@ -278,7 +307,7 @@ class SettingsScreen extends ConsumerWidget {
                   subtitle: l10n.privacyPolicySubtitle,
                   accent: colorScheme.primary,
                   trailingIcon: Icons.open_in_new_rounded,
-                  onTap: () => _openPrivacyPolicy(context),
+                  onTap: () => _openPrivacyPolicy(context, ref),
                 ),
               ],
             ),
@@ -291,6 +320,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
+/// Renders one tappable settings row with icon, copy, and trailing affordance.
 class _SettingsActionTile extends StatelessWidget {
   const _SettingsActionTile({
     required this.icon,
@@ -308,6 +338,7 @@ class _SettingsActionTile extends StatelessWidget {
   final VoidCallback onTap;
   final IconData trailingIcon;
 
+  /// Builds the action tile and preserves a large touch target for accessibility.
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;

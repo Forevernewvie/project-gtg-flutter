@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/gtg_gradients.dart';
+import '../core/ui/gtg_ui.dart';
 import '../l10n/app_localizations.dart';
 
 class AppShell extends StatelessWidget {
@@ -11,12 +12,17 @@ class AppShell extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
+  /// Builds the shared shell and adapts bottom navigation density for compact cases.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final compactNavigation = width < 360 || textScale >= 1.4;
+    final compactNavigation = GtgUi.useCompactLayout(
+      width: width,
+      textScale: textScale,
+      textScaleThreshold: GtgUi.accessibilityTextScale,
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -30,7 +36,7 @@ class AppShell extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(GtgUi.controlRadius + 4),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                 child: NavigationBar(
