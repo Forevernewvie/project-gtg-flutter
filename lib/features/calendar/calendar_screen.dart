@@ -6,14 +6,26 @@ import '../../core/date_utils.dart';
 import '../../core/l10n/gtg_date_formatters.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/exercise_type.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/exercise_type_l10n.dart';
+import '../workout/presentation/exercise_ui_style.dart';
 import '../workout/state/workout_stats_providers.dart';
 import 'calendar_utils.dart';
 
+/// Centralizes calendar-specific layout thresholds to avoid scattered magic numbers.
+abstract final class _CalendarPolicy {
+  static const double heatmapGap = 8;
+  static const double compactHeatmapCellSize = 30;
+  static const double selectedDayBorderWidth = 2;
+  static const double todayBorderWidth = 1.2;
+}
+
+/// Shows the monthly heatmap and selected-day workout details.
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
+  /// Creates state for visible-month and selected-day interactions.
   @override
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
@@ -22,6 +34,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   late DateTime _visibleMonth;
   late DateTime _selectedDay;
 
+  /// Initializes the calendar to the current month and current day.
   @override
   void initState() {
     super.initState();
@@ -30,6 +43,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     _selectedDay = startOfDay(now);
   }
 
+  /// Resets the calendar back to today to reduce navigation friction.
   void _jumpToToday() {
     final now = ref.read(clockProvider).now();
     setState(() {
@@ -38,6 +52,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     });
   }
 
+  /// Moves the visible month backward or forward and snaps selection to that month.
   void _goToMonth(int delta) {
     setState(() {
       _visibleMonth = addMonths(_visibleMonth, delta);
@@ -45,6 +60,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     });
   }
 
+  /// Builds the full calendar screen using pre-aggregated analytics summaries.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -52,39 +68,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     final logs = ref.watch(sortedWorkoutLogsProvider);
     final service = ref.watch(workoutAnalyticsServiceProvider);
+    final monthSummary = service.summarizeMonth(logs, _visibleMonth);
 
     final monthStart = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
     final monthEnd = DateTime(_visibleMonth.year, _visibleMonth.month + 1, 1);
-
-    final dayTotals = <DateTime, int>{};
-    for (final log in logs) {
-      if (isInRange(log.timestamp, monthStart, monthEnd)) {
-        final dayKey = startOfDay(log.timestamp);
-        dayTotals[dayKey] = (dayTotals[dayKey] ?? 0) + log.reps;
-      }
-    }
-
-    final maxTotal = dayTotals.values.fold<int>(
-      0,
-      (max, v) => v > max ? v : max,
-    );
-    final monthSum = dayTotals.values.fold<int>(
-      0,
-      (sum, v) => sum + (v > 0 ? v : 0),
-    );
-    final activeDays = dayTotals.entries.where((e) => e.value > 0).length;
-
     final selectedDay =
         (_selectedDay.isBefore(monthStart) || !_selectedDay.isBefore(monthEnd))
         ? DateTime(_visibleMonth.year, _visibleMonth.month, 1)
         : _selectedDay;
 
-    final selectedTotals = service.totalsForDay(logs, selectedDay);
-    final selectedSum = service.sumTotals(selectedTotals);
-    final selectedSorted = <ExerciseLog>[
-      for (final l in logs)
-        if (isSameDay(l.timestamp, selectedDay)) l,
-    ];
+    final selectedSummary = service.summarizeDay(logs, selectedDay);
 
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -99,8 +92,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final textScale = MediaQuery.textScalerOf(context).scale(1);
-                final useCompactHeader =
-                    constraints.maxWidth < 360 || textScale >= 1.25;
+                final useCompactHeader = GtgUi.useCompactLayout(
+                  width: constraints.maxWidth,
+                  textScale: textScale,
+                  textScaleThreshold: GtgUi.elevatedTextScale,
+                );
                 final titleBlock = Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -165,8 +161,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         final textScale = MediaQuery.textScalerOf(
                           context,
                         ).scale(1);
-                        final useCompactHeader =
-                            constraints.maxWidth < 360 || textScale >= 1.25;
+                        final useCompactHeader = GtgUi.useCompactLayout(
+                          width: constraints.maxWidth,
+                          textScale: textScale,
+                          textScaleThreshold: GtgUi.elevatedTextScale,
+                        );
                         final monthLabel = Text(
                           GtgDateFormatters.monthLabel(
                             _visibleMonth,
@@ -228,19 +227,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         final chips = <Widget>[
                           _MiniStatChip(
                             label: l10n.monthTotalLabel,
-                            value: l10n.repsWithUnit(monthSum),
+                            value: l10n.repsWithUnit(monthSummary.monthSum),
                             icon: Icons.bar_chart_rounded,
                             accent: colorScheme.primary,
                           ),
                           _MiniStatChip(
                             label: l10n.activeDaysLabel,
-                            value: l10n.daysWithUnit(activeDays),
+                            value: l10n.daysWithUnit(monthSummary.activeDays),
                             icon: Icons.local_fire_department_rounded,
                             accent: colorScheme.secondary,
                           ),
                         ];
 
-                        if (constraints.maxWidth < 360) {
+                        if (GtgUi.isCompactWidth(constraints.maxWidth)) {
                           return Column(
                             children: <Widget>[
                               chips[0],
@@ -268,8 +267,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     const SizedBox(height: 10),
                     _MonthHeatmap(
                       monthStart: monthStart,
-                      dayTotals: dayTotals,
-                      maxTotal: maxTotal,
+                      dayTotals: monthSummary.dayTotals,
+                      maxTotal: monthSummary.maxTotal,
                       selectedDay: selectedDay,
                       today: today,
                       onSelect: (day) => setState(() => _selectedDay = day),
@@ -315,13 +314,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             final textScale = MediaQuery.textScalerOf(
                               context,
                             ).scale(1);
-                            final useCompactSummary =
-                                constraints.maxWidth < 300 || textScale >= 1.4;
+                            final useCompactSummary = GtgUi.useCompactLayout(
+                              width: constraints.maxWidth,
+                              textScale: textScale,
+                              widthThreshold: GtgUi.compactDetailWidth,
+                              textScaleThreshold: GtgUi.accessibilityTextScale,
+                            );
                             final summaryText = Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  l10n.dayTotal(selectedSum),
+                                  l10n.dayTotal(selectedSummary.totalReps),
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
                                         color: colorScheme.onSurfaceVariant,
@@ -330,7 +333,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  l10n.repsWithUnit(selectedSum),
+                                  l10n.repsWithUnit(selectedSummary.totalReps),
                                   maxLines: useCompactSummary ? 2 : 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
@@ -389,9 +392,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           _MiniStatChip(
                             label: ExerciseType.pushUp.label(l10n),
                             value:
-                                '${selectedTotals[ExerciseType.pushUp] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.pushUp),
-                            accent: _exerciseAccent(
+                                '${selectedSummary.totals[ExerciseType.pushUp] ?? 0}',
+                            icon: ExerciseUiStyle.icon(ExerciseType.pushUp),
+                            accent: ExerciseUiStyle.accent(
                               context,
                               ExerciseType.pushUp,
                             ),
@@ -399,22 +402,29 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           _MiniStatChip(
                             label: ExerciseType.pullUp.label(l10n),
                             value:
-                                '${selectedTotals[ExerciseType.pullUp] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.pullUp),
-                            accent: _exerciseAccent(
+                                '${selectedSummary.totals[ExerciseType.pullUp] ?? 0}',
+                            icon: ExerciseUiStyle.icon(ExerciseType.pullUp),
+                            accent: ExerciseUiStyle.accent(
                               context,
                               ExerciseType.pullUp,
                             ),
                           ),
                           _MiniStatChip(
                             label: ExerciseType.dips.label(l10n),
-                            value: '${selectedTotals[ExerciseType.dips] ?? 0}',
-                            icon: _exerciseIcon(ExerciseType.dips),
-                            accent: _exerciseAccent(context, ExerciseType.dips),
+                            value:
+                                '${selectedSummary.totals[ExerciseType.dips] ?? 0}',
+                            icon: ExerciseUiStyle.icon(ExerciseType.dips),
+                            accent: ExerciseUiStyle.accent(
+                              context,
+                              ExerciseType.dips,
+                            ),
                           ),
                         ];
 
-                        if (constraints.maxWidth < 420) {
+                        if (GtgUi.isCompactWidth(
+                          constraints.maxWidth,
+                          threshold: GtgUi.compactActionWidth,
+                        )) {
                           return Column(
                             children: <Widget>[
                               chips[0],
@@ -438,7 +448,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       },
                     ),
                     const SizedBox(height: 14),
-                    if (selectedSorted.isEmpty)
+                    if (selectedSummary.logs.isEmpty)
                       Text(
                         l10n.noLogsForDay,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -447,7 +457,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                       )
                     else
-                      ...selectedSorted.map(
+                      ...selectedSummary.logs.map(
                         (log) => Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: _DayLogRow(log: log),
@@ -464,17 +474,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 }
 
+/// Renders weekday labels and shortens them under tight space constraints.
 class _WeekdayRow extends StatelessWidget {
   const _WeekdayRow({required this.labels});
 
   final List<String> labels;
 
+  /// Builds the weekday header above the month heatmap.
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final textScale = MediaQuery.textScalerOf(context).scale(1);
-        final useCompactLabels = constraints.maxWidth < 360 || textScale >= 1.3;
+        final useCompactLabels = GtgUi.useCompactLayout(
+          width: constraints.maxWidth,
+          textScale: textScale,
+        );
 
         return Row(
           children: <Widget>[
@@ -503,6 +518,7 @@ class _WeekdayRow extends StatelessWidget {
   }
 }
 
+/// Paints the month heatmap grid and exposes tap targets for day selection.
 class _MonthHeatmap extends StatelessWidget {
   const _MonthHeatmap({
     required this.monthStart,
@@ -522,23 +538,25 @@ class _MonthHeatmap extends StatelessWidget {
   final ValueChanged<DateTime> onSelect;
   final Color accent;
 
+  /// Builds an adaptive 7-column grid of day cells for the visible month.
   @override
   Widget build(BuildContext context) {
     final cells = buildMonthGrid(monthStart);
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gap = 8.0;
-        final cellSize = (constraints.maxWidth - gap * 6) / 7;
-        final useCompactCell = cellSize < 30;
+        final cellSize =
+            (constraints.maxWidth - _CalendarPolicy.heatmapGap * 6) / 7;
+        final useCompactCell =
+            cellSize < _CalendarPolicy.compactHeatmapCellSize;
 
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            crossAxisSpacing: gap,
-            mainAxisSpacing: gap,
+            crossAxisSpacing: _CalendarPolicy.heatmapGap,
+            mainAxisSpacing: _CalendarPolicy.heatmapGap,
             childAspectRatio: 1,
           ),
           itemCount: cells.length,
@@ -559,9 +577,15 @@ class _MonthHeatmap extends StatelessWidget {
               colorScheme.surfaceContainerHigh,
             );
             final border = isSelected
-                ? Border.all(color: accent, width: 2)
+                ? Border.all(
+                    color: accent,
+                    width: _CalendarPolicy.selectedDayBorderWidth,
+                  )
                 : isToday
-                ? Border.all(color: accent.withValues(alpha: 0.50), width: 1.2)
+                ? Border.all(
+                    color: accent.withValues(alpha: 0.50),
+                    width: _CalendarPolicy.todayBorderWidth,
+                  )
                 : Border.all(color: colorScheme.outlineVariant);
 
             final textColor = total == 0 ? colorScheme.onSurface : Colors.white;
@@ -643,6 +667,7 @@ class _MonthHeatmap extends StatelessWidget {
     );
   }
 
+  /// Maps one day total to the heatmap fill color intensity.
   Color _heatColor(int total, int max, Color accent, Color baseColor) {
     if (total <= 0 || max <= 0) {
       return baseColor;
@@ -660,6 +685,7 @@ class _MonthHeatmap extends StatelessWidget {
   }
 }
 
+/// Shows one compact stat chip inside the month or day summary area.
 class _MiniStatChip extends StatelessWidget {
   const _MiniStatChip({
     required this.label,
@@ -673,6 +699,7 @@ class _MiniStatChip extends StatelessWidget {
   final IconData? icon;
   final Color? accent;
 
+  /// Builds a labeled stat chip with optional accent icon.
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -734,15 +761,17 @@ class _MiniStatChip extends StatelessWidget {
   }
 }
 
+/// Renders one selected-day log entry with responsive reps placement.
 class _DayLogRow extends StatelessWidget {
   const _DayLogRow({required this.log});
 
   final ExerciseLog log;
 
+  /// Builds the day detail row and stacks the pill when accessibility needs more width.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final accent = _exerciseAccent(context, log.type);
+    final accent = ExerciseUiStyle.accent(context, log.type);
     final colorScheme = Theme.of(context).colorScheme;
 
     final time = TimeOfDay.fromDateTime(log.timestamp);
@@ -763,8 +792,12 @@ class _DayLogRow extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final textScale = MediaQuery.textScalerOf(context).scale(1);
-            final useCompactRow =
-                constraints.maxWidth < 280 || textScale >= 1.4;
+            final useCompactRow = GtgUi.useCompactLayout(
+              width: constraints.maxWidth,
+              textScale: textScale,
+              widthThreshold: 280,
+              textScaleThreshold: GtgUi.accessibilityTextScale,
+            );
             final leading = Row(
               children: <Widget>[
                 DecoratedBox(
@@ -775,7 +808,7 @@ class _DayLogRow extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Icon(
-                      _exerciseIcon(log.type),
+                      ExerciseUiStyle.icon(log.type),
                       color: accent,
                       size: 18,
                     ),
@@ -848,21 +881,4 @@ class _DayLogRow extends StatelessWidget {
       ),
     );
   }
-}
-
-Color _exerciseAccent(BuildContext context, ExerciseType type) {
-  final colorScheme = Theme.of(context).colorScheme;
-  return switch (type) {
-    ExerciseType.pushUp => colorScheme.primary,
-    ExerciseType.pullUp => colorScheme.secondary,
-    ExerciseType.dips => const Color(0xFFF59E0B),
-  };
-}
-
-IconData _exerciseIcon(ExerciseType type) {
-  return switch (type) {
-    ExerciseType.pushUp => Icons.fitness_center_rounded,
-    ExerciseType.pullUp => Icons.vertical_align_top_rounded,
-    ExerciseType.dips => Icons.workspace_premium_rounded,
-  };
 }

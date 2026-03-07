@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/clock.dart';
+import '../../core/logging/app_logger.dart';
+import '../../core/logging/logger_provider.dart';
 import '../../core/models/reminder_settings.dart';
+import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
+import 'reminder_ui_policy.dart';
 import 'state/reminder_controller.dart';
 import 'state/reminder_providers.dart';
 
@@ -12,6 +16,7 @@ import 'state/reminder_providers.dart';
 class ReminderSettingsScreen extends ConsumerStatefulWidget {
   const ReminderSettingsScreen({super.key});
 
+  /// Creates state that coordinates reminder mutations and busy indicators.
   @override
   ConsumerState<ReminderSettingsScreen> createState() =>
       _ReminderSettingsScreenState();
@@ -19,9 +24,52 @@ class ReminderSettingsScreen extends ConsumerStatefulWidget {
 
 class _ReminderSettingsScreenState
     extends ConsumerState<ReminderSettingsScreen> {
-  static const double _compactFormBreakpoint = 360;
+  static const String _enableRemindersFailureLog =
+      'Failed to toggle reminder enablement.';
+  static const String _updateReminderSettingsFailureLog =
+      'Failed to update reminder settings.';
+  static const String _openAppSettingsFallbackLog =
+      'Notification settings route unavailable, opening generic app settings.';
 
   bool _busy = false;
+
+  /// Toggles the enabled flag and logs failures without crashing the screen.
+  Future<void> _setEnabled(bool value) async {
+    setState(() => _busy = true);
+
+    try {
+      final ok = await ref
+          .read(reminderControllerProvider.notifier)
+          .setEnabled(value);
+      if (!mounted) return;
+      if (!ok) _showPermissionDeniedSnackBar(context);
+    } catch (error, stackTrace) {
+      _logger.error(
+        _enableRemindersFailureLog,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
+  /// Persists reminder settings changes while keeping UI callbacks lightweight.
+  Future<void> _updateSettings(ReminderSettings updated) async {
+    try {
+      await ref
+          .read(reminderControllerProvider.notifier)
+          .updateSettings(updated);
+    } catch (error, stackTrace) {
+      _logger.error(
+        _updateReminderSettingsFailureLog,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
 
   /// Builds reminder settings sections (toggle, schedule, quiet hours) from reactive state.
   @override
@@ -60,9 +108,10 @@ class _ReminderSettingsScreenState
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final textScale = MediaQuery.textScalerOf(context).scale(1);
-                  final useCompactToggle =
-                      constraints.maxWidth < _compactFormBreakpoint ||
-                      textScale >= 1.3;
+                  final useCompactToggle = GtgUi.useCompactLayout(
+                    width: constraints.maxWidth,
+                    textScale: textScale,
+                  );
                   final description = Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -73,7 +122,8 @@ class _ReminderSettingsScreenState
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _buildEnabledSubtitle(
+                        ReminderUiPolicy.buildEnabledSubtitle(
+                          l10n: l10n,
                           now: now,
                           enabled: settings.enabled,
                           nextTime: nextTime,
@@ -89,17 +139,7 @@ class _ReminderSettingsScreenState
                   final toggle = Switch(
                     key: const Key('reminders.enabledSwitch'),
                     value: settings.enabled,
-                    onChanged: _busy
-                        ? null
-                        : (value) async {
-                            setState(() => _busy = true);
-                            final ok = await ref
-                                .read(reminderControllerProvider.notifier)
-                                .setEnabled(value);
-                            if (!context.mounted) return;
-                            setState(() => _busy = false);
-                            if (!ok) _showPermissionDeniedSnackBar(context);
-                          },
+                    onChanged: _busy ? null : _setEnabled,
                   );
 
                   return Column(
@@ -151,35 +191,32 @@ class _ReminderSettingsScreenState
                   const SizedBox(height: 10),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final isCompact =
-                          constraints.maxWidth < _compactFormBreakpoint;
+                      final isCompact = GtgUi.isCompactWidth(
+                        constraints.maxWidth,
+                      );
 
                       final intervalField = _DropdownField<int>(
                         label: l10n.intervalLabel,
                         value: settings.intervalMinutes,
-                        items: const <int>[15, 30, 45, 60, 90, 120, 180],
+                        items: ReminderUiPolicy.intervalOptions,
                         labelFor: l10n.minutesShort,
                         onChanged: (value) async {
                           if (value == null) return;
-                          await ref
-                              .read(reminderControllerProvider.notifier)
-                              .updateSettings(
-                                settings.copyWith(intervalMinutes: value),
-                              );
+                          await _updateSettings(
+                            settings.copyWith(intervalMinutes: value),
+                          );
                         },
                       );
 
                       final maxPerDayField = _StepperField(
                         label: l10n.maxPerDayLabel,
                         value: settings.maxPerDay,
-                        min: 1,
-                        max: 64,
+                        min: ReminderUiPolicy.minMaxPerDay,
+                        max: ReminderUiPolicy.maxMaxPerDay,
                         onChanged: (value) async {
-                          await ref
-                              .read(reminderControllerProvider.notifier)
-                              .updateSettings(
-                                settings.copyWith(maxPerDay: value),
-                              );
+                          await _updateSettings(
+                            settings.copyWith(maxPerDay: value),
+                          );
                         },
                       );
 
@@ -222,18 +259,17 @@ class _ReminderSettingsScreenState
                   const SizedBox(height: 10),
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final isCompact =
-                          constraints.maxWidth < _compactFormBreakpoint;
+                      final isCompact = GtgUi.isCompactWidth(
+                        constraints.maxWidth,
+                      );
 
                       final startField = _TimeField(
                         label: l10n.startLabel,
                         minutes: settings.quietStartMinutes,
                         onPick: (value) async {
-                          await ref
-                              .read(reminderControllerProvider.notifier)
-                              .updateSettings(
-                                settings.copyWith(quietStartMinutes: value),
-                              );
+                          await _updateSettings(
+                            settings.copyWith(quietStartMinutes: value),
+                          );
                         },
                       );
 
@@ -241,11 +277,9 @@ class _ReminderSettingsScreenState
                         label: l10n.endLabel,
                         minutes: settings.quietEndMinutes,
                         onPick: (value) async {
-                          await ref
-                              .read(reminderControllerProvider.notifier)
-                              .updateSettings(
-                                settings.copyWith(quietEndMinutes: value),
-                              );
+                          await _updateSettings(
+                            settings.copyWith(quietEndMinutes: value),
+                          );
                         },
                       );
 
@@ -274,9 +308,10 @@ class _ReminderSettingsScreenState
                       final textScale = MediaQuery.textScalerOf(
                         context,
                       ).scale(1);
-                      final useCompactToggle =
-                          constraints.maxWidth < _compactFormBreakpoint ||
-                          textScale >= 1.3;
+                      final useCompactToggle = GtgUi.useCompactLayout(
+                        width: constraints.maxWidth,
+                        textScale: textScale,
+                      );
                       final description = Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -301,11 +336,9 @@ class _ReminderSettingsScreenState
                       final toggle = Switch(
                         value: settings.skipWeekends,
                         onChanged: (value) async {
-                          await ref
-                              .read(reminderControllerProvider.notifier)
-                              .updateSettings(
-                                settings.copyWith(skipWeekends: value),
-                              );
+                          await _updateSettings(
+                            settings.copyWith(skipWeekends: value),
+                          );
                         },
                       );
 
@@ -388,7 +421,12 @@ class _ReminderSettingsScreenState
           onPressed: () {
             try {
               AppSettings.openAppSettings(type: AppSettingsType.notification);
-            } catch (_) {
+            } catch (error, stackTrace) {
+              _logger.warning(
+                _openAppSettingsFallbackLog,
+                error: error,
+                stackTrace: stackTrace,
+              );
               AppSettings.openAppSettings();
             }
           },
@@ -397,43 +435,8 @@ class _ReminderSettingsScreenState
     );
   }
 
-  /// Computes reminder status subtitle from enablement, next trigger, and planned slot count.
-  String _buildEnabledSubtitle({
-    required DateTime now,
-    required bool enabled,
-    required DateTime? nextTime,
-    required int plannedCount,
-  }) {
-    final l10n = AppLocalizations.of(context)!;
-
-    if (!enabled) return l10n.enableRemindersOffSubtitle;
-    if (nextTime == null) {
-      return l10n.enableRemindersNoSlotsSubtitle;
-    }
-
-    final label = _formatNextTime(now, nextTime, l10n);
-    return l10n.enableRemindersNextScheduledSubtitle(label, plannedCount);
-  }
-
-  /// Formats next reminder timestamp using today/tomorrow/date-aware microcopy.
-  String _formatNextTime(DateTime now, DateTime next, AppLocalizations l10n) {
-    final time = TimeOfDay.fromDateTime(next);
-    final hh = time.hour.toString().padLeft(2, '0');
-    final mm = time.minute.toString().padLeft(2, '0');
-
-    final sameDay =
-        now.year == next.year && now.month == next.month && now.day == next.day;
-    if (sameDay) return '$hh:$mm';
-
-    final tomorrow = now.add(const Duration(days: 1));
-    final isTomorrow =
-        tomorrow.year == next.year &&
-        tomorrow.month == next.month &&
-        tomorrow.day == next.day;
-
-    if (isTomorrow) return l10n.tomorrowAt('$hh:$mm');
-    return '${next.month}/${next.day} $hh:$mm';
-  }
+  /// Exposes the injected logger so UI callbacks remain implementation-agnostic.
+  AppLogger get _logger => ref.read(appLoggerProvider);
 }
 
 /// Reusable dropdown field for schedule values with outlined input styling.
