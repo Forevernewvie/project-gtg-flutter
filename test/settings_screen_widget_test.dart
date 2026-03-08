@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:url_launcher_platform_interface/link.dart';
-import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import 'package:project_gtg/app/gtg_app.dart';
+import 'package:project_gtg/core/external_link_launcher.dart';
 import 'package:project_gtg/core/models/app_theme_preference.dart';
 import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/reminder_settings.dart';
@@ -67,30 +65,14 @@ class _MemoryPersistence extends GtgPersistence {
   }
 }
 
-class _FakeUrlLauncherPlatform extends UrlLauncherPlatform
-    with MockPlatformInterfaceMixin {
-  _FakeUrlLauncherPlatform({required this.shouldLaunchSucceed});
+class _FakeExternalLinkLauncher implements ExternalLinkLauncher {
+  _FakeExternalLinkLauncher({required this.shouldLaunchSucceed});
 
   final bool shouldLaunchSucceed;
   int launchCount = 0;
 
   @override
-  LinkDelegate? get linkDelegate => null;
-
-  @override
-  Future<bool> canLaunch(String url) async => true;
-
-  @override
-  Future<bool> launch(
-    String url, {
-    required bool useSafariVC,
-    required bool useWebView,
-    required bool enableJavaScript,
-    required bool enableDomStorage,
-    required bool universalLinksOnly,
-    required Map<String, String> headers,
-    String? webOnlyWindowName,
-  }) async {
+  Future<bool> launch(Uri uri) async {
     launchCount++;
     return shouldLaunchSucceed;
   }
@@ -127,16 +109,18 @@ void main() {
     testWidgets('shows snackbar when privacy policy launch fails', (
       tester,
     ) async {
-      final originalLauncher = UrlLauncherPlatform.instance;
-      final fakeLauncher = _FakeUrlLauncherPlatform(shouldLaunchSucceed: false);
-      UrlLauncherPlatform.instance = fakeLauncher;
-      addTearDown(() => UrlLauncherPlatform.instance = originalLauncher);
+      final fakeLauncher = _FakeExternalLinkLauncher(
+        shouldLaunchSucceed: false,
+      );
 
       final persistence = _MemoryPersistence();
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [persistenceProvider.overrideWithValue(persistence)],
+          overrides: [
+            persistenceProvider.overrideWithValue(persistence),
+            externalLinkLauncherProvider.overrideWithValue(fakeLauncher),
+          ],
           child: testApp(const Scaffold(body: SettingsScreen())),
         ),
       );

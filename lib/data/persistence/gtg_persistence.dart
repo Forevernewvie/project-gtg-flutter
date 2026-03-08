@@ -1,33 +1,37 @@
 import '../../core/env.dart';
 import '../../core/logging/app_logger.dart';
+import '../../core/models/app_theme_preference.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/reminder_settings.dart';
 import '../../core/models/user_preferences.dart';
-import '../../core/models/app_theme_preference.dart';
 import '../isar/isar_database.dart';
 import '../isar/isar_persistence.dart';
 import 'directory_provider.dart';
 import 'json_file_store.dart';
-import 'persistence_constants.dart';
+import 'persistence_backend.dart';
+import 'persistence_bootstrapper.dart';
+import 'theme_preference_store.dart';
 
-enum _PersistenceMode { unknown, json, isar }
-
-/// High-level repository for app persistence entities.
+/// High-level facade for app persistence entities.
 ///
-/// Migration strategy:
-/// - Prefer Isar backend.
-/// - If Isar has no migration marker, import from legacy JSON once.
-/// - If Isar init/migration fails, gracefully fallback to JSON backend.
+/// Responsibilities:
+/// - expose stable persistence APIs to the rest of the app
+/// - delegate feature data to the selected backend
+/// - keep theme preference storage independent from backend migration mode
 class GtgPersistence {
   GtgPersistence({
     DirectoryProvider? directoryProvider,
     JsonFileStore? fileStore,
     IsarDatabase? isarDatabase,
     IsarPersistence? isarPersistence,
+    PersistenceBootstrapper? bootstrapper,
+    ThemePreferenceStore? themePreferenceStore,
     AppLogger? logger,
     bool? enableIsarMigration,
-  }) : _logger = logger ?? const DebugAppLogger(),
-       _enableIsarMigration = enableIsarMigration ?? !Env.isTestRuntime {
+  }) {
+    final resolvedLogger = logger ?? const DebugAppLogger();
+    final resolvedEnableIsarMigration =
+        enableIsarMigration ?? !Env.isTestRuntime;
     final resolvedDirectoryProvider =
         directoryProvider ?? DefaultDirectoryProvider();
 
@@ -35,7 +39,7 @@ class GtgPersistence {
         fileStore ??
         JsonFileStore(
           directoryProvider: resolvedDirectoryProvider,
-          logger: _logger,
+          logger: resolvedLogger,
         );
 
     _isarPersistence =
@@ -45,229 +49,89 @@ class GtgPersistence {
               isarDatabase ??
               IsarDatabase(directoryProvider: resolvedDirectoryProvider),
         );
-  }
 
-  final AppLogger _logger;
-  final bool _enableIsarMigration;
+    final jsonBackend = JsonPersistenceBackend(fileStore: _fileStore);
+    final isarBackend = IsarPersistenceBackend(
+      isarPersistence: _isarPersistence,
+    );
+
+    _bootstrapper =
+        bootstrapper ??
+        PersistenceBootstrapper(
+          logger: resolvedLogger,
+          enableIsarMigration: resolvedEnableIsarMigration,
+          jsonBackend: jsonBackend,
+          isarPersistence: _isarPersistence,
+          isarBackend: isarBackend,
+        );
+
+    _themePreferenceStore =
+        themePreferenceStore ?? ThemePreferenceStore(fileStore: _fileStore);
+  }
 
   late final JsonFileStore _fileStore;
   late final IsarPersistence _isarPersistence;
+  late final PersistenceBootstrapper _bootstrapper;
+  late final ThemePreferenceStore _themePreferenceStore;
 
-  _PersistenceMode _mode = _PersistenceMode.unknown;
-  Future<void>? _initializationFuture;
+  PersistenceBackend? _backend;
+  Future<PersistenceBackend>? _backendFuture;
 
-  /// Loads all exercise logs from persistence.
+  /// Loads all exercise logs from the selected backend.
   Future<List<ExerciseLog>> loadLogs() async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      return _isarPersistence.loadLogs();
-    }
-
-    return _loadLogsFromJson();
+    return (await _resolveBackend()).loadLogs();
   }
 
   /// Persists all exercise logs to the selected backend.
   Future<void> saveLogs(List<ExerciseLog> logs) async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      await _isarPersistence.saveLogs(logs);
-      return;
-    }
-
-    await _saveLogsToJson(logs);
+    await (await _resolveBackend()).saveLogs(logs);
   }
 
   /// Loads reminder settings with defaults as a safe fallback.
   Future<ReminderSettings> loadReminderSettings() async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      return _isarPersistence.loadReminderSettings();
-    }
-
-    return _loadReminderSettingsFromJson();
+    return (await _resolveBackend()).loadReminderSettings();
   }
 
   /// Persists reminder settings atomically.
   Future<void> saveReminderSettings(ReminderSettings settings) async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      await _isarPersistence.saveReminderSettings(settings);
-      return;
-    }
-
-    await _saveReminderSettingsToJson(settings);
+    await (await _resolveBackend()).saveReminderSettings(settings);
   }
 
   /// Loads user preferences with defaults as a safe fallback.
   Future<UserPreferences> loadUserPreferences() async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      return _isarPersistence.loadUserPreferences();
-    }
-
-    return _loadUserPreferencesFromJson();
+    return (await _resolveBackend()).loadUserPreferences();
   }
 
   /// Persists user preferences atomically.
   Future<void> saveUserPreferences(UserPreferences preferences) async {
-    await _ensureInitialized();
-
-    if (_mode == _PersistenceMode.isar) {
-      await _isarPersistence.saveUserPreferences(preferences);
-      return;
-    }
-
-    await _saveUserPreferencesToJson(preferences);
+    await (await _resolveBackend()).saveUserPreferences(preferences);
   }
 
-  /// Loads app theme preference with a system-default fallback.
-  Future<AppThemePreference> loadAppThemePreference() async {
-    final raw = await _fileStore.readJson(
-      PersistenceConstants.themePreferenceFileName,
-    );
-
-    if (raw is String) {
-      return AppThemePreference.fromRaw(raw);
-    }
-
-    final map = _tryMap(raw);
-    return AppThemePreference.fromRaw(map?['themeMode']);
+  /// Loads app theme preference independently from feature data storage mode.
+  Future<AppThemePreference> loadAppThemePreference() {
+    return _themePreferenceStore.loadAppThemePreference();
   }
 
   /// Persists app theme preference independently from feature data storage mode.
-  Future<void> saveAppThemePreference(AppThemePreference preference) async {
-    await _fileStore.writeJson(
-      PersistenceConstants.themePreferenceFileName,
-      <String, Object?>{'themeMode': preference.key},
-    );
+  Future<void> saveAppThemePreference(AppThemePreference preference) {
+    return _themePreferenceStore.saveAppThemePreference(preference);
   }
 
-  /// Releases Isar database resources when callers need deterministic cleanup.
+  /// Releases backend resources when callers need deterministic cleanup.
   Future<void> close({bool deleteFromDisk = false}) async {
-    if (_mode != _PersistenceMode.isar) return;
-    await _isarPersistence.close(deleteFromDisk: deleteFromDisk);
+    final backend = _backend;
+    if (backend == null) return;
+    await backend.close(deleteFromDisk: deleteFromDisk);
   }
 
-  Future<void> _ensureInitialized() async {
-    final future = _initializationFuture ??= _initializeBackend();
-    await future;
-  }
+  /// Resolves and memoizes the active feature-data backend for this process.
+  Future<PersistenceBackend> _resolveBackend() async {
+    final current = _backend;
+    if (current != null) return current;
 
-  Future<void> _initializeBackend() async {
-    final stopwatch = Stopwatch()..start();
-    if (!_enableIsarMigration) {
-      _mode = _PersistenceMode.json;
-      stopwatch.stop();
-      _logger.info(
-        'Persistence initialized in JSON mode (Isar migration disabled) in '
-        '${stopwatch.elapsedMilliseconds}ms.',
-      );
-      return;
-    }
-
-    try {
-      await _isarPersistence.open();
-      final hasMarker = await _isarPersistence.hasMigrationMarker();
-
-      if (!hasMarker) {
-        final logs = await _loadLogsFromJson();
-        final reminderSettings = await _loadReminderSettingsFromJson();
-        final userPreferences = await _loadUserPreferencesFromJson();
-
-        await _isarPersistence.migrateFromLegacy(
-          logs: logs,
-          reminderSettings: reminderSettings,
-          userPreferences: userPreferences,
-        );
-
-        _logger.info('Legacy JSON data migrated to Isar successfully.');
-      }
-
-      _mode = _PersistenceMode.isar;
-      stopwatch.stop();
-      _logger.info(
-        'Persistence initialized in Isar mode in '
-        '${stopwatch.elapsedMilliseconds}ms.',
-      );
-    } catch (error, stackTrace) {
-      _mode = _PersistenceMode.json;
-      stopwatch.stop();
-      _logger.warning(
-        'Isar initialization/migration failed. Falling back to JSON backend.',
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _logger.info(
-        'Persistence initialized in JSON fallback mode in '
-        '${stopwatch.elapsedMilliseconds}ms.',
-      );
-    }
-  }
-
-  Future<List<ExerciseLog>> _loadLogsFromJson() async {
-    final raw = await _fileStore.readJson(PersistenceConstants.logsFileName);
-    if (raw == null) return <ExerciseLog>[];
-    if (raw is! List) return <ExerciseLog>[];
-
-    final logs = <ExerciseLog>[];
-    for (final item in raw) {
-      final map = _tryMap(item);
-      if (map != null) {
-        logs.add(ExerciseLog.fromJson(map));
-      }
-    }
-    return logs;
-  }
-
-  Future<void> _saveLogsToJson(List<ExerciseLog> logs) async {
-    final payload = logs.map((e) => e.toJson()).toList(growable: false);
-    await _fileStore.writeJson(PersistenceConstants.logsFileName, payload);
-  }
-
-  Future<ReminderSettings> _loadReminderSettingsFromJson() async {
-    final raw = await _fileStore.readJson(
-      PersistenceConstants.reminderSettingsFileName,
-    );
-    final map = _tryMap(raw);
-    if (map != null) {
-      return ReminderSettings.fromJson(map);
-    }
-    return ReminderSettings.defaults;
-  }
-
-  Future<void> _saveReminderSettingsToJson(ReminderSettings settings) async {
-    await _fileStore.writeJson(
-      PersistenceConstants.reminderSettingsFileName,
-      settings.toJson(),
-    );
-  }
-
-  Future<UserPreferences> _loadUserPreferencesFromJson() async {
-    final raw = await _fileStore.readJson(
-      PersistenceConstants.userPreferencesFileName,
-    );
-    final map = _tryMap(raw);
-    if (map != null) {
-      return UserPreferences.fromJson(map);
-    }
-    return UserPreferences.defaults;
-  }
-
-  Future<void> _saveUserPreferencesToJson(UserPreferences preferences) async {
-    await _fileStore.writeJson(
-      PersistenceConstants.userPreferencesFileName,
-      preferences.toJson(),
-    );
-  }
-
-  /// Attempts to normalize dynamic map data into string-keyed JSON map.
-  Map<String, dynamic>? _tryMap(Object? raw) {
-    if (raw is! Map) return null;
-    return raw.map((key, value) => MapEntry('$key', value));
+    final future = _backendFuture ??= _bootstrapper.initialize();
+    final resolved = await future;
+    _backend = resolved;
+    return resolved;
   }
 }

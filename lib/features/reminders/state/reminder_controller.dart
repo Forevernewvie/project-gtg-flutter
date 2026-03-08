@@ -4,7 +4,7 @@ import '../../../core/clock.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/logging/logger_provider.dart';
 import '../../../core/models/reminder_settings.dart';
-import '../../../data/persistence/persistence_provider.dart';
+import '../../../data/persistence/persistence_repositories.dart';
 import '../services/reminder_notification_client.dart';
 import '../services/reminder_permission_client.dart';
 import 'reminder_dependencies.dart';
@@ -18,7 +18,7 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
   /// Loads persisted settings and normalizes schedule state at startup.
   @override
   Future<ReminderSettings> build() async {
-    final settings = await ref.read(persistenceProvider).loadReminderSettings();
+    final settings = await _repository.loadReminderSettings();
     if (!settings.enabled) return settings;
 
     final hasPermission = await _permissionClient.hasPermission();
@@ -118,7 +118,7 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
   /// Persists settings and logs failures to aid debugging.
   Future<void> _persist(ReminderSettings settings) async {
     try {
-      await ref.read(persistenceProvider).saveReminderSettings(settings);
+      await _repository.saveReminderSettings(settings);
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist reminder settings.',
@@ -135,5 +135,10 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
   ReminderPermissionClient get _permissionClient =>
       ref.read(reminderPermissionClientProvider);
 
+  /// Exposes the repository abstraction to keep the controller storage-agnostic.
+  ReminderSettingsRepository get _repository =>
+      ref.read(reminderSettingsRepositoryProvider);
+
+  /// Exposes the injected logger so reminder failures remain observable.
   AppLogger get _logger => ref.read(appLoggerProvider);
 }
