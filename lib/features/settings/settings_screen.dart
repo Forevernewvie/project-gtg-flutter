@@ -1,26 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ads/gtg_banner_ad.dart';
-import '../../core/app_links.dart';
-import '../../core/app_link_policy.dart';
-import '../../core/logging/logger_provider.dart';
 import '../../core/models/app_theme_preference.dart';
 import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
+import 'state/settings_action_service.dart';
 import 'state/theme_preference_controller.dart';
-
-/// Collects settings-screen layout rules and interaction logging labels.
-abstract final class _SettingsPolicy {
-  static const String invalidPrivacyUrlLog =
-      'Settings privacy policy URL failed validation.';
-  static const String failedPrivacyLaunchLog =
-      'Settings privacy policy could not be launched.';
-  static const String failedThemePreferenceLog =
-      'Failed to update theme preference from settings.';
-}
 
 /// Describes one selectable theme option shown in settings.
 final class _ThemeOption {
@@ -39,46 +26,32 @@ final class _ThemeOption {
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  /// Opens the privacy policy URL after validating secure HTTPS scheme and host.
+  /// Opens the privacy policy flow and maps side-effect outcomes into snackbar feedback.
   Future<void> _openPrivacyPolicy(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
-    final logger = ref.read(appLoggerProvider);
-    final uri = AppLinkPolicy.parseExternalHttpsUri(AppLinks.privacyPolicyUrl);
-    if (uri == null) {
-      logger.warning(_SettingsPolicy.invalidPrivacyUrlLog);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.invalidLink)));
+    final result = await ref
+        .read(settingsActionServiceProvider)
+        .openPrivacyPolicy();
+    if (!context.mounted || result == PrivacyPolicyLaunchResult.opened) {
       return;
     }
 
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!ok && context.mounted) {
-      logger.warning(_SettingsPolicy.failedPrivacyLaunchLog);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.cannotOpenBrowser)));
-    }
+    final message = result == PrivacyPolicyLaunchResult.invalidUrl
+        ? l10n.invalidLink
+        : l10n.cannotOpenBrowser;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  /// Persists a theme preference change while keeping failures visible in logs.
+  /// Persists a theme preference change through the settings action service.
   Future<void> _setThemePreference(
     WidgetRef ref,
     AppThemePreference preference,
   ) async {
-    try {
-      await ref
-          .read(themePreferenceControllerProvider.notifier)
-          .setPreference(preference);
-    } catch (error, stackTrace) {
-      ref
-          .read(appLoggerProvider)
-          .error(
-            _SettingsPolicy.failedThemePreferenceLog,
-            error: error,
-            stackTrace: stackTrace,
-          );
-    }
+    await ref
+        .read(settingsActionServiceProvider)
+        .setThemePreference(preference);
   }
 
   /// Returns the ordered theme options used by the settings selector.
