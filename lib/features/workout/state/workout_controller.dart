@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/clock.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/logging/logger_provider.dart';
 import '../../../core/models/exercise_log.dart';
 import '../../../core/models/exercise_type.dart';
-import '../../../data/persistence/persistence_provider.dart';
+import '../../../data/persistence/persistence_repositories.dart';
 
 final workoutControllerProvider =
     AsyncNotifierProvider<WorkoutController, WorkoutState>(
@@ -23,8 +24,7 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
   /// Loads workout logs from persistence.
   @override
   Future<WorkoutState> build() async {
-    final persistence = ref.read(persistenceProvider);
-    final logs = await persistence.loadLogs();
+    final logs = await _repository.loadLogs();
     return WorkoutState(logs: logs);
   }
 
@@ -48,7 +48,7 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
     state = AsyncData(WorkoutState(logs: updated));
 
     try {
-      await ref.read(persistenceProvider).saveLogs(updated);
+      await _repository.saveLogs(updated);
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist workout logs.',
@@ -63,7 +63,7 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
   Future<void> clearAll() async {
     state = const AsyncData(WorkoutState(logs: <ExerciseLog>[]));
     try {
-      await ref.read(persistenceProvider).saveLogs(<ExerciseLog>[]);
+      await _repository.saveLogs(<ExerciseLog>[]);
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to clear workout logs.',
@@ -80,7 +80,7 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
     required int reps,
     DateTime? timestamp,
   }) {
-    final now = timestamp ?? DateTime.now();
+    final now = timestamp ?? ref.read(clockProvider).now();
     final normalizedReps = reps < _minReps ? _minReps : reps;
 
     return ExerciseLog(
@@ -91,5 +91,10 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
     );
   }
 
+  /// Exposes the repository abstraction to keep the controller storage-agnostic.
+  WorkoutLogRepository get _repository =>
+      ref.read(workoutLogRepositoryProvider);
+
+  /// Exposes the injected logger so failures remain observable in tests and runtime.
   AppLogger get _logger => ref.read(appLoggerProvider);
 }
