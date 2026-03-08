@@ -9,6 +9,7 @@ import '../../core/models/exercise_type.dart';
 import '../../core/ui/gtg_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/exercise_type_l10n.dart';
+import 'calendar_view_model.dart';
 import '../workout/presentation/exercise_ui_style.dart';
 import '../workout/state/workout_stats_providers.dart';
 import 'calendar_utils.dart';
@@ -64,20 +65,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final today = startOfDay(ref.read(clockProvider).now());
-
+    final now = ref.read(clockProvider).now();
     final logs = ref.watch(sortedWorkoutLogsProvider);
     final service = ref.watch(workoutAnalyticsServiceProvider);
-    final monthSummary = service.summarizeMonth(logs, _visibleMonth);
-
-    final monthStart = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
-    final monthEnd = DateTime(_visibleMonth.year, _visibleMonth.month + 1, 1);
-    final selectedDay =
-        (_selectedDay.isBefore(monthStart) || !_selectedDay.isBefore(monthEnd))
-        ? DateTime(_visibleMonth.year, _visibleMonth.month, 1)
-        : _selectedDay;
-
-    final selectedSummary = service.summarizeDay(logs, selectedDay);
+    final viewModel = CalendarViewModel.create(
+      logs: logs,
+      analyticsService: service,
+      visibleMonth: _visibleMonth,
+      selectedDay: _selectedDay,
+      now: now,
+    );
 
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -168,7 +165,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         );
                         final monthLabel = Text(
                           GtgDateFormatters.monthLabel(
-                            _visibleMonth,
+                            viewModel.visibleMonth,
                             l10n.localeName,
                           ),
                           maxLines: useCompactHeader ? 2 : 1,
@@ -227,13 +224,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         final chips = <Widget>[
                           _MiniStatChip(
                             label: l10n.monthTotalLabel,
-                            value: l10n.repsWithUnit(monthSummary.monthSum),
+                            value: l10n.repsWithUnit(
+                              viewModel.monthSummary.monthSum,
+                            ),
                             icon: Icons.bar_chart_rounded,
                             accent: colorScheme.primary,
                           ),
                           _MiniStatChip(
                             label: l10n.activeDaysLabel,
-                            value: l10n.daysWithUnit(monthSummary.activeDays),
+                            value: l10n.daysWithUnit(
+                              viewModel.monthSummary.activeDays,
+                            ),
                             icon: Icons.local_fire_department_rounded,
                             accent: colorScheme.secondary,
                           ),
@@ -266,11 +267,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     ),
                     const SizedBox(height: 10),
                     _MonthHeatmap(
-                      monthStart: monthStart,
-                      dayTotals: monthSummary.dayTotals,
-                      maxTotal: monthSummary.maxTotal,
-                      selectedDay: selectedDay,
-                      today: today,
+                      monthStart: viewModel.monthStart,
+                      dayTotals: viewModel.monthSummary.dayTotals,
+                      maxTotal: viewModel.monthSummary.maxTotal,
+                      selectedDay: viewModel.selectedDay,
+                      today: viewModel.today,
                       onSelect: (day) => setState(() => _selectedDay = day),
                       accent: colorScheme.primary,
                     ),
@@ -291,7 +292,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   children: <Widget>[
                     Text(
                       GtgDateFormatters.monthDayWithWeekday(
-                        selectedDay,
+                        viewModel.selectedDay,
                         l10n.localeName,
                       ),
                       key: const Key('calendar.selectedDateLabel'),
@@ -324,7 +325,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  l10n.dayTotal(selectedSummary.totalReps),
+                                  l10n.dayTotal(
+                                    viewModel.selectedSummary.totalReps,
+                                  ),
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
                                         color: colorScheme.onSurfaceVariant,
@@ -333,7 +336,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  l10n.repsWithUnit(selectedSummary.totalReps),
+                                  l10n.repsWithUnit(
+                                    viewModel.selectedSummary.totalReps,
+                                  ),
                                   maxLines: useCompactSummary ? 2 : 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
@@ -392,7 +397,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           _MiniStatChip(
                             label: ExerciseType.pushUp.label(l10n),
                             value:
-                                '${selectedSummary.totals[ExerciseType.pushUp] ?? 0}',
+                                '${viewModel.selectedSummary.totals[ExerciseType.pushUp] ?? 0}',
                             icon: ExerciseUiStyle.icon(ExerciseType.pushUp),
                             accent: ExerciseUiStyle.accent(
                               context,
@@ -402,7 +407,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           _MiniStatChip(
                             label: ExerciseType.pullUp.label(l10n),
                             value:
-                                '${selectedSummary.totals[ExerciseType.pullUp] ?? 0}',
+                                '${viewModel.selectedSummary.totals[ExerciseType.pullUp] ?? 0}',
                             icon: ExerciseUiStyle.icon(ExerciseType.pullUp),
                             accent: ExerciseUiStyle.accent(
                               context,
@@ -412,7 +417,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           _MiniStatChip(
                             label: ExerciseType.dips.label(l10n),
                             value:
-                                '${selectedSummary.totals[ExerciseType.dips] ?? 0}',
+                                '${viewModel.selectedSummary.totals[ExerciseType.dips] ?? 0}',
                             icon: ExerciseUiStyle.icon(ExerciseType.dips),
                             accent: ExerciseUiStyle.accent(
                               context,
@@ -448,7 +453,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       },
                     ),
                     const SizedBox(height: 14),
-                    if (selectedSummary.logs.isEmpty)
+                    if (viewModel.selectedSummary.logs.isEmpty)
                       Text(
                         l10n.noLogsForDay,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -457,7 +462,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                       )
                     else
-                      ...selectedSummary.logs.map(
+                      ...viewModel.selectedSummary.logs.map(
                         (log) => Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: _DayLogRow(log: log),
