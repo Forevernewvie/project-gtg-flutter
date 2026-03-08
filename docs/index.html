@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PROJECT GTG Docs</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f7fb;
+        --surface: rgba(255, 255, 255, 0.92);
+        --text: #152033;
+        --muted: #576579;
+        --primary: #0e6fff;
+        --border: rgba(21, 32, 51, 0.12);
+        --shadow: 0 20px 48px rgba(18, 31, 53, 0.08);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #08111f;
+          --surface: rgba(13, 22, 36, 0.92);
+          --text: #edf3ff;
+          --muted: #adc0da;
+          --primary: #7bc2ff;
+          --border: rgba(173, 192, 218, 0.18);
+          --shadow: 0 20px 48px rgba(0, 0, 0, 0.32);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          "SUIT",
+          "Pretendard",
+          "Apple SD Gothic Neo",
+          "Noto Sans KR",
+          system-ui,
+          sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(14, 111, 255, 0.12), transparent 36%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 56px 20px 80px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        padding: 32px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.08;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: grid;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      a.tile {
+        display: block;
+        padding: 18px 20px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        color: inherit;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.44);
+      }
+
+      a.tile:hover {
+        border-color: var(--primary);
+        transform: translateY(-1px);
+      }
+
+      strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.05rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1>PROJECT GTG 문서</h1>
+        <p>
+          PROJECT GTG는 로컬 기반 GTG 운동 기록 앱입니다. 스토어 등록과 앱 내 안내에
+          필요한 공개 문서를 이 페이지에서 제공합니다.
+        </p>
+        <div class="actions">
+          <a class="tile" href="./privacy_policy.html">
+            <strong>개인정보 처리방침</strong>
+            앱에서 처리하는 데이터, 권한, 광고 SDK 사용 범위를 확인합니다.
+          </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
