@@ -9,14 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
 import '../features/reminders/state/reminder_controller.dart';
-
-bool shouldShowInAppSplash({
-  required bool isTestRuntime,
-  required bool uiTesting,
-  required bool smokeScreenshots,
-}) {
-  return !isTestRuntime && (!uiTesting || smokeScreenshots);
-}
+import 'root_overlays_policy.dart';
 
 class RootOverlays extends ConsumerStatefulWidget {
   const RootOverlays({super.key, required this.child});
@@ -32,22 +25,25 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
   Timer? _timer;
   bool _showSplash = true;
 
+  /// Captures environment flags once so UI and lifecycle checks stay consistent.
+  RootOverlayEnvironment get _environment => RootOverlayEnvironment(
+    isTestRuntime: Env.isTestRuntime,
+    uiTesting: Env.uiTesting,
+    smokeScreenshots: Env.smokeScreenshots,
+  );
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    final allowSplash = shouldShowInAppSplash(
-      isTestRuntime: Env.isTestRuntime,
-      uiTesting: Env.uiTesting,
-      smokeScreenshots: Env.smokeScreenshots,
-    );
+    final allowSplash = RootOverlaysPolicy.shouldShowSplash(_environment);
     if (!allowSplash) {
       _showSplash = false;
       return;
     }
 
-    _timer = Timer(const Duration(seconds: 2), () {
+    _timer = Timer(RootOverlaysPolicy.splashDuration, () {
       if (!mounted) return;
       setState(() => _showSplash = false);
     });
@@ -62,8 +58,12 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (Env.isTestRuntime) return;
-    if (state != AppLifecycleState.resumed) return;
+    if (!RootOverlaysPolicy.shouldSyncRemindersOnLifecycle(
+      environment: _environment,
+      state: state,
+    )) {
+      return;
+    }
 
     // Keep reminders in sync when users change permissions in iOS Settings.
     unawaited(ref.read(reminderControllerProvider.notifier).onAppForeground());
@@ -79,30 +79,33 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
   Widget build(BuildContext context) {
     final prefsAsync = ref.watch(userPreferencesControllerProvider);
     final prefs = prefsAsync.asData?.value;
-
-    final shouldShowOnboarding =
-        !_showSplash &&
-        !Env.isTestRuntime &&
-        !Env.uiTesting &&
-        !Env.smokeScreenshots &&
-        (prefs != null && !prefs.hasCompletedOnboarding);
+    final shouldShowOnboarding = RootOverlaysPolicy.shouldShowOnboarding(
+      environment: _environment,
+      showSplash: _showSplash,
+      preferences: prefs,
+    );
 
     return Stack(
       children: <Widget>[
         widget.child,
         if (_showSplash) ...<Widget>[_InAppSplash(onTap: _skipSplash)],
         if (shouldShowOnboarding) ...<Widget>[
-          OnboardingScreen(
-            initialExercise: prefs.primaryExercise,
-            onSkip: () async {
-              await ref
-                  .read(userPreferencesControllerProvider.notifier)
-                  .completeOnboarding(prefs.primaryExercise);
-            },
-            onComplete: (primary) async {
-              await ref
-                  .read(userPreferencesControllerProvider.notifier)
-                  .completeOnboarding(primary);
+          Builder(
+            builder: (context) {
+              final onboardingPrefs = prefs!;
+              return OnboardingScreen(
+                initialExercise: onboardingPrefs.primaryExercise,
+                onSkip: () async {
+                  await ref
+                      .read(userPreferencesControllerProvider.notifier)
+                      .completeOnboarding(onboardingPrefs.primaryExercise);
+                },
+                onComplete: (primary) async {
+                  await ref
+                      .read(userPreferencesControllerProvider.notifier)
+                      .completeOnboarding(primary);
+                },
+              );
             },
           ),
         ],
