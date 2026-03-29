@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
-import 'package:project_gtg/features/settings/all_logs_screen.dart';
+import 'package:project_gtg/features/settings/presentation/screens/all_logs_screen.dart';
 import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
 
 import 'test_app.dart';

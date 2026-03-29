@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/env.dart';
 import '../core/gtg_gradients.dart';
 import '../l10n/app_localizations.dart';
-import '../features/onboarding/onboarding_screen.dart';
+import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
 import '../features/reminders/state/reminder_controller.dart';
 import 'root_overlays_policy.dart';

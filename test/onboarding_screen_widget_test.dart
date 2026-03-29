@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:project_gtg/core/models/exercise_type.dart';
-import 'package:project_gtg/features/onboarding/onboarding_screen.dart';
+import 'package:project_gtg/features/onboarding/presentation/screens/onboarding_screen.dart';
 
 import 'test_app.dart';
 

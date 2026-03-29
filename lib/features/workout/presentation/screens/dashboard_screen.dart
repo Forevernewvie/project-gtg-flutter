@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../core/gtg_gradients.dart';
-import '../../core/models/exercise_log.dart';
-import '../../core/models/exercise_type.dart';
-import '../../core/ui/gtg_ui.dart';
-import '../../l10n/app_localizations.dart';
-import '../../l10n/exercise_type_l10n.dart';
-import 'presentation/exercise_ui_style.dart';
-import 'state/workout_controller.dart';
-import 'state/workout_stats_providers.dart';
+import 'package:project_gtg/core/gtg_gradients.dart';
+import 'package:project_gtg/core/models/exercise_log.dart';
+import 'package:project_gtg/core/models/exercise_type.dart';
+import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/workout/presentation/exercise_ui_style.dart';
+import 'package:project_gtg/features/workout/presentation/workout_log_row.dart';
+import 'package:project_gtg/features/workout/state/workout_controller.dart';
+import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
+import 'package:project_gtg/l10n/app_localizations.dart';
+import 'package:project_gtg/l10n/exercise_type_l10n.dart';
 
 /// Collects dashboard-specific layout and input guard rails in one place.
 abstract final class _DashboardPolicy {
@@ -37,19 +37,34 @@ class DashboardScreen extends ConsumerWidget {
       slivers: <Widget>[
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              GtgUi.screenTopPadding,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
             child: const _HeroCard(),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              0,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
             child: const _QuickLogCard(),
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              0,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.screenBottomPadding + 4,
+            ),
             child: const _RecentLogsCard(),
           ),
         ),
@@ -153,17 +168,26 @@ class _HeroCard extends ConsumerWidget {
                           _MetricChip(
                             label: ExerciseType.pushUp.label(l10n),
                             value: '${todayTotals[ExerciseType.pushUp] ?? 0}',
-                            icon: ExerciseUiStyle.icon(ExerciseType.pushUp),
+                            icon: ExerciseUiStyle.glyph(
+                              ExerciseType.pushUp,
+                              color: Colors.white,
+                            ),
                           ),
                           _MetricChip(
                             label: ExerciseType.pullUp.label(l10n),
                             value: '${todayTotals[ExerciseType.pullUp] ?? 0}',
-                            icon: ExerciseUiStyle.icon(ExerciseType.pullUp),
+                            icon: ExerciseUiStyle.glyph(
+                              ExerciseType.pullUp,
+                              color: Colors.white,
+                            ),
                           ),
                           _MetricChip(
                             label: ExerciseType.dips.label(l10n),
                             value: '${todayTotals[ExerciseType.dips] ?? 0}',
-                            icon: ExerciseUiStyle.icon(ExerciseType.dips),
+                            icon: ExerciseUiStyle.glyph(
+                              ExerciseType.dips,
+                              color: Colors.white,
+                            ),
                           ),
                         ];
 
@@ -320,7 +344,7 @@ class _MetricChip extends StatelessWidget {
 
   final String label;
   final String value;
-  final IconData icon;
+  final Widget icon;
 
   /// Builds a compact stat chip with icon, label, and value.
   @override
@@ -340,10 +364,7 @@ class _MetricChip extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Icon(icon, color: Colors.white, size: 18),
-              ),
+              child: Padding(padding: const EdgeInsets.all(8), child: icon),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -427,143 +448,58 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
     final isReady = workout.hasValue;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final resetButton = TextButton.icon(
-                  onPressed: isReady
-                      ? () async {
-                          await ref
-                              .read(workoutControllerProvider.notifier)
-                              .clearAll();
-                        }
-                      : null,
-                  icon: const Icon(Icons.refresh_rounded, size: 18),
-                  label: Text(l10n.reset),
-                );
-
-                final title = Row(
-                  children: <Widget>[
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Icon(
-                          Icons.bolt_rounded,
-                          color: colorScheme.primary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            l10n.quickLogTitle,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.w900),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n.quickLogHelper,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-
-                if (GtgUi.isCompactWidth(constraints.maxWidth)) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      title,
-                      const SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: resetButton,
-                      ),
-                    ],
-                  );
-                }
-
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(child: title),
-                    const SizedBox(width: 12),
-                    resetButton,
-                  ],
-                );
-              },
+    return GtgSectionCard(
+      icon: Icons.bolt_rounded,
+      accent: colorScheme.primary,
+      title: l10n.quickLogTitle,
+      subtitle: l10n.quickLogHelper,
+      trailing: TextButton.icon(
+        onPressed: isReady
+            ? () async {
+                await ref.read(workoutControllerProvider.notifier).clearAll();
+              }
+            : null,
+        icon: const Icon(Icons.refresh_rounded, size: 18),
+        label: Text(l10n.reset),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          for (
+            var index = 0;
+            index < ExerciseType.values.length;
+            index++
+          ) ...<Widget>[
+            _QuickLogRow(
+              type: ExerciseType.values[index],
+              reps: _repsFor(ExerciseType.values[index]),
+              onMinus: isReady
+                  ? () => _updateReps(
+                      ExerciseType.values[index],
+                      _repsFor(ExerciseType.values[index]) - 1,
+                    )
+                  : null,
+              onPlus: isReady
+                  ? () => _updateReps(
+                      ExerciseType.values[index],
+                      _repsFor(ExerciseType.values[index]) + 1,
+                    )
+                  : null,
+              onRecord: isReady
+                  ? () => _recordExercise(ExerciseType.values[index])
+                  : null,
             ),
-            const SizedBox(height: GtgUi.contentSpacing),
-            for (
-              var index = 0;
-              index < ExerciseType.values.length;
-              index++
-            ) ...<Widget>[
-              _QuickLogRow(
-                type: ExerciseType.values[index],
-                reps: _repsFor(ExerciseType.values[index]),
-                onMinus: isReady
-                    ? () => _updateReps(
-                        ExerciseType.values[index],
-                        _repsFor(ExerciseType.values[index]) - 1,
-                      )
-                    : null,
-                onPlus: isReady
-                    ? () => _updateReps(
-                        ExerciseType.values[index],
-                        _repsFor(ExerciseType.values[index]) + 1,
-                      )
-                    : null,
-                onRecord: isReady
-                    ? () => _recordExercise(ExerciseType.values[index])
-                    : null,
-              ),
-              if (index != ExerciseType.values.length - 1)
-                const SizedBox(height: GtgUi.secondarySectionSpacing),
-            ],
-            if (!isReady) ...<Widget>[
-              const SizedBox(height: GtgUi.contentSpacing),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  child: Text(
-                    l10n.loadingLogs,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            if (index != ExerciseType.values.length - 1)
+              const SizedBox(height: GtgUi.secondarySectionSpacing),
           ],
-        ),
+          if (!isReady) ...<Widget>[
+            const SizedBox(height: GtgUi.contentSpacing),
+            GtgEmptyState(
+              icon: Icons.hourglass_bottom_rounded,
+              message: l10n.loadingLogs,
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -612,6 +548,13 @@ class _QuickLogRow extends StatelessWidget {
               constraints.maxWidth,
               threshold: GtgUi.compactActionWidth,
             );
+            final textScale = MediaQuery.textScalerOf(context).scale(1);
+            final stackLabelMeta =
+                isCompact ||
+                GtgUi.isLargeTextScale(
+                  textScale,
+                  threshold: GtgUi.elevatedTextScale,
+                );
 
             final stepper = DecoratedBox(
               decoration: BoxDecoration(
@@ -621,21 +564,42 @@ class _QuickLogRow extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      key: Key('quicklog.$keyBase.minus'),
-                      tooltip: l10n.reset,
-                      onPressed: onMinus,
-                      style: IconButton.styleFrom(
-                        backgroundColor: colorScheme.surfaceContainerHighest,
+                child: SizedBox(
+                  height: 40,
+                  width: isCompact ? null : 170,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          IconButton(
+                            key: Key('quicklog.$keyBase.minus'),
+                            tooltip: l10n.reset,
+                            onPressed: onMinus,
+                            style: IconButton.styleFrom(
+                              backgroundColor:
+                                  colorScheme.surfaceContainerHighest,
+                              minimumSize: const Size(40, 40),
+                              padding: EdgeInsets.zero,
+                            ),
+                            icon: const Icon(Icons.remove_rounded),
+                          ),
+                          IconButton(
+                            key: Key('quicklog.$keyBase.plus'),
+                            tooltip: l10n.record,
+                            onPressed: onPlus,
+                            style: IconButton.styleFrom(
+                              backgroundColor: colorScheme.primaryContainer,
+                              foregroundColor: accent,
+                              minimumSize: const Size(40, 40),
+                              padding: EdgeInsets.zero,
+                            ),
+                            icon: const Icon(Icons.add_rounded),
+                          ),
+                        ],
                       ),
-                      icon: const Icon(Icons.remove_rounded),
-                    ),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(minWidth: 62),
-                      child: Center(
+                      IgnorePointer(
                         child: Text(
                           '$reps',
                           key: Key('quicklog.$keyBase.value'),
@@ -643,18 +607,8 @@ class _QuickLogRow extends StatelessWidget {
                               ?.copyWith(fontWeight: FontWeight.w900),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      key: Key('quicklog.$keyBase.plus'),
-                      tooltip: l10n.record,
-                      onPressed: onPlus,
-                      style: IconButton.styleFrom(
-                        backgroundColor: colorScheme.primaryContainer,
-                        foregroundColor: accent,
-                      ),
-                      icon: const Icon(Icons.add_rounded),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -662,58 +616,87 @@ class _QuickLogRow extends StatelessWidget {
             final recordButton = FilledButton.icon(
               key: Key('quicklog.$keyBase.record'),
               onPressed: onRecord,
-              icon: const Icon(Icons.bolt_rounded, size: 18),
+              icon: const Icon(Icons.bolt_rounded, size: 16),
               label: Text(l10n.record),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 40),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
             );
 
-            final labelSection = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                          ExerciseUiStyle.icon(type),
-                          color: accent,
-                          size: 18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        type.label(l10n),
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w900),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
+            final countPill = DecoratedBox(
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(GtgUi.pillRadius),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Text(
                   l10n.repsWithUnit(reps),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w700,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            );
+
+            final titleRow = Row(
+              children: <Widget>[
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ExerciseUiStyle.glyph(type, color: accent, size: 18),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    type.label(l10n),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ],
             );
+
+            final labelSection = stackLabelMeta
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      titleRow,
+                      const SizedBox(height: 8),
+                      countPill,
+                    ],
+                  )
+                : Row(
+                    children: <Widget>[
+                      Expanded(child: titleRow),
+                      const SizedBox(width: 8),
+                      countPill,
+                    ],
+                  );
 
             if (isCompact) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   labelSection,
-                  const SizedBox(height: 12),
-                  SizedBox(width: double.infinity, child: stepper),
                   const SizedBox(height: 10),
+                  SizedBox(width: double.infinity, child: stepper),
+                  const SizedBox(height: 8),
                   SizedBox(width: double.infinity, child: recordButton),
                 ],
               );
@@ -748,60 +731,27 @@ class _RecentLogsCard extends ConsumerWidget {
     final sortedLogs = ref.watch(sortedWorkoutLogsProvider);
 
     final top = sortedLogs.take(5).toList(growable: false);
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
+    return GtgSectionCard(
+      icon: Icons.schedule_rounded,
+      title: l10n.recentLogsTitle,
+      child: top.isEmpty
+          ? Text(
+              l10n.noLogsHint,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          : Column(
               children: <Widget>[
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.schedule_rounded,
-                      color: colorScheme.primary,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l10n.recentLogsTitle,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
+                for (var index = 0; index < top.length; index++) ...<Widget>[
+                  _RecentLogRow(log: top[index]),
+                  if (index != top.length - 1)
+                    const SizedBox(height: GtgUi.secondarySectionSpacing),
+                ],
               ],
             ),
-            const SizedBox(height: 12),
-            if (top.isEmpty)
-              Text(
-                l10n.noLogsHint,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              )
-            else
-              ...top.map(
-                (log) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: _RecentLogRow(log: log),
-                ),
-              ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -815,116 +765,7 @@ class _RecentLogRow extends StatelessWidget {
   /// Builds a responsive row that stacks the reps pill when text size is large.
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final accent = ExerciseUiStyle.accent(context, log.type);
-    final colorScheme = Theme.of(context).colorScheme;
-
-    final time = TimeOfDay.fromDateTime(log.timestamp);
-    final hh = time.hour.toString().padLeft(2, '0');
-    final mm = time.minute.toString().padLeft(2, '0');
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          accent.withValues(alpha: 0.08),
-          colorScheme.surface,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withValues(alpha: 0.18)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final textScale = MediaQuery.textScalerOf(context).scale(1);
-            final useCompactRow = GtgUi.useCompactLayout(
-              width: constraints.maxWidth,
-              textScale: textScale,
-              widthThreshold: 280,
-              textScaleThreshold: GtgUi.accessibilityTextScale,
-            );
-            final leading = Row(
-              children: <Widget>[
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Icon(
-                      ExerciseUiStyle.icon(log.type),
-                      color: accent,
-                      size: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        log.type.label(l10n),
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '$hh:$mm',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-            final repsPill = DecoratedBox(
-              decoration: BoxDecoration(
-                color: colorScheme.surface.withValues(alpha: 0.86),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: colorScheme.outlineVariant),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                child: Text(
-                  l10n.repsWithUnit(log.reps),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            );
-
-            if (useCompactRow) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  leading,
-                  const SizedBox(height: 10),
-                  Align(alignment: Alignment.centerRight, child: repsPill),
-                ],
-              );
-            }
-
-            return Row(
-              children: <Widget>[
-                Expanded(child: leading),
-                const SizedBox(width: 12),
-                repsPill,
-              ],
-            );
-          },
-        ),
-      ),
-    );
+    return WorkoutLogRow(log: log);
   }
 }
 

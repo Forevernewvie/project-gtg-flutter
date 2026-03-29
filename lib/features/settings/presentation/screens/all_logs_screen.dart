@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../core/ads/gtg_banner_ad.dart';
-import '../../core/date_utils.dart';
-import '../../core/l10n/gtg_date_formatters.dart';
-import '../../core/models/exercise_log.dart';
-import '../../core/ui/gtg_ui.dart';
-import '../../l10n/app_localizations.dart';
-import '../../l10n/exercise_type_l10n.dart';
-import '../workout/state/workout_stats_providers.dart';
+import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
+import 'package:project_gtg/core/date_utils.dart';
+import 'package:project_gtg/core/l10n/gtg_date_formatters.dart';
+import 'package:project_gtg/core/models/exercise_log.dart';
+import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
+import 'package:project_gtg/l10n/app_localizations.dart';
+import 'package:project_gtg/l10n/exercise_type_l10n.dart';
 
 class AllLogsScreen extends ConsumerWidget {
   const AllLogsScreen({super.key});
@@ -152,7 +151,7 @@ class _DayHeader extends StatelessWidget {
     final totalBadge = DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(GtgUi.pillRadius),
         border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Padding(

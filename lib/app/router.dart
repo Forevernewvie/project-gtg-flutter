@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/calendar/calendar_screen.dart';
-import '../features/reminders/reminder_settings_screen.dart';
-import '../features/settings/settings_screen.dart';
-import '../features/settings/all_logs_screen.dart';
-import '../features/workout/dashboard_screen.dart';
+import '../features/calendar/presentation/screens/calendar_screen.dart';
+import '../features/reminders/presentation/screens/reminder_settings_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
+import '../features/settings/presentation/screens/all_logs_screen.dart';
+import '../features/workout/presentation/screens/dashboard_screen.dart';
 import 'app_shell.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');

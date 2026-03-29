@@ -6,7 +6,7 @@ import 'package:project_gtg/core/clock.dart';
 import 'package:project_gtg/core/models/reminder_settings.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
-import 'package:project_gtg/features/reminders/reminder_settings_screen.dart';
+import 'package:project_gtg/features/reminders/presentation/screens/reminder_settings_screen.dart';
 import 'package:project_gtg/features/reminders/services/reminder_notification_client.dart';
 import 'package:project_gtg/features/reminders/services/reminder_permission_client.dart';
 import 'package:project_gtg/features/reminders/state/reminder_dependencies.dart';
