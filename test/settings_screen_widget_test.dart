@@ -13,7 +13,7 @@ import 'package:project_gtg/core/models/user_preferences.dart';
 import 'package:project_gtg/data/persistence/directory_provider.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
-import 'package:project_gtg/features/settings/settings_screen.dart';
+import 'package:project_gtg/features/settings/presentation/screens/settings_screen.dart';
 
 import 'test_app.dart';
 

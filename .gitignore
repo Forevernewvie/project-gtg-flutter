@@ -49,11 +49,13 @@ migrate_working_dir/
 /.gemini/
 /.github/prompts/
 /.kiro/
+/.omx/
 /.opencode/
 /.qoder/
 /.roo/
 /.trae/
 /.windsurf/
+/artifacts/
 
 # Symbolication related
 app.*.symbols
