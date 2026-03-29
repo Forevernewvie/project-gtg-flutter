@@ -152,7 +152,10 @@ Future<void> _tapListTileWithScroll(WidgetTester tester, String label) async {
 }
 
 /// Taps a text control after bringing it into view inside scrollable onboarding layouts.
-Future<void> _tapTextControlWithScroll(WidgetTester tester, String label) async {
+Future<void> _tapTextControlWithScroll(
+  WidgetTester tester,
+  String label,
+) async {
   final control = find.text(label);
   expect(control, findsOneWidget);
 
@@ -163,10 +166,7 @@ Future<void> _tapTextControlWithScroll(WidgetTester tester, String label) async 
 }
 
 /// Scrolls lazily built content into view before asserting on it.
-Future<void> _expectFinderVisible(
-  WidgetTester tester,
-  Finder finder,
-) async {
+Future<void> _expectFinderVisible(WidgetTester tester, Finder finder) async {
   await tester.scrollUntilVisible(
     finder,
     _scrollStep,
