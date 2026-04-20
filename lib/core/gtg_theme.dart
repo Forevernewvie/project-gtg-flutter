@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'gtg_colors.dart';
 import 'ui/gtg_ui.dart';
 
 abstract final class GtgTheme {
+  static const SystemUiOverlayStyle _lightAppBarOverlayStyle =
+      SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
+
+  static const SystemUiOverlayStyle _darkAppBarOverlayStyle =
+      SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.light,
+      );
+
   /// Builds the light theme from shared GTG design tokens.
   static ThemeData light() => _build(Brightness.light);
 
@@ -97,6 +112,9 @@ abstract final class GtgTheme {
         foregroundColor: onSurface,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: isDark
+            ? _darkAppBarOverlayStyle
+            : _lightAppBarOverlayStyle,
         titleTextStyle: textTheme.titleLarge,
       ),
       dividerTheme: DividerThemeData(color: border, thickness: 1, space: 1),
