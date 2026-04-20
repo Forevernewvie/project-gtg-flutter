@@ -15,6 +15,8 @@ final reminderControllerProvider =
     );
 
 class ReminderController extends AsyncNotifier<ReminderSettings> {
+  Future<void>? _foregroundSyncFuture;
+
   /// Loads persisted settings and normalizes schedule state at startup.
   @override
   Future<ReminderSettings> build() async {
@@ -32,6 +34,25 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
 
   /// Re-syncs reminder state when app returns to foreground.
   Future<void> onAppForeground() async {
+    final pending = _foregroundSyncFuture;
+    if (pending != null) {
+      await pending;
+      return;
+    }
+
+    final future = _runForegroundSync();
+    _foregroundSyncFuture = future;
+
+    try {
+      await future;
+    } finally {
+      if (identical(_foregroundSyncFuture, future)) {
+        _foregroundSyncFuture = null;
+      }
+    }
+  }
+
+  Future<void> _runForegroundSync() async {
     final current = state.asData?.value;
     if (current == null || !current.enabled) return;
 

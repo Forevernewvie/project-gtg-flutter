@@ -93,6 +93,11 @@ ARGS=(
   "--dart-define=ADS_ENABLED=$ADS_ENABLED_DART"
 )
 
+# Gradle reads ADS_ENABLED from the environment when resolving the AdMob
+# application ID manifest placeholder. Keep the shell env aligned with the
+# Dart define so ads-enabled releases don't fall back to the test App ID.
+export ADS_ENABLED="$ADS_ENABLED_DART"
+
 if [[ "$ADS_ENABLED_DART" == "true" ]]; then
   ARGS+=("--dart-define=ADMOB_BANNER_AD_UNIT_ID_ANDROID=$ADMOB_BANNER_UNIT_ID_ANDROID")
 fi

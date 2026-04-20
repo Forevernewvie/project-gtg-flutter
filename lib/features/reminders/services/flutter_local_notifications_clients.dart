@@ -3,6 +3,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../../core/async/async_once.dart';
 import 'reminder_notification_client.dart';
 import 'reminder_permission_client.dart';
 
@@ -11,22 +12,20 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
-  bool _initialized = false;
+  final AsyncOnce _initializer = AsyncOnce();
 
   Future<void> _ensureInitialized() async {
-    if (_initialized) return;
-
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
-    await _plugin.initialize(
-      settings: const InitializationSettings(android: android, iOS: ios),
-    );
-
-    _initialized = true;
+    await _initializer.run(() async {
+      const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const ios = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
+      await _plugin.initialize(
+        settings: const InitializationSettings(android: android, iOS: ios),
+      );
+    });
   }
 
   @override
@@ -69,22 +68,20 @@ class AndroidReminderPermissionClient implements ReminderPermissionClient {
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
-  bool _initialized = false;
+  final AsyncOnce _initializer = AsyncOnce();
 
   Future<void> _ensureInitialized() async {
-    if (_initialized) return;
-
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
-    await _plugin.initialize(
-      settings: const InitializationSettings(android: android, iOS: ios),
-    );
-
-    _initialized = true;
+    await _initializer.run(() async {
+      const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const ios = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
+      await _plugin.initialize(
+        settings: const InitializationSettings(android: android, iOS: ios),
+      );
+    });
   }
 
   @override
@@ -120,30 +117,28 @@ class FlutterReminderNotificationClient implements ReminderNotificationClient {
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
-  bool _initialized = false;
+  final AsyncOnce _initializer = AsyncOnce();
 
   Future<void> _ensureInitialized() async {
-    if (_initialized) return;
+    await _initializer.run(() async {
+      tzdata.initializeTimeZones();
+      try {
+        final info = await FlutterTimezone.getLocalTimezone();
+        tz.setLocalLocation(tz.getLocation(info.identifier));
+      } catch (_) {
+        // Best-effort; fall back to timezone's default local location.
+      }
 
-    tzdata.initializeTimeZones();
-    try {
-      final info = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(info.identifier));
-    } catch (_) {
-      // Best-effort; fall back to timezone's default local location.
-    }
-
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
-    await _plugin.initialize(
-      settings: const InitializationSettings(android: android, iOS: ios),
-    );
-
-    _initialized = true;
+      const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const ios = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
+      await _plugin.initialize(
+        settings: const InitializationSettings(android: android, iOS: ios),
+      );
+    });
   }
 
   @override
