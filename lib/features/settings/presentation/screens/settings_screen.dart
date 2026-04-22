@@ -108,10 +108,13 @@ class SettingsScreen extends ConsumerWidget {
         _SettingsActionsSection(
           primaryAccent: colorScheme.primary,
           secondaryAccent: colorScheme.secondary,
+          coachTitle: l10n.settingsCoachTitle,
+          coachSubtitle: l10n.settingsCoachSubtitle,
           remindersTitle: l10n.remindersTitle,
           remindersSubtitle: l10n.remindersSubtitle,
           allLogsTitle: l10n.allLogsTitle,
           allLogsSubtitle: l10n.allLogsSubtitle,
+          onOpenCoach: () => context.push('/settings/coach'),
           onOpenReminders: () => context.push('/settings/reminders'),
           onOpenLogs: () => context.push('/settings/logs'),
         ),
@@ -146,20 +149,26 @@ class _SettingsActionsSection extends StatelessWidget {
   const _SettingsActionsSection({
     required this.primaryAccent,
     required this.secondaryAccent,
+    required this.coachTitle,
+    required this.coachSubtitle,
     required this.remindersTitle,
     required this.remindersSubtitle,
     required this.allLogsTitle,
     required this.allLogsSubtitle,
+    required this.onOpenCoach,
     required this.onOpenReminders,
     required this.onOpenLogs,
   });
 
   final Color primaryAccent;
   final Color secondaryAccent;
+  final String coachTitle;
+  final String coachSubtitle;
   final String remindersTitle;
   final String remindersSubtitle;
   final String allLogsTitle;
   final String allLogsSubtitle;
+  final VoidCallback onOpenCoach;
   final VoidCallback onOpenReminders;
   final VoidCallback onOpenLogs;
 
@@ -168,6 +177,14 @@ class _SettingsActionsSection extends StatelessWidget {
     return GtgSectionCard(
       child: Column(
         children: <Widget>[
+          _SettingsActionTile(
+            icon: Icons.track_changes_rounded,
+            title: coachTitle,
+            subtitle: coachSubtitle,
+            accent: primaryAccent,
+            onTap: onOpenCoach,
+          ),
+          const SizedBox(height: GtgUi.secondarySectionSpacing),
           _SettingsActionTile(
             icon: Icons.notifications_active_rounded,
             title: remindersTitle,

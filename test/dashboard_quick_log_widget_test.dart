@@ -51,6 +51,13 @@ void main() {
     expect(find.byKey(const Key('dashboard.todayTotalValue')), findsOneWidget);
     expect(find.text('0회'), findsWidgets);
 
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('quicklog.pushUp.record')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(const Key('quicklog.pushUp.record')));
     await tester.pumpAndSettle();
 

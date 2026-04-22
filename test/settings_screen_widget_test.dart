@@ -80,7 +80,9 @@ class _FakeExternalLinkLauncher implements ExternalLinkLauncher {
 
 void main() {
   group('Settings screen', () {
-    testWidgets('navigates to reminders and all logs', (tester) async {
+    testWidgets('navigates to GTG coach, reminders, and all logs', (
+      tester,
+    ) async {
       final persistence = _MemoryPersistence();
 
       await tester.pumpWidget(
@@ -92,6 +94,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('설정'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(ListTile, 'GTG 코치'));
+      await tester.pumpAndSettle();
+      expect(find.text('집중 동작'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ListTile, '리마인더'));
@@ -162,6 +171,13 @@ void main() {
         find.byKey(const Key('settings.theme.option.dark')),
         findsOneWidget,
       );
+
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('settings.theme.option.dark')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('settings.theme.option.dark')));
       await tester.pumpAndSettle();

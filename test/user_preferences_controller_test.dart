@@ -60,4 +60,77 @@ void main() {
       expect(persisted.primaryExercise, ExerciseType.dips);
     },
   );
+
+  test(
+    'completeOnboarding can persist an onboarding max-rep baseline',
+    () async {
+      final repository = _MemoryUserPreferencesRepository(
+        UserPreferences.defaults,
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          userPreferencesRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(userPreferencesControllerProvider.future);
+
+      final testedAt = DateTime(2026, 4, 22, 10);
+      await container
+          .read(userPreferencesControllerProvider.notifier)
+          .completeOnboarding(
+            ExerciseType.pullUp,
+            primaryExerciseMaxReps: 9,
+            primaryExerciseLastMaxTestedAt: testedAt,
+          );
+
+      final persisted = await repository.loadUserPreferences();
+      expect(persisted.hasCompletedOnboarding, isTrue);
+      expect(persisted.primaryExercise, ExerciseType.pullUp);
+      expect(persisted.primaryExerciseMaxReps, 9);
+      expect(persisted.primaryExerciseLastMaxTestedAt, testedAt);
+    },
+  );
+
+  test('updatePrimaryExerciseCoaching persists GTG coaching fields', () async {
+    final repository = _MemoryUserPreferencesRepository(
+      const UserPreferences(
+        hasCompletedOnboarding: true,
+        primaryExercise: ExerciseType.pullUp,
+      ),
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        userPreferencesRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await container.read(userPreferencesControllerProvider.future);
+
+    final testedAt = DateTime(2026, 4, 22, 9, 15);
+    await container
+        .read(userPreferencesControllerProvider.notifier)
+        .updatePrimaryExerciseCoaching(
+          maxReps: 11,
+          dailySetTarget: 8,
+          lastMaxTestedAt: testedAt,
+        );
+
+    final after = container
+        .read(userPreferencesControllerProvider)
+        .asData!
+        .value;
+    expect(after.primaryExerciseMaxReps, 11);
+    expect(after.primaryExerciseDailySetTarget, 8);
+    expect(after.primaryExerciseLastMaxTestedAt, testedAt);
+
+    final persisted = await repository.loadUserPreferences();
+    expect(persisted.primaryExerciseMaxReps, 11);
+    expect(persisted.primaryExerciseDailySetTarget, 8);
+    expect(persisted.primaryExerciseLastMaxTestedAt, testedAt);
+  });
 }

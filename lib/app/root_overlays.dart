@@ -3,18 +3,27 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/clock.dart';
 import '../core/env.dart';
+import '../core/external_link_launcher.dart';
 import '../core/gtg_gradients.dart';
 import '../l10n/app_localizations.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
 import '../features/reminders/state/reminder_controller.dart';
+import '../features/update/models/app_update_info.dart';
+import '../features/update/services/app_update_checker.dart';
 import 'root_overlays_policy.dart';
 
 class RootOverlays extends ConsumerStatefulWidget {
-  const RootOverlays({super.key, required this.child});
+  const RootOverlays({
+    super.key,
+    required this.child,
+    this.environmentOverride,
+  });
 
   final Widget child;
+  final RootOverlayEnvironment? environmentOverride;
 
   @override
   ConsumerState<RootOverlays> createState() => _RootOverlaysState();
@@ -24,13 +33,17 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
     with WidgetsBindingObserver {
   Timer? _timer;
   bool _showSplash = true;
+  bool _updateCheckScheduled = false;
+  bool _updatePromptShown = false;
 
   /// Captures environment flags once so UI and lifecycle checks stay consistent.
-  RootOverlayEnvironment get _environment => RootOverlayEnvironment(
-    isTestRuntime: Env.isTestRuntime,
-    uiTesting: Env.uiTesting,
-    smokeScreenshots: Env.smokeScreenshots,
-  );
+  RootOverlayEnvironment get _environment =>
+      widget.environmentOverride ??
+      RootOverlayEnvironment(
+        isTestRuntime: Env.isTestRuntime,
+        uiTesting: Env.uiTesting,
+        smokeScreenshots: Env.smokeScreenshots,
+      );
 
   @override
   void initState() {
@@ -85,6 +98,10 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
       preferences: prefs,
     );
 
+    if (!_showSplash && !shouldShowOnboarding) {
+      _scheduleUpdateCheck(context);
+    }
+
     return Stack(
       children: <Widget>[
         widget.child,
@@ -95,21 +112,95 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
               final onboardingPrefs = prefs!;
               return OnboardingScreen(
                 initialExercise: onboardingPrefs.primaryExercise,
+                initialMaxReps: onboardingPrefs.primaryExerciseMaxReps,
                 onSkip: () async {
                   await ref
                       .read(userPreferencesControllerProvider.notifier)
-                      .completeOnboarding(onboardingPrefs.primaryExercise);
+                      .completeOnboarding(
+                        onboardingPrefs.primaryExercise,
+                        primaryExerciseMaxReps:
+                            onboardingPrefs.primaryExerciseMaxReps,
+                        primaryExerciseLastMaxTestedAt:
+                            onboardingPrefs.primaryExerciseLastMaxTestedAt,
+                      );
                 },
-                onComplete: (primary) async {
-                  await ref
-                      .read(userPreferencesControllerProvider.notifier)
-                      .completeOnboarding(primary);
-                },
+                onComplete:
+                    ({
+                      required primaryExercise,
+                      required primaryExerciseMaxReps,
+                    }) async {
+                      await ref
+                          .read(userPreferencesControllerProvider.notifier)
+                          .completeOnboarding(
+                            primaryExercise,
+                            primaryExerciseMaxReps: primaryExerciseMaxReps,
+                            primaryExerciseLastMaxTestedAt:
+                                primaryExerciseMaxReps > 0
+                                ? ref.read(clockProvider).now()
+                                : null,
+                          );
+                    },
               );
             },
           ),
         ],
       ],
+    );
+  }
+
+  void _scheduleUpdateCheck(BuildContext context) {
+    if (_updateCheckScheduled || _updatePromptShown) return;
+    if (_environment.isTestRuntime || _environment.uiTesting) return;
+
+    _updateCheckScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
+      final update = await ref.read(appUpdateCheckerProvider).checkForUpdate();
+      if (!mounted || update == null || _updatePromptShown) return;
+
+      _updatePromptShown = true;
+      await _showUpdatePrompt(update);
+    });
+  }
+
+  Future<void> _showUpdatePrompt(AppUpdateInfo update) async {
+    if (!mounted) return;
+
+    final dialogContext = context;
+    final l10n = AppLocalizations.of(dialogContext)!;
+
+    await showDialog<void>(
+      context: dialogContext,
+      barrierDismissible: !update.forceUpdate,
+      builder: (overlayContext) {
+        return AlertDialog(
+          title: Text(l10n.appUpdateTitle),
+          content: Text(
+            update.message.isEmpty
+                ? l10n.appUpdateBody(update.latestVersionName)
+                : update.message,
+          ),
+          actions: <Widget>[
+            if (!update.forceUpdate)
+              TextButton(
+                onPressed: () => Navigator.of(overlayContext).pop(),
+                child: Text(l10n.appUpdateLater),
+              ),
+            FilledButton(
+              onPressed: () async {
+                final uri = Uri.tryParse(update.storeUrl);
+                if (uri != null) {
+                  await ref.read(externalLinkLauncherProvider).launch(uri);
+                }
+                if (!overlayContext.mounted || update.forceUpdate) return;
+                Navigator.of(overlayContext).pop();
+              },
+              child: Text(l10n.appUpdateNow),
+            ),
+          ],
+        );
+      },
     );
   }
 }

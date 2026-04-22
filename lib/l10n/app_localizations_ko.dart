@@ -38,6 +38,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get quickLogHelper => '횟수를 조정한 뒤 기록을 누르세요.';
 
   @override
+  String get decreaseValue => '감소';
+
+  @override
+  String get increaseValue => '증가';
+
+  @override
   String get reset => '초기화';
 
   @override
@@ -109,6 +115,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remindersSubtitle => '반복 주기, 방해 금지 시간, 주말 제외를 설정합니다';
 
   @override
+  String get settingsCoachTitle => 'GTG 코치';
+
+  @override
+  String get settingsCoachSubtitle => '최대 반복, GTG 추천 횟수, 오늘 계획을 관리합니다.';
+
+  @override
   String get allLogsTitle => '전체 기록';
 
   @override
@@ -131,6 +143,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get openExternalFailed => '열 수 없습니다.';
+
+  @override
+  String get appUpdateTitle => '업데이트 가능';
+
+  @override
+  String appUpdateBody(String version) {
+    return '새 버전($version)이 나왔습니다. 최신 개선 사항을 위해 지금 업데이트해보세요.';
+  }
+
+  @override
+  String get appUpdateLater => '나중에';
+
+  @override
+  String get appUpdateNow => '업데이트';
 
   @override
   String get remindersHeadline => '조용하게, 꾸준히';
@@ -214,6 +240,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingHint => '기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.';
 
   @override
+  String get onboardingBaselineTitle => '선택 입력: 최대 반복';
+
+  @override
+  String get onboardingBaselineSubtitle =>
+      '지금 넣어도 되고, 건너뛰어도 됩니다. 나중에 GTG 코치가 더 가볍게 추천할 때 사용합니다.';
+
+  @override
+  String get onboardingBaselineFieldLabel => '현재 깔끔한 최대 반복';
+
+  @override
+  String get onboardingBaselineFieldHint =>
+      '건너뛰어도 괜찮아요. 나중에 GTG 코치에서 추가할 수 있어요.';
+
+  @override
   String get onboardingNext => '다음';
 
   @override
@@ -224,6 +264,91 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingDipsSubtitle => '푸쉬 라인 강화. 어깨 각도 주의';
+
+  @override
+  String get coachFocusTitle => '집중 동작';
+
+  @override
+  String get coachFocusSubtitle => '주 종목을 무리 없이 자주 반복할 수 있게 맞춥니다.';
+
+  @override
+  String get coachFocusMoveLabel => '주 종목';
+
+  @override
+  String get coachRecommendedRepsLabel => '추천 GTG 횟수';
+
+  @override
+  String get coachRecommendedHint => '최대 반복의 절반 정도로 유지해 매 세트를 여유 있게 가져갑니다.';
+
+  @override
+  String get coachLastTestedLabel => '마지막 최대 반복 측정';
+
+  @override
+  String get coachLastTestedNever => '아직 없음';
+
+  @override
+  String get coachBaselineTitle => '기준 설정';
+
+  @override
+  String get coachBaselineSubtitle => '현재 최대 반복과 하루 세트 목표를 설정하세요.';
+
+  @override
+  String get coachBaselineLabel => '현재 최대 반복';
+
+  @override
+  String get coachDailySetGoalLabel => '하루 세트 목표';
+
+  @override
+  String get coachPlanTitle => '오늘의 계획';
+
+  @override
+  String get coachPlanSubtitle => '오늘 기록한 주 종목 로그를 기준으로 진행도를 계산합니다.';
+
+  @override
+  String get coachTodayLabel => '오늘';
+
+  @override
+  String get coachCardReadySubtitle => '오늘의 GTG 추천과 진행 상황';
+
+  @override
+  String get coachCardSetupSubtitle => '최대 반복을 넣으면 홈이 더 가볍게 추천해줍니다.';
+
+  @override
+  String get coachSetBaselineAction => '최대반복 추가';
+
+  @override
+  String get coachAdjustAction => '조정';
+
+  @override
+  String get coachSetupHint =>
+      '주 종목의 현재 최대 반복을 저장하세요. 홈이 더 가벼운 GTG 세트를 추천하고 오늘 진행도를 보여줍니다.';
+
+  @override
+  String get coachNotSet => '미설정';
+
+  @override
+  String get coachRetestDueMessage =>
+      '2주 이상 지났어요. 최대 반복을 다시 측정해 추천값을 새로 맞춰보세요.';
+
+  @override
+  String coachQuickLogRecommended(int count) {
+    return 'GTG $count회';
+  }
+
+  @override
+  String coachTodayProgress(int done, int target) {
+    return '$done/$target세트';
+  }
+
+  @override
+  String coachRemainingSets(int count) {
+    return '오늘 $count세트 남음';
+  }
+
+  @override
+  String coachSetsShort(int count) {
+    return '$count세트';
+  }
 
   @override
   String get splashTapToSkip => '탭하여 스킵';

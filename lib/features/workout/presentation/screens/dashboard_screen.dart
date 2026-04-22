@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:project_gtg/core/gtg_gradients.dart';
 import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/coaching/gtg_coach_policy.dart';
+import 'package:project_gtg/features/coaching/state/gtg_coach_providers.dart';
 import 'package:project_gtg/features/workout/presentation/exercise_ui_style.dart';
 import 'package:project_gtg/features/workout/presentation/workout_log_row.dart';
 import 'package:project_gtg/features/workout/state/workout_controller.dart';
@@ -44,6 +47,17 @@ class DashboardScreen extends ConsumerWidget {
               GtgUi.primarySectionSpacing,
             ),
             child: const _HeroCard(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              0,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
+            child: const _CoachCard(),
           ),
         ),
         SliverToBoxAdapter(
@@ -398,6 +412,183 @@ class _MetricChip extends StatelessWidget {
   }
 }
 
+/// Summarizes the user's GTG coaching setup without disrupting the main log flow.
+class _CoachCard extends ConsumerWidget {
+  const _CoachCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final summary = ref.watch(gtgCoachSummaryProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GtgSectionCard(
+      key: const Key('dashboard.coachCard'),
+      icon: Icons.track_changes_rounded,
+      accent: colorScheme.secondary,
+      title: l10n.settingsCoachTitle,
+      subtitle: summary.hasBaseline
+          ? l10n.coachCardReadySubtitle
+          : l10n.coachCardSetupSubtitle,
+      trailing: TextButton(
+        onPressed: () => context.push('/settings/coach'),
+        child: Text(
+          summary.hasBaseline
+              ? l10n.coachAdjustAction
+              : l10n.coachSetBaselineAction,
+        ),
+      ),
+      child: summary.hasBaseline
+          ? _CoachReadyState(summary: summary)
+          : _CoachEmptyState(message: l10n.coachSetupHint),
+    );
+  }
+}
+
+class _CoachReadyState extends StatelessWidget {
+  const _CoachReadyState({required this.summary});
+
+  final GtgCoachSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final accent = Theme.of(context).colorScheme.secondary;
+    final progressValue = l10n.coachTodayProgress(
+      summary.completedSetsToday,
+      summary.dailySetTarget,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        GtgResponsivePair(
+          primary: _CoachValueTile(
+            label: l10n.coachRecommendedRepsLabel,
+            value: l10n.repsWithUnit(summary.recommendedReps),
+            accent: accent,
+            keyValue: 'recommended',
+          ),
+          secondary: _CoachValueTile(
+            label: l10n.coachTodayLabel,
+            value: progressValue,
+            accent: accent,
+            keyValue: 'today',
+          ),
+        ),
+        const SizedBox(height: GtgUi.controlSpacing),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LinearProgressIndicator(
+            key: const Key('dashboard.coachProgress'),
+            value: summary.progress,
+            minHeight: 10,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          l10n.coachRemainingSets(summary.remainingSetsToday),
+          key: const Key('dashboard.coachRemaining'),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (summary.retestDue) ...<Widget>[
+          const SizedBox(height: GtgUi.controlSpacing),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.refresh_rounded, color: accent, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.coachRetestDueMessage,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _CoachValueTile extends StatelessWidget {
+  const _CoachValueTile({
+    required this.label,
+    required this.value,
+    required this.accent,
+    required this.keyValue,
+  });
+
+  final String label;
+  final String value;
+  final Color accent;
+  final String keyValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              key: Key('dashboard.coach.$keyValue'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CoachEmptyState extends StatelessWidget {
+  const _CoachEmptyState({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      message,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+}
+
 /// Hosts the quick-log draft state and renders the record controls.
 class _QuickLogCard extends ConsumerStatefulWidget {
   const _QuickLogCard();
@@ -409,6 +600,7 @@ class _QuickLogCard extends ConsumerStatefulWidget {
 
 class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
   late final Map<ExerciseType, int> _draftReps;
+  String? _appliedCoachSignature;
 
   /// Seeds quick-log drafts from central defaults so exercise presets stay consistent.
   @override
@@ -443,10 +635,26 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final userPreferences = ref.watch(userPreferencesValueProvider);
+    final coachSummary = ref.watch(gtgCoachSummaryProvider);
 
     final workout = ref.watch(workoutControllerProvider);
     final isReady = workout.hasValue;
     final colorScheme = Theme.of(context).colorScheme;
+    final coachSignature = coachSummary.hasBaseline
+        ? '${coachSummary.primaryExercise.key}:${coachSummary.recommendedReps}'
+        : null;
+
+    if (coachSignature != null && coachSignature != _appliedCoachSignature) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _appliedCoachSignature == coachSignature) return;
+        setState(() {
+          _draftReps[coachSummary.primaryExercise] =
+              coachSummary.recommendedReps;
+          _appliedCoachSignature = coachSignature;
+        });
+      });
+    }
 
     return GtgSectionCard(
       icon: Icons.bolt_rounded,
@@ -473,6 +681,12 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
             _QuickLogRow(
               type: ExerciseType.values[index],
               reps: _repsFor(ExerciseType.values[index]),
+              recommendedReps:
+                  coachSummary.hasBaseline &&
+                      ExerciseType.values[index] ==
+                          userPreferences.primaryExercise
+                  ? coachSummary.recommendedReps
+                  : null,
               onMinus: isReady
                   ? () => _updateReps(
                       ExerciseType.values[index],
@@ -510,6 +724,7 @@ class _QuickLogRow extends StatelessWidget {
   const _QuickLogRow({
     required this.type,
     required this.reps,
+    required this.recommendedReps,
     required this.onMinus,
     required this.onPlus,
     required this.onRecord,
@@ -517,6 +732,7 @@ class _QuickLogRow extends StatelessWidget {
 
   final ExerciseType type;
   final int reps;
+  final int? recommendedReps;
   final VoidCallback? onMinus;
   final VoidCallback? onPlus;
   final VoidCallback? onRecord;
@@ -575,7 +791,7 @@ class _QuickLogRow extends StatelessWidget {
                         children: <Widget>[
                           IconButton(
                             key: Key('quicklog.$keyBase.minus'),
-                            tooltip: l10n.reset,
+                            tooltip: l10n.decreaseValue,
                             onPressed: onMinus,
                             style: IconButton.styleFrom(
                               backgroundColor:
@@ -587,7 +803,7 @@ class _QuickLogRow extends StatelessWidget {
                           ),
                           IconButton(
                             key: Key('quicklog.$keyBase.plus'),
-                            tooltip: l10n.record,
+                            tooltip: l10n.increaseValue,
                             onPressed: onPlus,
                             style: IconButton.styleFrom(
                               backgroundColor: colorScheme.primaryContainer,
@@ -645,6 +861,29 @@ class _QuickLogRow extends StatelessWidget {
                 ),
               ),
             );
+            final recommendedPill = recommendedReps == null
+                ? null
+                : DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(GtgUi.pillRadius),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        l10n.coachQuickLogRecommended(recommendedReps!),
+                        key: Key('quicklog.$keyBase.recommended'),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w800,
+                            ),
+                      ),
+                    ),
+                  );
 
             final titleRow = Row(
               children: <Widget>[
@@ -678,14 +917,35 @@ class _QuickLogRow extends StatelessWidget {
                     children: <Widget>[
                       titleRow,
                       const SizedBox(height: 8),
-                      countPill,
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: <Widget>[
+                          countPill,
+                          ...?recommendedPill == null
+                              ? null
+                              : <Widget>[recommendedPill],
+                        ],
+                      ),
                     ],
                   )
                 : Row(
                     children: <Widget>[
                       Expanded(child: titleRow),
                       const SizedBox(width: 8),
-                      countPill,
+                      Flexible(
+                        child: Wrap(
+                          alignment: WrapAlignment.end,
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: <Widget>[
+                            countPill,
+                            ...?recommendedPill == null
+                                ? null
+                                : <Widget>[recommendedPill],
+                          ],
+                        ),
+                      ),
                     ],
                   );
 

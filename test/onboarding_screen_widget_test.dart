@@ -23,13 +23,21 @@ void main() {
     tester,
   ) async {
     ExerciseType? completedWith;
+    int? completedMaxReps;
     var skipCalls = 0;
 
     await tester.pumpWidget(
       testApp(
         OnboardingScreen(
           initialExercise: ExerciseType.pushUp,
-          onComplete: (primary) async => completedWith = primary,
+          onComplete:
+              ({
+                required primaryExercise,
+                required primaryExerciseMaxReps,
+              }) async {
+                completedWith = primaryExercise;
+                completedMaxReps = primaryExerciseMaxReps;
+              },
           onSkip: () async => skipCalls++,
         ),
       ),
@@ -38,12 +46,23 @@ void main() {
 
     await tester.tap(find.text('풀업'));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('onboarding.maxReps.plus')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('onboarding.maxReps.plus')));
+    await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('다음'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('다음'));
     await tester.pumpAndSettle();
 
     expect(skipCalls, 0);
     expect(completedWith, ExerciseType.pullUp);
+    expect(completedMaxReps, 2);
   });
 
   testWidgets('onboarding skip calls onSkip', (tester) async {
@@ -53,7 +72,11 @@ void main() {
       testApp(
         OnboardingScreen(
           initialExercise: ExerciseType.pushUp,
-          onComplete: (_) async {},
+          onComplete:
+              ({
+                required primaryExercise,
+                required primaryExerciseMaxReps,
+              }) async {},
           onSkip: () async => skipCalls++,
         ),
       ),
@@ -76,7 +99,11 @@ void main() {
         testApp(
           OnboardingScreen(
             initialExercise: ExerciseType.pushUp,
-            onComplete: (_) async {},
+            onComplete:
+                ({
+                  required primaryExercise,
+                  required primaryExerciseMaxReps,
+                }) async {},
             onSkip: () async {},
           ),
         ),
@@ -88,4 +115,26 @@ void main() {
       expect(find.text('다음'), findsOneWidget);
     },
   );
+
+  testWidgets('onboarding shows optional max-reps baseline input', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      testApp(
+        OnboardingScreen(
+          initialExercise: ExerciseType.pushUp,
+          onComplete:
+              ({
+                required primaryExercise,
+                required primaryExerciseMaxReps,
+              }) async {},
+          onSkip: () async {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('선택 입력: 최대 반복'), findsOneWidget);
+    expect(find.byKey(const Key('onboarding.maxReps.value')), findsOneWidget);
+  });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/calendar/presentation/screens/calendar_screen.dart';
+import '../features/coaching/presentation/screens/gtg_coach_screen.dart';
 import '../features/reminders/presentation/screens/reminder_settings_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/settings/presentation/screens/all_logs_screen.dart';
@@ -45,6 +46,11 @@ GoRouter createRouter() {
                 name: 'settings',
                 builder: (context, state) => const SettingsScreen(),
                 routes: <RouteBase>[
+                  GoRoute(
+                    path: 'coach',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const GtgCoachScreen(),
+                  ),
                   GoRoute(
                     path: 'reminders',
                     parentNavigatorKey: _rootNavigatorKey,

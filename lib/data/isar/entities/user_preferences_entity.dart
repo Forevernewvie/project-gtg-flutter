@@ -14,6 +14,10 @@ class UserPreferencesEntity {
 
   bool hasCompletedOnboarding = UserPreferences.defaults.hasCompletedOnboarding;
   String primaryExerciseKey = UserPreferences.defaults.primaryExercise.key;
+  int primaryExerciseMaxReps = UserPreferences.defaults.primaryExerciseMaxReps;
+  int primaryExerciseDailySetTarget =
+      UserPreferences.defaults.primaryExerciseDailySetTarget;
+  DateTime? primaryExerciseLastMaxTestedAt;
 
   /// Internal storage schema version marker for safe one-time migration.
   int storageVersion = 0;
@@ -27,6 +31,9 @@ class UserPreferencesEntity {
     return UserPreferences(
       hasCompletedOnboarding: hasCompletedOnboarding,
       primaryExercise: primaryExercise,
+      primaryExerciseMaxReps: primaryExerciseMaxReps,
+      primaryExerciseDailySetTarget: primaryExerciseDailySetTarget,
+      primaryExerciseLastMaxTestedAt: primaryExerciseLastMaxTestedAt,
     );
   }
 
@@ -38,6 +45,9 @@ class UserPreferencesEntity {
     return UserPreferencesEntity()
       ..hasCompletedOnboarding = model.hasCompletedOnboarding
       ..primaryExerciseKey = model.primaryExercise.key
+      ..primaryExerciseMaxReps = model.primaryExerciseMaxReps
+      ..primaryExerciseDailySetTarget = model.primaryExerciseDailySetTarget
+      ..primaryExerciseLastMaxTestedAt = model.primaryExerciseLastMaxTestedAt
       ..storageVersion = storageVersion;
   }
 }

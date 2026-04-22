@@ -39,6 +39,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickLogHelper => 'Adjust reps, then tap Record.';
 
   @override
+  String get decreaseValue => 'Decrease';
+
+  @override
+  String get increaseValue => 'Increase';
+
+  @override
   String get reset => 'Reset';
 
   @override
@@ -112,6 +118,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersSubtitle => 'Set interval, quiet hours, and weekends off';
 
   @override
+  String get settingsCoachTitle => 'GTG Coach';
+
+  @override
+  String get settingsCoachSubtitle =>
+      'Your max reps, GTG recommendation, and today\'s plan';
+
+  @override
   String get allLogsTitle => 'All Logs';
 
   @override
@@ -134,6 +147,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openExternalFailed => 'Couldn\'t open.';
+
+  @override
+  String get appUpdateTitle => 'Update available';
+
+  @override
+  String appUpdateBody(String version) {
+    return 'A newer version ($version) is available. Update now for the latest improvements.';
+  }
+
+  @override
+  String get appUpdateLater => 'Later';
+
+  @override
+  String get appUpdateNow => 'Update';
 
   @override
   String get remindersHeadline => 'Quiet and consistent';
@@ -220,6 +247,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingHint => 'Your primary move shows first on Home.';
 
   @override
+  String get onboardingBaselineTitle => 'Optional max reps';
+
+  @override
+  String get onboardingBaselineSubtitle =>
+      'Add it now or skip it. GTG Coach can use it for a lighter recommendation later.';
+
+  @override
+  String get onboardingBaselineFieldLabel => 'Current clean max reps';
+
+  @override
+  String get onboardingBaselineFieldHint =>
+      'Skip this if you want. You can add it later in GTG Coach.';
+
+  @override
   String get onboardingNext => 'Next';
 
   @override
@@ -230,6 +271,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDipsSubtitle => 'Push strength. Watch your shoulders.';
+
+  @override
+  String get coachFocusTitle => 'Focus move';
+
+  @override
+  String get coachFocusSubtitle =>
+      'Keep your primary move fresh and repeatable.';
+
+  @override
+  String get coachFocusMoveLabel => 'Primary move';
+
+  @override
+  String get coachRecommendedRepsLabel => 'Recommended GTG reps';
+
+  @override
+  String get coachRecommendedHint =>
+      'About half of your max so each set stays well below failure.';
+
+  @override
+  String get coachLastTestedLabel => 'Last max test';
+
+  @override
+  String get coachLastTestedNever => 'Not yet';
+
+  @override
+  String get coachBaselineTitle => 'Baseline';
+
+  @override
+  String get coachBaselineSubtitle =>
+      'Set your current max and the number of daily practice sets.';
+
+  @override
+  String get coachBaselineLabel => 'Current max reps';
+
+  @override
+  String get coachDailySetGoalLabel => 'Daily set goal';
+
+  @override
+  String get coachPlanTitle => 'Today\'s plan';
+
+  @override
+  String get coachPlanSubtitle =>
+      'Progress is counted from today\'s logs for your primary move.';
+
+  @override
+  String get coachTodayLabel => 'Today';
+
+  @override
+  String get coachCardReadySubtitle => 'Today\'s GTG suggestion and progress';
+
+  @override
+  String get coachCardSetupSubtitle =>
+      'Add your max reps to get a lighter GTG suggestion';
+
+  @override
+  String get coachSetBaselineAction => 'Add max';
+
+  @override
+  String get coachAdjustAction => 'Adjust';
+
+  @override
+  String get coachSetupHint =>
+      'Save your current max for your focus move. Home will suggest a lighter GTG set and track today\'s progress.';
+
+  @override
+  String get coachNotSet => 'Not set';
+
+  @override
+  String get coachRetestDueMessage =>
+      'It has been over 2 weeks. Recheck your max and refresh the recommendation.';
+
+  @override
+  String coachQuickLogRecommended(int count) {
+    return 'GTG $count reps';
+  }
+
+  @override
+  String coachTodayProgress(int done, int target) {
+    return '$done/$target sets';
+  }
+
+  @override
+  String coachRemainingSets(int count) {
+    return '$count sets left today';
+  }
+
+  @override
+  String coachSetsShort(int count) {
+    return '$count sets';
+  }
 
   @override
   String get splashTapToSkip => 'Tap to skip';

@@ -152,6 +152,18 @@ abstract class AppLocalizations {
   /// **'Adjust reps, then tap Record.'**
   String get quickLogHelper;
 
+  /// No description provided for @decreaseValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease'**
+  String get decreaseValue;
+
+  /// No description provided for @increaseValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase'**
+  String get increaseValue;
+
   /// No description provided for @reset.
   ///
   /// In en, this message translates to:
@@ -290,6 +302,18 @@ abstract class AppLocalizations {
   /// **'Set interval, quiet hours, and weekends off'**
   String get remindersSubtitle;
 
+  /// No description provided for @settingsCoachTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'GTG Coach'**
+  String get settingsCoachTitle;
+
+  /// No description provided for @settingsCoachSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your max reps, GTG recommendation, and today\'s plan'**
+  String get settingsCoachSubtitle;
+
   /// No description provided for @allLogsTitle.
   ///
   /// In en, this message translates to:
@@ -337,6 +361,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open.'**
   String get openExternalFailed;
+
+  /// No description provided for @appUpdateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get appUpdateTitle;
+
+  /// No description provided for @appUpdateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A newer version ({version}) is available. Update now for the latest improvements.'**
+  String appUpdateBody(String version);
+
+  /// No description provided for @appUpdateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get appUpdateLater;
+
+  /// No description provided for @appUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get appUpdateNow;
 
   /// No description provided for @remindersHeadline.
   ///
@@ -482,6 +530,30 @@ abstract class AppLocalizations {
   /// **'Your primary move shows first on Home.'**
   String get onboardingHint;
 
+  /// No description provided for @onboardingBaselineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional max reps'**
+  String get onboardingBaselineTitle;
+
+  /// No description provided for @onboardingBaselineSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add it now or skip it. GTG Coach can use it for a lighter recommendation later.'**
+  String get onboardingBaselineSubtitle;
+
+  /// No description provided for @onboardingBaselineFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current clean max reps'**
+  String get onboardingBaselineFieldLabel;
+
+  /// No description provided for @onboardingBaselineFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this if you want. You can add it later in GTG Coach.'**
+  String get onboardingBaselineFieldHint;
+
   /// No description provided for @onboardingNext.
   ///
   /// In en, this message translates to:
@@ -505,6 +577,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Push strength. Watch your shoulders.'**
   String get onboardingDipsSubtitle;
+
+  /// No description provided for @coachFocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus move'**
+  String get coachFocusTitle;
+
+  /// No description provided for @coachFocusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your primary move fresh and repeatable.'**
+  String get coachFocusSubtitle;
+
+  /// No description provided for @coachFocusMoveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary move'**
+  String get coachFocusMoveLabel;
+
+  /// No description provided for @coachRecommendedRepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended GTG reps'**
+  String get coachRecommendedRepsLabel;
+
+  /// No description provided for @coachRecommendedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'About half of your max so each set stays well below failure.'**
+  String get coachRecommendedHint;
+
+  /// No description provided for @coachLastTestedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last max test'**
+  String get coachLastTestedLabel;
+
+  /// No description provided for @coachLastTestedNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get coachLastTestedNever;
+
+  /// No description provided for @coachBaselineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Baseline'**
+  String get coachBaselineTitle;
+
+  /// No description provided for @coachBaselineSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your current max and the number of daily practice sets.'**
+  String get coachBaselineSubtitle;
+
+  /// No description provided for @coachBaselineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current max reps'**
+  String get coachBaselineLabel;
+
+  /// No description provided for @coachDailySetGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily set goal'**
+  String get coachDailySetGoalLabel;
+
+  /// No description provided for @coachPlanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s plan'**
+  String get coachPlanTitle;
+
+  /// No description provided for @coachPlanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress is counted from today\'s logs for your primary move.'**
+  String get coachPlanSubtitle;
+
+  /// No description provided for @coachTodayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get coachTodayLabel;
+
+  /// No description provided for @coachCardReadySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s GTG suggestion and progress'**
+  String get coachCardReadySubtitle;
+
+  /// No description provided for @coachCardSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your max reps to get a lighter GTG suggestion'**
+  String get coachCardSetupSubtitle;
+
+  /// No description provided for @coachSetBaselineAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add max'**
+  String get coachSetBaselineAction;
+
+  /// No description provided for @coachAdjustAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust'**
+  String get coachAdjustAction;
+
+  /// No description provided for @coachSetupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your current max for your focus move. Home will suggest a lighter GTG set and track today\'s progress.'**
+  String get coachSetupHint;
+
+  /// No description provided for @coachNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get coachNotSet;
+
+  /// No description provided for @coachRetestDueMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It has been over 2 weeks. Recheck your max and refresh the recommendation.'**
+  String get coachRetestDueMessage;
+
+  /// No description provided for @coachQuickLogRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'GTG {count} reps'**
+  String coachQuickLogRecommended(int count);
+
+  /// No description provided for @coachTodayProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{target} sets'**
+  String coachTodayProgress(int done, int target);
+
+  /// No description provided for @coachRemainingSets.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sets left today'**
+  String coachRemainingSets(int count);
+
+  /// No description provided for @coachSetsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sets'**
+  String coachSetsShort(int count);
 
   /// No description provided for @splashTapToSkip.
   ///

@@ -23,13 +23,28 @@ const UserPreferencesEntitySchema = CollectionSchema(
       name: r'hasCompletedOnboarding',
       type: IsarType.bool,
     ),
-    r'primaryExerciseKey': PropertySchema(
+    r'primaryExerciseDailySetTarget': PropertySchema(
       id: 1,
+      name: r'primaryExerciseDailySetTarget',
+      type: IsarType.long,
+    ),
+    r'primaryExerciseKey': PropertySchema(
+      id: 2,
       name: r'primaryExerciseKey',
       type: IsarType.string,
     ),
+    r'primaryExerciseLastMaxTestedAt': PropertySchema(
+      id: 3,
+      name: r'primaryExerciseLastMaxTestedAt',
+      type: IsarType.dateTime,
+    ),
+    r'primaryExerciseMaxReps': PropertySchema(
+      id: 4,
+      name: r'primaryExerciseMaxReps',
+      type: IsarType.long,
+    ),
     r'storageVersion': PropertySchema(
-      id: 2,
+      id: 5,
       name: r'storageVersion',
       type: IsarType.long,
     ),
@@ -67,8 +82,11 @@ void _userPreferencesEntitySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.hasCompletedOnboarding);
-  writer.writeString(offsets[1], object.primaryExerciseKey);
-  writer.writeLong(offsets[2], object.storageVersion);
+  writer.writeLong(offsets[1], object.primaryExerciseDailySetTarget);
+  writer.writeString(offsets[2], object.primaryExerciseKey);
+  writer.writeDateTime(offsets[3], object.primaryExerciseLastMaxTestedAt);
+  writer.writeLong(offsets[4], object.primaryExerciseMaxReps);
+  writer.writeLong(offsets[5], object.storageVersion);
 }
 
 UserPreferencesEntity _userPreferencesEntityDeserialize(
@@ -80,8 +98,11 @@ UserPreferencesEntity _userPreferencesEntityDeserialize(
   final object = UserPreferencesEntity();
   object.hasCompletedOnboarding = reader.readBool(offsets[0]);
   object.id = id;
-  object.primaryExerciseKey = reader.readString(offsets[1]);
-  object.storageVersion = reader.readLong(offsets[2]);
+  object.primaryExerciseDailySetTarget = reader.readLong(offsets[1]);
+  object.primaryExerciseKey = reader.readString(offsets[2]);
+  object.primaryExerciseLastMaxTestedAt = reader.readDateTimeOrNull(offsets[3]);
+  object.primaryExerciseMaxReps = reader.readLong(offsets[4]);
+  object.storageVersion = reader.readLong(offsets[5]);
   return object;
 }
 
@@ -95,8 +116,14 @@ P _userPreferencesEntityDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 4:
+      return (reader.readLong(offset)) as P;
+    case 5:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -305,6 +332,80 @@ extension UserPreferencesEntityQueryFilter
     UserPreferencesEntity,
     QAfterFilterCondition
   >
+  primaryExerciseDailySetTargetEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'primaryExerciseDailySetTarget',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseDailySetTargetGreaterThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'primaryExerciseDailySetTarget',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseDailySetTargetLessThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'primaryExerciseDailySetTarget',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseDailySetTargetBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'primaryExerciseDailySetTarget',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
   primaryExerciseKeyEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -486,6 +587,190 @@ extension UserPreferencesEntityQueryFilter
     UserPreferencesEntity,
     QAfterFilterCondition
   >
+  primaryExerciseLastMaxTestedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(
+          property: r'primaryExerciseLastMaxTestedAt',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseLastMaxTestedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(
+          property: r'primaryExerciseLastMaxTestedAt',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseLastMaxTestedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'primaryExerciseLastMaxTestedAt',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseLastMaxTestedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'primaryExerciseLastMaxTestedAt',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseLastMaxTestedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'primaryExerciseLastMaxTestedAt',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseLastMaxTestedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'primaryExerciseLastMaxTestedAt',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseMaxRepsEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'primaryExerciseMaxReps',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseMaxRepsGreaterThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'primaryExerciseMaxReps',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseMaxRepsLessThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'primaryExerciseMaxReps',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
+  primaryExerciseMaxRepsBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'primaryExerciseMaxReps',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<
+    UserPreferencesEntity,
+    UserPreferencesEntity,
+    QAfterFilterCondition
+  >
   storageVersionEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -586,6 +871,20 @@ extension UserPreferencesEntityQuerySortBy
   }
 
   QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseDailySetTarget() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseDailySetTarget', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseDailySetTargetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseDailySetTarget', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
   sortByPrimaryExerciseKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'primaryExerciseKey', Sort.asc);
@@ -596,6 +895,34 @@ extension UserPreferencesEntityQuerySortBy
   sortByPrimaryExerciseKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'primaryExerciseKey', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseLastMaxTestedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseLastMaxTestedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseLastMaxTestedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseLastMaxTestedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseMaxReps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseMaxReps', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  sortByPrimaryExerciseMaxRepsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseMaxReps', Sort.desc);
     });
   }
 
@@ -645,6 +972,20 @@ extension UserPreferencesEntityQuerySortThenBy
   }
 
   QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseDailySetTarget() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseDailySetTarget', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseDailySetTargetDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseDailySetTarget', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
   thenByPrimaryExerciseKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'primaryExerciseKey', Sort.asc);
@@ -655,6 +996,34 @@ extension UserPreferencesEntityQuerySortThenBy
   thenByPrimaryExerciseKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'primaryExerciseKey', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseLastMaxTestedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseLastMaxTestedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseLastMaxTestedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseLastMaxTestedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseMaxReps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseMaxReps', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QAfterSortBy>
+  thenByPrimaryExerciseMaxRepsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'primaryExerciseMaxReps', Sort.desc);
     });
   }
 
@@ -683,12 +1052,33 @@ extension UserPreferencesEntityQueryWhereDistinct
   }
 
   QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QDistinct>
+  distinctByPrimaryExerciseDailySetTarget() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'primaryExerciseDailySetTarget');
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QDistinct>
   distinctByPrimaryExerciseKey({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(
         r'primaryExerciseKey',
         caseSensitive: caseSensitive,
       );
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QDistinct>
+  distinctByPrimaryExerciseLastMaxTestedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'primaryExerciseLastMaxTestedAt');
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, UserPreferencesEntity, QDistinct>
+  distinctByPrimaryExerciseMaxReps() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'primaryExerciseMaxReps');
     });
   }
 
@@ -720,10 +1110,31 @@ extension UserPreferencesEntityQueryProperty
     });
   }
 
+  QueryBuilder<UserPreferencesEntity, int, QQueryOperations>
+  primaryExerciseDailySetTargetProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'primaryExerciseDailySetTarget');
+    });
+  }
+
   QueryBuilder<UserPreferencesEntity, String, QQueryOperations>
   primaryExerciseKeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'primaryExerciseKey');
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, DateTime?, QQueryOperations>
+  primaryExerciseLastMaxTestedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'primaryExerciseLastMaxTestedAt');
+    });
+  }
+
+  QueryBuilder<UserPreferencesEntity, int, QQueryOperations>
+  primaryExerciseMaxRepsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'primaryExerciseMaxReps');
     });
   }
 

@@ -89,9 +89,12 @@ void main() {
       ),
     );
     await persistence.saveUserPreferences(
-      const UserPreferences(
+      UserPreferences(
         hasCompletedOnboarding: true,
         primaryExercise: ExerciseType.dips,
+        primaryExerciseMaxReps: 14,
+        primaryExerciseDailySetTarget: 9,
+        primaryExerciseLastMaxTestedAt: DateTime(2026, 2, 16, 7, 45),
       ),
     );
 
@@ -109,6 +112,12 @@ void main() {
 
     expect(loadedPrefs.hasCompletedOnboarding, isTrue);
     expect(loadedPrefs.primaryExercise, ExerciseType.dips);
+    expect(loadedPrefs.primaryExerciseMaxReps, 14);
+    expect(loadedPrefs.primaryExerciseDailySetTarget, 9);
+    expect(
+      loadedPrefs.primaryExerciseLastMaxTestedAt,
+      DateTime(2026, 2, 16, 7, 45),
+    );
 
     final projectDir = Directory('${tmp.path}/ProjectGTG');
     final tmpFiles = projectDir

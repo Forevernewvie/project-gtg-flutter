@@ -19,6 +19,8 @@
 
   "quickLogTitle": "빠른 입력",
   "quickLogHelper": "횟수를 조정한 뒤 기록을 누르세요.",
+  "decreaseValue": "감소",
+  "increaseValue": "증가",
   "reset": "초기화",
   "record": "기록",
   "loadingLogs": "기록을 불러오는 중입니다...",
@@ -49,6 +51,8 @@
   "settingsThemeSystem": "시스템",
   "settingsThemeLight": "라이트",
   "settingsThemeDark": "다크",
+  "settingsCoachTitle": "GTG 코치",
+  "settingsCoachSubtitle": "최대 반복, GTG 추천 횟수, 오늘 계획을 관리합니다.",
   "remindersTitle": "리마인더",
   "remindersSubtitle": "반복 주기, 방해 금지 시간, 주말 제외를 설정합니다",
   "allLogsTitle": "전체 기록",
@@ -59,6 +63,17 @@
   "invalidLink": "링크가 올바르지 않습니다.",
   "cannotOpenBrowser": "브라우저를 열 수 없습니다.",
   "openExternalFailed": "열 수 없습니다.",
+  "appUpdateTitle": "업데이트 가능",
+  "appUpdateBody": "새 버전({version})이 나왔습니다. 최신 개선 사항을 위해 지금 업데이트해보세요.",
+  "@appUpdateBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdateLater": "나중에",
+  "appUpdateNow": "업데이트",
 
   "remindersHeadline": "조용하게, 꾸준히",
   "remindersSubheadline": "반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.",
@@ -116,10 +131,71 @@
   "onboardingSubtitle": "완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.",
   "onboardingQuestion": "주로 어떤 동작을 할까요?",
   "onboardingHint": "기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.",
+  "onboardingBaselineTitle": "선택 입력: 최대 반복",
+  "onboardingBaselineSubtitle": "지금 넣어도 되고, 건너뛰어도 됩니다. 나중에 GTG 코치가 더 가볍게 추천할 때 사용합니다.",
+  "onboardingBaselineFieldLabel": "현재 깔끔한 최대 반복",
+  "onboardingBaselineFieldHint": "건너뛰어도 괜찮아요. 나중에 GTG 코치에서 추가할 수 있어요.",
   "onboardingNext": "다음",
   "onboardingPushUpSubtitle": "가장 빠른 루틴. 어디서든 시작",
   "onboardingPullUpSubtitle": "상체 당기기. 폼이 핵심",
   "onboardingDipsSubtitle": "푸쉬 라인 강화. 어깨 각도 주의",
+
+  "coachFocusTitle": "집중 동작",
+  "coachFocusSubtitle": "주 종목을 무리 없이 자주 반복할 수 있게 맞춥니다.",
+  "coachFocusMoveLabel": "주 종목",
+  "coachRecommendedRepsLabel": "추천 GTG 횟수",
+  "coachRecommendedHint": "최대 반복의 절반 정도로 유지해 매 세트를 여유 있게 가져갑니다.",
+  "coachLastTestedLabel": "마지막 최대 반복 측정",
+  "coachLastTestedNever": "아직 없음",
+  "coachBaselineTitle": "기준 설정",
+  "coachBaselineSubtitle": "현재 최대 반복과 하루 세트 목표를 설정하세요.",
+  "coachBaselineLabel": "현재 최대 반복",
+  "coachDailySetGoalLabel": "하루 세트 목표",
+  "coachPlanTitle": "오늘의 계획",
+  "coachPlanSubtitle": "오늘 기록한 주 종목 로그를 기준으로 진행도를 계산합니다.",
+  "coachTodayLabel": "오늘",
+  "coachCardReadySubtitle": "오늘의 GTG 추천과 진행 상황",
+  "coachCardSetupSubtitle": "최대 반복을 넣으면 홈이 더 가볍게 추천해줍니다.",
+  "coachSetBaselineAction": "최대반복 추가",
+  "coachAdjustAction": "조정",
+  "coachSetupHint": "주 종목의 현재 최대 반복을 저장하세요. 홈이 더 가벼운 GTG 세트를 추천하고 오늘 진행도를 보여줍니다.",
+  "coachNotSet": "미설정",
+  "coachRetestDueMessage": "2주 이상 지났어요. 최대 반복을 다시 측정해 추천값을 새로 맞춰보세요.",
+  "coachQuickLogRecommended": "GTG {count}회",
+  "@coachQuickLogRecommended": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coachTodayProgress": "{done}/{target}세트",
+  "@coachTodayProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "coachRemainingSets": "오늘 {count}세트 남음",
+  "@coachRemainingSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coachSetsShort": "{count}세트",
+  "@coachSetsShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "splashTapToSkip": "탭하여 스킵",
 

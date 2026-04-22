@@ -589,9 +589,13 @@ Future<void> _runOnboardingMatrixForLocale(
                   : ThemeMode.light,
               home: OnboardingScreen(
                 initialExercise: ExerciseType.pushUp,
-                onComplete: (_) async {
-                  completeCalls += 1;
-                },
+                onComplete:
+                    ({
+                      required primaryExercise,
+                      required primaryExerciseMaxReps,
+                    }) async {
+                      completeCalls += 1;
+                    },
                 onSkip: () async {
                   skipCalls += 1;
                 },

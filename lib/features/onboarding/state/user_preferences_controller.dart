@@ -19,11 +19,20 @@ class UserPreferencesController extends AsyncNotifier<UserPreferences> {
   }
 
   /// Marks onboarding complete and persists the selected primary exercise.
-  Future<void> completeOnboarding(ExerciseType primaryExercise) async {
+  Future<void> completeOnboarding(
+    ExerciseType primaryExercise, {
+    int? primaryExerciseMaxReps,
+    DateTime? primaryExerciseLastMaxTestedAt,
+  }) async {
     final current = state.asData?.value ?? UserPreferences.defaults;
     final updated = current.copyWith(
       hasCompletedOnboarding: true,
       primaryExercise: primaryExercise,
+      primaryExerciseMaxReps:
+          primaryExerciseMaxReps ?? current.primaryExerciseMaxReps,
+      primaryExerciseLastMaxTestedAt:
+          primaryExerciseLastMaxTestedAt ??
+          current.primaryExerciseLastMaxTestedAt,
     );
     state = AsyncData(updated);
     try {
@@ -31,6 +40,35 @@ class UserPreferencesController extends AsyncNotifier<UserPreferences> {
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist user preferences.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
+
+  /// Persists coaching preferences tied to the user's primary exercise.
+  Future<void> updatePrimaryExerciseCoaching({
+    int? maxReps,
+    int? dailySetTarget,
+    DateTime? lastMaxTestedAt,
+    bool clearLastMaxTestedAt = false,
+  }) async {
+    final current = state.asData?.value ?? UserPreferences.defaults;
+    final updated = current.copyWith(
+      primaryExerciseMaxReps: maxReps,
+      primaryExerciseDailySetTarget: dailySetTarget,
+      primaryExerciseLastMaxTestedAt: clearLastMaxTestedAt
+          ? null
+          : (lastMaxTestedAt ?? current.primaryExerciseLastMaxTestedAt),
+    );
+    state = AsyncData(updated);
+
+    try {
+      await _repository.saveUserPreferences(updated);
+    } catch (error, stackTrace) {
+      _logger.error(
+        'Failed to persist GTG coaching preferences.',
         error: error,
         stackTrace: stackTrace,
       );

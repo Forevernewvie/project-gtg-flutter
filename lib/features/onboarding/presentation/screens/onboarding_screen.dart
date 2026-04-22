@@ -3,6 +3,7 @@ import 'package:project_gtg/core/gtg_colors.dart';
 import 'package:project_gtg/core/gtg_gradients.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/coaching/gtg_coach_policy.dart';
 import 'package:project_gtg/features/workout/presentation/exercise_ui_style.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
 import 'package:project_gtg/l10n/exercise_type_l10n.dart';
@@ -11,12 +12,18 @@ class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
     super.key,
     required this.initialExercise,
+    this.initialMaxReps = 0,
     required this.onComplete,
     required this.onSkip,
   });
 
   final ExerciseType initialExercise;
-  final Future<void> Function(ExerciseType primaryExercise) onComplete;
+  final int initialMaxReps;
+  final Future<void> Function({
+    required ExerciseType primaryExercise,
+    required int primaryExerciseMaxReps,
+  })
+  onComplete;
   final Future<void> Function() onSkip;
 
   @override
@@ -25,7 +32,17 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   late ExerciseType _selected = widget.initialExercise;
+  late int _maxReps = widget.initialMaxReps;
   bool _busy = false;
+
+  void _updateMaxReps(int nextValue) {
+    setState(() {
+      _maxReps = nextValue.clamp(
+        GtgCoachPolicy.minMaxReps,
+        GtgCoachPolicy.maxMaxReps,
+      );
+    });
+  }
 
   Future<void> _runBusy(Future<void> Function() action) async {
     setState(() => _busy = true);
@@ -131,6 +148,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: GtgUi.primarySectionSpacing),
+                      GtgSectionCard(
+                        icon: Icons.fitness_center_rounded,
+                        accent: GtgColors.successFor(brightness),
+                        title: l10n.onboardingBaselineTitle,
+                        subtitle: l10n.onboardingBaselineSubtitle,
+                        child: _BaselineInputCard(
+                          reps: _maxReps,
+                          onMinus:
+                              _busy || _maxReps <= GtgCoachPolicy.minMaxReps
+                              ? null
+                              : () => _updateMaxReps(_maxReps - 1),
+                          onPlus: _busy
+                              ? null
+                              : () => _updateMaxReps(_maxReps + 1),
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       if (_busy) ...<Widget>[
                         const LinearProgressIndicator(minHeight: 3),
@@ -142,7 +176,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           onPressed: _busy
                               ? null
                               : () => _runBusy(
-                                  () => widget.onComplete(_selected),
+                                  () => widget.onComplete(
+                                    primaryExercise: _selected,
+                                    primaryExerciseMaxReps: _maxReps,
+                                  ),
                                 ),
                           style: FilledButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -209,6 +246,93 @@ class _PickCard extends StatelessWidget {
       subtitle: subtitle,
       selected: selected,
       onTap: onTap,
+    );
+  }
+}
+
+class _BaselineInputCard extends StatelessWidget {
+  const _BaselineInputCard({
+    required this.reps,
+    required this.onMinus,
+    required this.onPlus,
+  });
+
+  final int reps;
+  final VoidCallback? onMinus;
+  final VoidCallback? onPlus;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(GtgUi.cardRadius - 2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: GtgResponsivePair(
+          primary: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                l10n.onboardingBaselineFieldLabel,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                reps == 0 ? l10n.coachNotSet : l10n.repsWithUnit(reps),
+                key: const Key('onboarding.maxReps.value'),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                l10n.onboardingBaselineFieldHint,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          secondary: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                key: const Key('onboarding.maxReps.minus'),
+                tooltip: l10n.decreaseValue,
+                onPressed: onMinus,
+                style: IconButton.styleFrom(
+                  backgroundColor: colorScheme.surface,
+                  minimumSize: const Size(40, 40),
+                ),
+                icon: const Icon(Icons.remove_rounded),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                key: const Key('onboarding.maxReps.plus'),
+                tooltip: l10n.increaseValue,
+                onPressed: onPlus,
+                style: IconButton.styleFrom(
+                  backgroundColor: colorScheme.primaryContainer,
+                  foregroundColor: colorScheme.primary,
+                  minimumSize: const Size(40, 40),
+                ),
+                icon: const Icon(Icons.add_rounded),
+              ),
+            ],
+          ),
+          expandPrimary: true,
+          expandSecondary: false,
+          compactSecondaryAlignment: Alignment.centerLeft,
+        ),
+      ),
     );
   }
 }

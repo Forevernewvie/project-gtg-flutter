@@ -19,6 +19,8 @@
 
   "quickLogTitle": "Quick Log",
   "quickLogHelper": "Adjust reps, then tap Record.",
+  "decreaseValue": "Decrease",
+  "increaseValue": "Increase",
   "reset": "Reset",
   "record": "Log",
   "loadingLogs": "Loading logs...",
@@ -51,6 +53,8 @@
   "settingsThemeDark": "Dark",
   "remindersTitle": "Reminders",
   "remindersSubtitle": "Set interval, quiet hours, and weekends off",
+  "settingsCoachTitle": "GTG Coach",
+  "settingsCoachSubtitle": "Your max reps, GTG recommendation, and today's plan",
   "allLogsTitle": "All Logs",
   "allLogsSubtitle": "Browse by date and exercise",
   "aboutTitle": "About",
@@ -59,6 +63,17 @@
   "invalidLink": "Invalid link.",
   "cannotOpenBrowser": "Couldn't open the browser.",
   "openExternalFailed": "Couldn't open.",
+  "appUpdateTitle": "Update available",
+  "appUpdateBody": "A newer version ({version}) is available. Update now for the latest improvements.",
+  "@appUpdateBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appUpdateLater": "Later",
+  "appUpdateNow": "Update",
 
   "remindersHeadline": "Quiet and consistent",
   "remindersSubheadline": "We only schedule within the time left today.",
@@ -116,10 +131,71 @@
   "onboardingSubtitle": "Not perfect, just frequent. Start in 1 minute.",
   "onboardingQuestion": "Which move will you focus on?",
   "onboardingHint": "Your primary move shows first on Home.",
+  "onboardingBaselineTitle": "Optional max reps",
+  "onboardingBaselineSubtitle": "Add it now or skip it. GTG Coach can use it for a lighter recommendation later.",
+  "onboardingBaselineFieldLabel": "Current clean max reps",
+  "onboardingBaselineFieldHint": "Skip this if you want. You can add it later in GTG Coach.",
   "onboardingNext": "Next",
   "onboardingPushUpSubtitle": "Fastest routine. Start anywhere.",
   "onboardingPullUpSubtitle": "Pulling strength. Form matters.",
   "onboardingDipsSubtitle": "Push strength. Watch your shoulders.",
+
+  "coachFocusTitle": "Focus move",
+  "coachFocusSubtitle": "Keep your primary move fresh and repeatable.",
+  "coachFocusMoveLabel": "Primary move",
+  "coachRecommendedRepsLabel": "Recommended GTG reps",
+  "coachRecommendedHint": "About half of your max so each set stays well below failure.",
+  "coachLastTestedLabel": "Last max test",
+  "coachLastTestedNever": "Not yet",
+  "coachBaselineTitle": "Baseline",
+  "coachBaselineSubtitle": "Set your current max and the number of daily practice sets.",
+  "coachBaselineLabel": "Current max reps",
+  "coachDailySetGoalLabel": "Daily set goal",
+  "coachPlanTitle": "Today's plan",
+  "coachPlanSubtitle": "Progress is counted from today's logs for your primary move.",
+  "coachTodayLabel": "Today",
+  "coachCardReadySubtitle": "Today's GTG suggestion and progress",
+  "coachCardSetupSubtitle": "Add your max reps to get a lighter GTG suggestion",
+  "coachSetBaselineAction": "Add max",
+  "coachAdjustAction": "Adjust",
+  "coachSetupHint": "Save your current max for your focus move. Home will suggest a lighter GTG set and track today's progress.",
+  "coachNotSet": "Not set",
+  "coachRetestDueMessage": "It has been over 2 weeks. Recheck your max and refresh the recommendation.",
+  "coachQuickLogRecommended": "GTG {count} reps",
+  "@coachQuickLogRecommended": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coachTodayProgress": "{done}/{target} sets",
+  "@coachTodayProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "coachRemainingSets": "{count} sets left today",
+  "@coachRemainingSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coachSetsShort": "{count} sets",
+  "@coachSetsShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
 
   "splashTapToSkip": "Tap to skip",
 
