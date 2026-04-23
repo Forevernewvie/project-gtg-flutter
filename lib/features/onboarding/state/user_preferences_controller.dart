@@ -15,7 +15,16 @@ class UserPreferencesController extends AsyncNotifier<UserPreferences> {
   /// Loads persisted user preferences for onboarding bootstrap.
   @override
   Future<UserPreferences> build() async {
-    return _repository.loadUserPreferences();
+    try {
+      return await _repository.loadUserPreferences();
+    } catch (error, stackTrace) {
+      _logger.warning(
+        'Failed to load user preferences. Falling back to defaults.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return UserPreferences.defaults;
+    }
   }
 
   /// Marks onboarding complete and persists the selected primary exercise.

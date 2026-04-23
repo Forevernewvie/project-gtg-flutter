@@ -123,8 +123,6 @@ void main() {
           ),
         ),
       );
-      await tester.pump();
-      await tester.tap(find.text('Tap to skip'));
       await tester.pumpAndSettle();
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
@@ -194,7 +192,6 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.tap(find.text('Tap to skip'));
     await tester.pumpAndSettle();
 
     expect(find.text('Update available'), findsOneWidget);

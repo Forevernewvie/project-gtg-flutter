@@ -23,6 +23,16 @@ class _MemoryUserPreferencesRepository implements UserPreferencesRepository {
   }
 }
 
+class _ThrowingUserPreferencesRepository implements UserPreferencesRepository {
+  @override
+  Future<UserPreferences> loadUserPreferences() async {
+    throw StateError('prefs-load-failed');
+  }
+
+  @override
+  Future<void> saveUserPreferences(UserPreferences preferences) async {}
+}
+
 void main() {
   test(
     'completeOnboarding persists primary exercise and completion flag',
@@ -132,5 +142,22 @@ void main() {
     expect(persisted.primaryExerciseMaxReps, 11);
     expect(persisted.primaryExerciseDailySetTarget, 8);
     expect(persisted.primaryExerciseLastMaxTestedAt, testedAt);
+  });
+
+  test('build falls back to default preferences when loading fails', () async {
+    final container = ProviderContainer(
+      overrides: [
+        userPreferencesRepositoryProvider.overrideWithValue(
+          _ThrowingUserPreferencesRepository(),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final value = await container.read(
+      userPreferencesControllerProvider.future,
+    );
+
+    expect(value, UserPreferences.defaults);
   });
 }

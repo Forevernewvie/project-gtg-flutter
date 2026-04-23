@@ -22,8 +22,7 @@ abstract final class RootOverlaysPolicy {
 
   /// Returns whether the in-app splash should appear for the current environment.
   static bool shouldShowSplash(RootOverlayEnvironment environment) {
-    return !environment.isTestRuntime &&
-        (!environment.uiTesting || environment.smokeScreenshots);
+    return !environment.isTestRuntime && environment.smokeScreenshots;
   }
 
   /// Returns whether onboarding should appear once splash handling is complete.

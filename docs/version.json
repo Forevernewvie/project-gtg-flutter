@@ -1,16 +1,16 @@
 {
   "android": {
-    "latestVersionCode": 5,
-    "latestVersionName": "1.0.1",
+    "latestVersionCode": 6,
+    "latestVersionName": "1.0.2",
     "forceUpdate": false,
-    "message": "PROJECT GTG 1.0.1 is now available.",
+    "message": "PROJECT GTG 1.0.2 is now available.",
     "storeUrl": "https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg"
   },
   "ios": {
-    "latestVersionCode": 5,
-    "latestVersionName": "1.0.1",
+    "latestVersionCode": 6,
+    "latestVersionName": "1.0.2",
     "forceUpdate": false,
-    "message": "PROJECT GTG 1.0.1 is now available.",
+    "message": "PROJECT GTG 1.0.2 is now available.",
     "storeUrl": "https://apps.apple.com"
   }
 }

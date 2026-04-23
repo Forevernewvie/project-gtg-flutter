@@ -33,6 +33,7 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
     with WidgetsBindingObserver {
   Timer? _timer;
   bool _showSplash = true;
+  bool _overlayChecksActivated = false;
   bool _updateCheckScheduled = false;
   bool _updatePromptShown = false;
 
@@ -53,12 +54,16 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
     final allowSplash = RootOverlaysPolicy.shouldShowSplash(_environment);
     if (!allowSplash) {
       _showSplash = false;
-      return;
+    } else {
+      _timer = Timer(RootOverlaysPolicy.splashDuration, () {
+        if (!mounted) return;
+        setState(() => _showSplash = false);
+      });
     }
 
-    _timer = Timer(RootOverlaysPolicy.splashDuration, () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      setState(() => _showSplash = false);
+      setState(() => _overlayChecksActivated = true);
     });
   }
 
@@ -90,15 +95,18 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
 
   @override
   Widget build(BuildContext context) {
-    final prefsAsync = ref.watch(userPreferencesControllerProvider);
-    final prefs = prefsAsync.asData?.value;
+    final prefsAsync = !_overlayChecksActivated || _showSplash
+        ? null
+        : ref.watch(userPreferencesControllerProvider);
+    final prefs = prefsAsync?.asData?.value;
+    final prefsReady = prefsAsync?.hasValue ?? false;
     final shouldShowOnboarding = RootOverlaysPolicy.shouldShowOnboarding(
       environment: _environment,
       showSplash: _showSplash,
       preferences: prefs,
     );
 
-    if (!_showSplash && !shouldShowOnboarding) {
+    if (!_showSplash && prefsReady && !shouldShowOnboarding) {
       _scheduleUpdateCheck(context);
     }
 

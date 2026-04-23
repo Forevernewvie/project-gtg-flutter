@@ -19,6 +19,7 @@ abstract final class _DashboardPolicy {
   static const double heroRadius = 28;
   static const int minQuickLogReps = 1;
   static const int maxQuickLogReps = 999;
+  static const double startupPlaceholderHeight = 188;
   static const Map<ExerciseType, int> defaultDraftReps = <ExerciseType, int>{
     ExerciseType.pushUp: 10,
     ExerciseType.pullUp: 5,
@@ -27,12 +28,32 @@ abstract final class _DashboardPolicy {
 }
 
 /// Renders the home dashboard with hero metrics, quick logging, and recent history.
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  bool _dataActivated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() => _dataActivated = true);
+    });
+  }
 
   /// Builds the dashboard sections inside one vertically scrolling surface.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    if (!_dataActivated) {
+      return const _DashboardStartupPlaceholder();
+    }
+
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -83,6 +104,78 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DashboardStartupPlaceholder extends StatelessWidget {
+  const _DashboardStartupPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      slivers: <Widget>[
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              GtgUi.screenTopPadding,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
+            child: const _StartupPlaceholderCard(
+              height: _DashboardPolicy.startupPlaceholderHeight,
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              0,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
+            child: const _StartupPlaceholderCard(height: 112),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              GtgUi.screenHorizontalPadding,
+              0,
+              GtgUi.screenHorizontalPadding,
+              GtgUi.primarySectionSpacing,
+            ),
+            child: const _StartupPlaceholderCard(height: 260),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartupPlaceholderCard extends StatelessWidget {
+  const _StartupPlaceholderCard({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(GtgUi.cardRadius),
+      ),
+      child: SizedBox(
+        height: height,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

@@ -14,7 +14,16 @@ class ThemePreferenceController extends AsyncNotifier<AppThemePreference> {
   /// Loads the persisted theme preference for app bootstrap.
   @override
   Future<AppThemePreference> build() async {
-    return _repository.loadAppThemePreference();
+    try {
+      return await _repository.loadAppThemePreference();
+    } catch (error, stackTrace) {
+      _logger.warning(
+        'Failed to load theme preference. Falling back to system mode.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return AppThemePreference.system;
+    }
   }
 
   /// Persists a new theme preference while keeping failures observable in logs.

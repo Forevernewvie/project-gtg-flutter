@@ -55,8 +55,18 @@ void main() {
     );
   });
 
-  test('non-test runtime shows splash by default', () {
-    expect(RootOverlaysPolicy.shouldShowSplash(_prodEnv), isTrue);
+  test('non-test runtime keeps splash off unless explicitly requested', () {
+    expect(RootOverlaysPolicy.shouldShowSplash(_prodEnv), isFalse);
+    expect(
+      RootOverlaysPolicy.shouldShowSplash(
+        const RootOverlayEnvironment(
+          isTestRuntime: false,
+          uiTesting: false,
+          smokeScreenshots: true,
+        ),
+      ),
+      isTrue,
+    );
   });
 
   test('onboarding shows only after splash for incomplete preferences', () {

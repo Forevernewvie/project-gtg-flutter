@@ -37,6 +37,16 @@ class _MemoryWorkoutLogRepository implements WorkoutLogRepository {
   }
 }
 
+class _ThrowingWorkoutLogRepository implements WorkoutLogRepository {
+  @override
+  Future<List<ExerciseLog>> loadLogs() async {
+    throw StateError('logs-load-failed');
+  }
+
+  @override
+  Future<void> saveLogs(List<ExerciseLog> logs) async {}
+}
+
 void main() {
   test(
     'addLog uses injected clock and normalizes reps before persisting',
@@ -101,5 +111,23 @@ void main() {
     final after = container.read(workoutControllerProvider).asData!.value;
     expect(after.logs, isEmpty);
     expect(await repository.loadLogs(), isEmpty);
+  });
+
+  test('build falls back to an empty history when loading fails', () async {
+    final container = ProviderContainer(
+      overrides: [
+        workoutLogRepositoryProvider.overrideWithValue(
+          _ThrowingWorkoutLogRepository(),
+        ),
+        clockProvider.overrideWithValue(
+          _FixedClock(DateTime(2026, 3, 8, 7, 30)),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final state = await container.read(workoutControllerProvider.future);
+
+    expect(state.logs, isEmpty);
   });
 }

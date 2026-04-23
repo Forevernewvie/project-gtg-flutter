@@ -24,8 +24,17 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
   /// Loads workout logs from persistence.
   @override
   Future<WorkoutState> build() async {
-    final logs = await _repository.loadLogs();
-    return WorkoutState(logs: logs);
+    try {
+      final logs = await _repository.loadLogs();
+      return WorkoutState(logs: logs);
+    } catch (error, stackTrace) {
+      _logger.warning(
+        'Failed to load workout logs. Falling back to empty history.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return const WorkoutState(logs: <ExerciseLog>[]);
+    }
   }
 
   /// Appends one new log and persists it atomically.
