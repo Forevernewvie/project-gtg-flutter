@@ -406,7 +406,6 @@ class _SettingsActionTile extends StatelessWidget {
             border: Border.all(color: accent.withValues(alpha: 0.18)),
           ),
           child: ListTile(
-            onTap: onTap,
             contentPadding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
             minLeadingWidth: 0,
             leading: DecoratedBox(
