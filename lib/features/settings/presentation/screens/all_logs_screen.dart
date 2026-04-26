@@ -46,7 +46,10 @@ class AllLogsScreen extends ConsumerWidget {
           ),
           padding: _AllLogsPolicy.screenPadding,
           children: <Widget>[
-            _AllLogsIntro(subtitle: l10n.allLogsSubtitle),
+            GtgInfoBanner(
+              icon: Icons.timeline_rounded,
+              message: l10n.allLogsSubtitle,
+            ),
             const SizedBox(height: GtgUi.primarySectionSpacing),
             GtgEmptyState(
               message: l10n.noLogsHintHome,
@@ -76,7 +79,10 @@ class AllLogsScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(
                 bottom: GtgUi.primarySectionSpacing,
               ),
-              child: _AllLogsIntro(subtitle: l10n.allLogsSubtitle),
+              child: GtgInfoBanner(
+                icon: Icons.timeline_rounded,
+                message: l10n.allLogsSubtitle,
+              ),
             );
           }
 
@@ -111,59 +117,6 @@ class AllLogsScreen extends ConsumerWidget {
           ),
         )
         .toList(growable: false);
-  }
-}
-
-class _AllLogsIntro extends StatelessWidget {
-  const _AllLogsIntro({required this.subtitle});
-
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          colorScheme.primary.withValues(alpha: 0.08),
-          colorScheme.surface,
-        ),
-        borderRadius: BorderRadius.circular(GtgUi.cardRadius),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.16)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-        child: Row(
-          children: <Widget>[
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(GtgUi.controlRadius),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Icon(
-                  Icons.timeline_rounded,
-                  color: colorScheme.primary,
-                  size: 20,
-                ),
-              ),
-            ),
-            const SizedBox(width: GtgUi.controlSpacing),
-            Expanded(
-              child: Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
