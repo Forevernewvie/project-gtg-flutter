@@ -13,6 +13,7 @@ This checklist covers:
   - [ ] `ADMOB_APP_ID_ANDROID`
   - [ ] `ADMOB_BANNER_UNIT_ID_ANDROID`
 - [ ] `docs/version.json` is updated for the intended release version
+- [ ] `python3 tool/validate_hosted_update_manifest.py` passes
 
 ## Build and upload
 - [ ] Build release AAB
@@ -28,7 +29,7 @@ This checklist covers:
   - [ ] `forceUpdate`
   - [ ] `message`
   - [ ] `storeUrl`
-- [ ] Push branch / merge so GitHub Pages publishes the new file
+- [ ] Push branch / merge to `main`; the Pages workflow deploys `docs/` after CI succeeds
 - [ ] Verify hosted file is reachable:
   - [ ] `https://forevernewvie.github.io/project-gtg-flutter/version.json`
 
@@ -48,6 +49,6 @@ This checklist covers:
 - [ ] Settings > GTG Coach opens
 
 ## Notes for next release
-- Keep `docs/version.json` aligned with the latest store rollout
+- Keep `docs/version.json` aligned with the latest store rollout and `pubspec.yaml` build number
 - Do not ship a new Play version without also updating the hosted manifest
 - Internal testing should verify cold start and update prompt behavior before production rollout

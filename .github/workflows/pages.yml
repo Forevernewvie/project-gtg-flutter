@@ -1,8 +1,10 @@
 name: Docs Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
     branches: [main]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -17,6 +19,7 @@ concurrency:
 jobs:
   deploy:
     name: Deploy Pages
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -24,6 +27,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate hosted update manifest
+        run: python3 tool/validate_hosted_update_manifest.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

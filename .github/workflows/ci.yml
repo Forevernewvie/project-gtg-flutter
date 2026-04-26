@@ -29,6 +29,9 @@ jobs:
       - name: Pub get
         run: flutter pub get
 
+      - name: Validate hosted update manifest
+        run: python3 tool/validate_hosted_update_manifest.py
+
       - name: Format (check)
         run: dart format --set-exit-if-changed .
 
