@@ -7,6 +7,8 @@ import '../core/clock.dart';
 import '../core/env.dart';
 import '../core/external_link_launcher.dart';
 import '../core/gtg_gradients.dart';
+import '../core/models/exercise_type.dart';
+import '../core/models/user_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/onboarding/state/user_preferences_controller.dart';
@@ -114,44 +116,26 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
       children: <Widget>[
         widget.child,
         if (_showSplash) ...<Widget>[_InAppSplash(onTap: _skipSplash)],
-        if (shouldShowOnboarding) ...<Widget>[
-          Builder(
-            builder: (context) {
-              final onboardingPrefs = prefs!;
-              return OnboardingScreen(
-                initialExercise: onboardingPrefs.primaryExercise,
-                initialMaxReps: onboardingPrefs.primaryExerciseMaxReps,
-                onSkip: () async {
-                  await ref
+        if (shouldShowOnboarding)
+          _OnboardingRootOverlay(
+            preferences: prefs!,
+            completeOnboarding:
+                ({
+                  required primaryExercise,
+                  required primaryExerciseMaxReps,
+                  required primaryExerciseLastMaxTestedAt,
+                }) {
+                  return ref
                       .read(userPreferencesControllerProvider.notifier)
                       .completeOnboarding(
-                        onboardingPrefs.primaryExercise,
-                        primaryExerciseMaxReps:
-                            onboardingPrefs.primaryExerciseMaxReps,
+                        primaryExercise,
+                        primaryExerciseMaxReps: primaryExerciseMaxReps,
                         primaryExerciseLastMaxTestedAt:
-                            onboardingPrefs.primaryExerciseLastMaxTestedAt,
+                            primaryExerciseLastMaxTestedAt,
                       );
                 },
-                onComplete:
-                    ({
-                      required primaryExercise,
-                      required primaryExerciseMaxReps,
-                    }) async {
-                      await ref
-                          .read(userPreferencesControllerProvider.notifier)
-                          .completeOnboarding(
-                            primaryExercise,
-                            primaryExerciseMaxReps: primaryExerciseMaxReps,
-                            primaryExerciseLastMaxTestedAt:
-                                primaryExerciseMaxReps > 0
-                                ? ref.read(clockProvider).now()
-                                : null,
-                          );
-                    },
-              );
-            },
+            now: () => ref.read(clockProvider).now(),
           ),
-        ],
       ],
     );
   }
@@ -209,6 +193,61 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
           ],
         );
       },
+    );
+  }
+}
+
+class _OnboardingRootOverlay extends StatelessWidget {
+  const _OnboardingRootOverlay({
+    required this.preferences,
+    required this.completeOnboarding,
+    required this.now,
+  });
+
+  final UserPreferences preferences;
+  final Future<void> Function({
+    required ExerciseType primaryExercise,
+    required int primaryExerciseMaxReps,
+    required DateTime? primaryExerciseLastMaxTestedAt,
+  })
+  completeOnboarding;
+  final DateTime Function() now;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Overlay(
+        initialEntries: <OverlayEntry>[
+          OverlayEntry(
+            builder: (context) {
+              return OnboardingScreen(
+                initialExercise: preferences.primaryExercise,
+                initialMaxReps: preferences.primaryExerciseMaxReps,
+                onSkip: () {
+                  return completeOnboarding(
+                    primaryExercise: preferences.primaryExercise,
+                    primaryExerciseMaxReps: preferences.primaryExerciseMaxReps,
+                    primaryExerciseLastMaxTestedAt:
+                        preferences.primaryExerciseLastMaxTestedAt,
+                  );
+                },
+                onComplete:
+                    ({
+                      required primaryExercise,
+                      required primaryExerciseMaxReps,
+                    }) {
+                      return completeOnboarding(
+                        primaryExercise: primaryExercise,
+                        primaryExerciseMaxReps: primaryExerciseMaxReps,
+                        primaryExerciseLastMaxTestedAt:
+                            primaryExerciseMaxReps > 0 ? now() : null,
+                      );
+                    },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
