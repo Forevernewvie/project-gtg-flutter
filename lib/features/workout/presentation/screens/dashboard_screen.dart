@@ -269,65 +269,19 @@ class _HeroCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final children = <Widget>[
+                    GtgResponsiveGroup(
+                      spacing: 10,
+                      children: <Widget>[
+                        for (final type in ExerciseType.values)
                           _MetricChip(
-                            label: ExerciseType.pushUp.label(l10n),
-                            value: '${todayTotals[ExerciseType.pushUp] ?? 0}',
+                            label: type.label(l10n),
+                            value: '${todayTotals[type] ?? 0}',
                             icon: ExerciseUiStyle.glyph(
-                              ExerciseType.pushUp,
+                              type,
                               color: Colors.white,
                             ),
                           ),
-                          _MetricChip(
-                            label: ExerciseType.pullUp.label(l10n),
-                            value: '${todayTotals[ExerciseType.pullUp] ?? 0}',
-                            icon: ExerciseUiStyle.glyph(
-                              ExerciseType.pullUp,
-                              color: Colors.white,
-                            ),
-                          ),
-                          _MetricChip(
-                            label: ExerciseType.dips.label(l10n),
-                            value: '${todayTotals[ExerciseType.dips] ?? 0}',
-                            icon: ExerciseUiStyle.glyph(
-                              ExerciseType.dips,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ];
-
-                        if (GtgUi.isCompactWidth(constraints.maxWidth)) {
-                          return Column(
-                            children: <Widget>[
-                              for (
-                                var i = 0;
-                                i < children.length;
-                                i++
-                              ) ...<Widget>[
-                                children[i],
-                                if (i != children.length - 1)
-                                  const SizedBox(height: 10),
-                              ],
-                            ],
-                          );
-                        }
-
-                        return Row(
-                          children: <Widget>[
-                            for (
-                              var i = 0;
-                              i < children.length;
-                              i++
-                            ) ...<Widget>[
-                              Expanded(child: children[i]),
-                              if (i != children.length - 1)
-                                const SizedBox(width: 10),
-                            ],
-                          ],
-                        );
-                      },
+                      ],
                     ),
                   ],
                 ),
@@ -1013,12 +967,7 @@ class _QuickLogRow extends StatelessWidget {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: <Widget>[
-                          countPill,
-                          ...?recommendedPill == null
-                              ? null
-                              : <Widget>[recommendedPill],
-                        ],
+                        children: <Widget>[countPill, ?recommendedPill],
                       ),
                     ],
                   )
@@ -1031,12 +980,7 @@ class _QuickLogRow extends StatelessWidget {
                           alignment: WrapAlignment.end,
                           spacing: 8,
                           runSpacing: 8,
-                          children: <Widget>[
-                            countPill,
-                            ...?recommendedPill == null
-                                ? null
-                                : <Widget>[recommendedPill],
-                          ],
+                          children: <Widget>[countPill, ?recommendedPill],
                         ),
                       ),
                     ],

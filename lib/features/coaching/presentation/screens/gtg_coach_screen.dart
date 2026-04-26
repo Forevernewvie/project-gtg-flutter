@@ -313,29 +313,17 @@ class _CoachInfoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.18)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: <Widget>[
-            Icon(icon, color: colorScheme.primary, size: 18),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
+
+    return GtgInfoBanner(
+      icon: icon,
+      message: message,
+      backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.45),
+      borderColor: colorScheme.primary.withValues(alpha: 0.18),
+      iconBackground: false,
+      padding: const EdgeInsets.all(12),
+      textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: colorScheme.onSurface,
+        fontWeight: FontWeight.w700,
       ),
     );
   }

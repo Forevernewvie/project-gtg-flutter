@@ -123,55 +123,33 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final chips = <Widget>[
-                        _MiniStatChip(
-                          label: l10n.monthTotalLabel,
-                          value: l10n.repsWithUnit(
-                            viewModel.monthSummary.monthSum,
-                          ),
-                          icon: Icon(
-                            Icons.bar_chart_rounded,
-                            color: colorScheme.primary,
-                            size: 18,
-                          ),
-                          accent: colorScheme.primary,
+                  GtgResponsiveGroup(
+                    children: <Widget>[
+                      _MiniStatChip(
+                        label: l10n.monthTotalLabel,
+                        value: l10n.repsWithUnit(
+                          viewModel.monthSummary.monthSum,
                         ),
-                        _MiniStatChip(
-                          label: l10n.activeDaysLabel,
-                          value: l10n.daysWithUnit(
-                            viewModel.monthSummary.activeDays,
-                          ),
-                          icon: Icon(
-                            Icons.local_fire_department_rounded,
-                            color: colorScheme.secondary,
-                            size: 18,
-                          ),
-                          accent: colorScheme.secondary,
+                        icon: Icon(
+                          Icons.bar_chart_rounded,
+                          color: colorScheme.primary,
+                          size: 18,
                         ),
-                      ];
-
-                      if (GtgUi.isCompactWidth(constraints.maxWidth)) {
-                        return Column(
-                          children: <Widget>[
-                            chips[0],
-                            const SizedBox(
-                              height: GtgUi.secondarySectionSpacing,
-                            ),
-                            chips[1],
-                          ],
-                        );
-                      }
-
-                      return Row(
-                        children: <Widget>[
-                          Expanded(child: chips[0]),
-                          const SizedBox(width: GtgUi.secondarySectionSpacing),
-                          Expanded(child: chips[1]),
-                        ],
-                      );
-                    },
+                        accent: colorScheme.primary,
+                      ),
+                      _MiniStatChip(
+                        label: l10n.activeDaysLabel,
+                        value: l10n.daysWithUnit(
+                          viewModel.monthSummary.activeDays,
+                        ),
+                        icon: Icon(
+                          Icons.local_fire_department_rounded,
+                          color: colorScheme.secondary,
+                          size: 18,
+                        ),
+                        accent: colorScheme.secondary,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: GtgUi.contentSpacing),
                   _WeekdayRow(
@@ -221,88 +199,21 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     totalReps: viewModel.selectedSummary.totalReps,
                   ),
                   const SizedBox(height: GtgUi.contentSpacing),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final chips = <Widget>[
+                  GtgResponsiveGroup(
+                    widthThreshold: GtgUi.compactActionWidth,
+                    children: <Widget>[
+                      for (final type in ExerciseType.values)
                         _MiniStatChip(
-                          label: ExerciseType.pushUp.label(l10n),
+                          label: type.label(l10n),
                           value:
-                              '${viewModel.selectedSummary.totals[ExerciseType.pushUp] ?? 0}',
+                              '${viewModel.selectedSummary.totals[type] ?? 0}',
                           icon: ExerciseUiStyle.glyph(
-                            ExerciseType.pushUp,
-                            color: ExerciseUiStyle.accent(
-                              context,
-                              ExerciseType.pushUp,
-                            ),
+                            type,
+                            color: ExerciseUiStyle.accent(context, type),
                           ),
-                          accent: ExerciseUiStyle.accent(
-                            context,
-                            ExerciseType.pushUp,
-                          ),
+                          accent: ExerciseUiStyle.accent(context, type),
                         ),
-                        _MiniStatChip(
-                          label: ExerciseType.pullUp.label(l10n),
-                          value:
-                              '${viewModel.selectedSummary.totals[ExerciseType.pullUp] ?? 0}',
-                          icon: ExerciseUiStyle.glyph(
-                            ExerciseType.pullUp,
-                            color: ExerciseUiStyle.accent(
-                              context,
-                              ExerciseType.pullUp,
-                            ),
-                          ),
-                          accent: ExerciseUiStyle.accent(
-                            context,
-                            ExerciseType.pullUp,
-                          ),
-                        ),
-                        _MiniStatChip(
-                          label: ExerciseType.dips.label(l10n),
-                          value:
-                              '${viewModel.selectedSummary.totals[ExerciseType.dips] ?? 0}',
-                          icon: ExerciseUiStyle.glyph(
-                            ExerciseType.dips,
-                            color: ExerciseUiStyle.accent(
-                              context,
-                              ExerciseType.dips,
-                            ),
-                          ),
-                          accent: ExerciseUiStyle.accent(
-                            context,
-                            ExerciseType.dips,
-                          ),
-                        ),
-                      ];
-
-                      if (GtgUi.isCompactWidth(
-                        constraints.maxWidth,
-                        threshold: GtgUi.compactActionWidth,
-                      )) {
-                        return Column(
-                          children: <Widget>[
-                            chips[0],
-                            const SizedBox(
-                              height: GtgUi.secondarySectionSpacing,
-                            ),
-                            chips[1],
-                            const SizedBox(
-                              height: GtgUi.secondarySectionSpacing,
-                            ),
-                            chips[2],
-                          ],
-                        );
-                      }
-
-                      return Row(
-                        children: <Widget>[
-                          Expanded(child: chips[0]),
-                          const SizedBox(width: GtgUi.secondarySectionSpacing),
-                          Expanded(child: chips[1]),
-                          const SizedBox(width: GtgUi.secondarySectionSpacing),
-                          Expanded(child: chips[2]),
-                        ],
-                      );
-                    },
+                    ],
                   ),
                   const SizedBox(height: GtgUi.contentSpacing),
                   if (viewModel.selectedSummary.logs.isEmpty)

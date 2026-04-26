@@ -360,6 +360,70 @@ class GtgResponsivePair extends StatelessWidget {
   }
 }
 
+/// Shared responsive layout for small groups of equal-priority tiles.
+class GtgResponsiveGroup extends StatelessWidget {
+  const GtgResponsiveGroup({
+    super.key,
+    required this.children,
+    this.spacing = GtgUi.secondarySectionSpacing,
+    this.widthThreshold = GtgUi.compactWidth,
+    this.textScaleThreshold = GtgUi.largeTextScale,
+    this.expandChildren = true,
+    this.compactCrossAxisAlignment = CrossAxisAlignment.stretch,
+    this.rowCrossAxisAlignment = CrossAxisAlignment.start,
+  });
+
+  final List<Widget> children;
+  final double spacing;
+  final double widthThreshold;
+  final double textScaleThreshold;
+  final bool expandChildren;
+  final CrossAxisAlignment compactCrossAxisAlignment;
+  final CrossAxisAlignment rowCrossAxisAlignment;
+
+  @override
+  Widget build(BuildContext context) {
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final textScale = MediaQuery.textScalerOf(context).scale(1);
+        final useCompact = GtgUi.useCompactLayout(
+          width: constraints.maxWidth,
+          textScale: textScale,
+          widthThreshold: widthThreshold,
+          textScaleThreshold: textScaleThreshold,
+        );
+
+        if (useCompact) {
+          return Column(
+            crossAxisAlignment: compactCrossAxisAlignment,
+            children: <Widget>[
+              for (var index = 0; index < children.length; index++) ...[
+                children[index],
+                if (index != children.length - 1) SizedBox(height: spacing),
+              ],
+            ],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: rowCrossAxisAlignment,
+          children: <Widget>[
+            for (var index = 0; index < children.length; index++) ...[
+              if (expandChildren)
+                Expanded(child: children[index])
+              else
+                children[index],
+              if (index != children.length - 1) SizedBox(width: spacing),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
 /// Shared selected/unselected card pattern used by settings and onboarding choices.
 class GtgSelectableCard extends StatelessWidget {
   const GtgSelectableCard({
@@ -473,6 +537,85 @@ class GtgSelectableCard extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Shared compact informational banner for explanatory helper copy.
+class GtgInfoBanner extends StatelessWidget {
+  const GtgInfoBanner({
+    super.key,
+    required this.message,
+    this.icon = Icons.info_outline_rounded,
+    this.accent,
+    this.backgroundColor,
+    this.borderColor,
+    this.iconBackground = true,
+    this.padding = const EdgeInsets.fromLTRB(12, 10, 12, 10),
+    this.textStyle,
+  });
+
+  final String message;
+  final IconData icon;
+  final Color? accent;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final bool iconBackground;
+  final EdgeInsetsGeometry padding;
+  final TextStyle? textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final resolvedAccent = accent ?? colorScheme.primary;
+    final resolvedBackground =
+        backgroundColor ??
+        Color.alphaBlend(
+          resolvedAccent.withValues(alpha: 0.08),
+          colorScheme.surface,
+        );
+    final resolvedBorder =
+        borderColor ?? resolvedAccent.withValues(alpha: 0.16);
+    final iconWidget = Icon(icon, color: resolvedAccent, size: 18);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: resolvedBackground,
+        borderRadius: BorderRadius.circular(GtgUi.controlRadius),
+        border: Border.all(color: resolvedBorder),
+      ),
+      child: Padding(
+        padding: padding,
+        child: Row(
+          children: <Widget>[
+            if (iconBackground)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: resolvedAccent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(GtgUi.controlRadius - 2),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(9),
+                  child: iconWidget,
+                ),
+              )
+            else
+              iconWidget,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style:
+                    textStyle ??
+                    Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ),
+          ],
         ),
       ),
     );

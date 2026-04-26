@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -153,6 +152,29 @@ void main() {
       expect(opened, isTrue);
       expect(client.showPrivacyOptionsCalls, 1);
       expect(manager.privacyOptionsRequiredListenable.value, isTrue);
+    },
+  );
+
+  test(
+    'showPrivacyOptionsForm reports false when the form returns an error',
+    () async {
+      final client = _FakeAdPrivacyClient(
+        canRequestAdsResult: true,
+        showFormSucceeds: false,
+        privacyOptionsStatus: PrivacyOptionsRequirementStatus.required,
+      );
+      final manager = AdPrivacyManager(
+        client: client,
+        initializeMobileAds: () async =>
+            InitializationStatus(<String, AdapterStatus>{}),
+        isAdsEnabled: () => true,
+      );
+      await manager.prepareForAppLaunch();
+
+      final opened = await manager.showPrivacyOptionsForm();
+
+      expect(opened, isFalse);
+      expect(client.showPrivacyOptionsCalls, 1);
     },
   );
 }

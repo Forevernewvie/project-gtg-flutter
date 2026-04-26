@@ -297,29 +297,14 @@ class _ReminderInfoBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(GtgUi.controlRadius),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Row(
-          children: <Widget>[
-            const Icon(Icons.info_outline_rounded, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                l10n.silentNotificationsInfo,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
+    return GtgInfoBanner(
+      message: l10n.silentNotificationsInfo,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+      borderColor: Theme.of(context).colorScheme.outlineVariant,
+      iconBackground: false,
+      textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
