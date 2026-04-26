@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_gtg/core/ads/ad_privacy_manager.dart';
 import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
 import 'package:project_gtg/core/models/app_theme_preference.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
@@ -37,6 +39,26 @@ class SettingsScreen extends ConsumerWidget {
 
     final message = result == PrivacyPolicyLaunchResult.invalidUrl
         ? l10n.invalidLink
+        : l10n.cannotOpenBrowser;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _openAdPrivacyChoices(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final result = await ref
+        .read(settingsActionServiceProvider)
+        .openAdPrivacyChoices();
+    if (!context.mounted || result == AdPrivacyChoicesResult.opened) {
+      return;
+    }
+
+    final message = result == AdPrivacyChoicesResult.unavailable
+        ? l10n.adPrivacyChoicesUnavailable
         : l10n.cannotOpenBrowser;
     ScaffoldMessenger.of(
       context,
@@ -136,6 +158,11 @@ class SettingsScreen extends ConsumerWidget {
           title: l10n.aboutTitle,
           privacyTitle: l10n.privacyPolicyTitle,
           privacySubtitle: l10n.privacyPolicySubtitle,
+          adPrivacyChoicesTitle: l10n.adPrivacyChoicesTitle,
+          adPrivacyChoicesSubtitle: l10n.adPrivacyChoicesSubtitle,
+          privacyOptionsRequiredListenable:
+              AdPrivacyManager.instance.privacyOptionsRequiredListenable,
+          onOpenAdPrivacyChoices: () => _openAdPrivacyChoices(context, ref),
           onOpenPrivacyPolicy: () => _openPrivacyPolicy(context, ref),
         ),
         const SizedBox(height: GtgUi.primarySectionSpacing),
@@ -257,6 +284,10 @@ class _SettingsAboutSection extends StatelessWidget {
     required this.title,
     required this.privacyTitle,
     required this.privacySubtitle,
+    required this.adPrivacyChoicesTitle,
+    required this.adPrivacyChoicesSubtitle,
+    required this.privacyOptionsRequiredListenable,
+    required this.onOpenAdPrivacyChoices,
     required this.onOpenPrivacyPolicy,
   });
 
@@ -264,6 +295,10 @@ class _SettingsAboutSection extends StatelessWidget {
   final String title;
   final String privacyTitle;
   final String privacySubtitle;
+  final String adPrivacyChoicesTitle;
+  final String adPrivacyChoicesSubtitle;
+  final ValueListenable<bool> privacyOptionsRequiredListenable;
+  final VoidCallback onOpenAdPrivacyChoices;
   final VoidCallback onOpenPrivacyPolicy;
 
   @override
@@ -272,13 +307,37 @@ class _SettingsAboutSection extends StatelessWidget {
       icon: Icons.info_outline_rounded,
       accent: accent,
       title: title,
-      child: _SettingsActionTile(
-        icon: Icons.privacy_tip_outlined,
-        title: privacyTitle,
-        subtitle: privacySubtitle,
-        accent: accent,
-        trailingIcon: Icons.open_in_new_rounded,
-        onTap: onOpenPrivacyPolicy,
+      child: Column(
+        children: <Widget>[
+          _SettingsActionTile(
+            icon: Icons.privacy_tip_outlined,
+            title: privacyTitle,
+            subtitle: privacySubtitle,
+            accent: accent,
+            trailingIcon: Icons.open_in_new_rounded,
+            onTap: onOpenPrivacyPolicy,
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: privacyOptionsRequiredListenable,
+            builder: (context, required, child) {
+              if (!required) {
+                return const SizedBox.shrink();
+              }
+              return Column(
+                children: <Widget>[
+                  const SizedBox(height: GtgUi.secondarySectionSpacing),
+                  _SettingsActionTile(
+                    icon: Icons.ads_click_outlined,
+                    title: adPrivacyChoicesTitle,
+                    subtitle: adPrivacyChoicesSubtitle,
+                    accent: accent,
+                    onTap: onOpenAdPrivacyChoices,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }

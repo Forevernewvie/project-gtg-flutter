@@ -136,6 +136,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get privacyPolicySubtitle => '광고/데이터 처리 안내';
 
   @override
+  String get adPrivacyChoicesTitle => '광고 개인정보 선택';
+
+  @override
+  String get adPrivacyChoicesSubtitle => '광고 동의 옵션 다시 보기';
+
+  @override
+  String get adPrivacyChoicesUnavailable => '지금은 광고 개인정보 옵션을 열 수 없습니다.';
+
+  @override
   String get invalidLink => '링크가 올바르지 않습니다.';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/ads/ad_privacy_manager.dart';
 import '../../../core/app_link_policy.dart';
 import '../../../core/external_link_launcher.dart';
 import '../../../core/logging/app_logger.dart';
@@ -11,22 +12,29 @@ import 'theme_preference_controller.dart';
 /// Enumerates the possible outcomes of trying to open the privacy policy link.
 enum PrivacyPolicyLaunchResult { opened, invalidUrl, launchFailed }
 
+enum AdPrivacyChoicesResult { opened, unavailable, launchFailed }
+
 /// Handles settings-side effects so the screen can stay focused on rendering and feedback.
 class SettingsActionService {
   /// Creates a settings action service with injected launcher, logger, and theme writer.
-  const SettingsActionService({
+  SettingsActionService({
+    AdPrivacyManager? adPrivacyManager,
     required ExternalLinkLauncher linkLauncher,
     required AppLogger logger,
     required Future<void> Function(AppThemePreference preference)
     setThemePreference,
-  }) : _linkLauncher = linkLauncher,
+  }) : _adPrivacyManager = adPrivacyManager ?? AdPrivacyManager.instance,
+       _linkLauncher = linkLauncher,
        _logger = logger,
        _setThemePreference = setThemePreference;
 
+  final AdPrivacyManager _adPrivacyManager;
   static const String invalidPrivacyUrlLog =
       'Settings privacy policy URL failed validation.';
   static const String failedPrivacyLaunchLog =
       'Settings privacy policy could not be launched.';
+  static const String failedAdPrivacyChoicesLog =
+      'Settings ad privacy choices could not be opened.';
   static const String failedThemePreferenceLog =
       'Failed to update theme preference from settings.';
 
@@ -52,6 +60,20 @@ class SettingsActionService {
     return PrivacyPolicyLaunchResult.opened;
   }
 
+  Future<AdPrivacyChoicesResult> openAdPrivacyChoices() async {
+    if (!_adPrivacyManager.privacyOptionsRequiredListenable.value) {
+      return AdPrivacyChoicesResult.unavailable;
+    }
+
+    final ok = await _adPrivacyManager.showPrivacyOptionsForm();
+    if (!ok) {
+      _logger.warning(failedAdPrivacyChoicesLog);
+      return AdPrivacyChoicesResult.launchFailed;
+    }
+
+    return AdPrivacyChoicesResult.opened;
+  }
+
   /// Persists a theme preference change while logging failures through one policy entrypoint.
   Future<void> setThemePreference(AppThemePreference preference) async {
     try {
@@ -69,6 +91,7 @@ class SettingsActionService {
 /// Provides the settings action orchestration service for the settings screen.
 final settingsActionServiceProvider = Provider<SettingsActionService>((ref) {
   return SettingsActionService(
+    adPrivacyManager: AdPrivacyManager.instance,
     linkLauncher: ref.read(externalLinkLauncherProvider),
     logger: ref.read(appLoggerProvider),
     setThemePreference: (preference) {

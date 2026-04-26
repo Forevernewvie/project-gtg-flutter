@@ -344,6 +344,24 @@ abstract class AppLocalizations {
   /// **'Ads and data usage'**
   String get privacyPolicySubtitle;
 
+  /// No description provided for @adPrivacyChoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy choices'**
+  String get adPrivacyChoicesTitle;
+
+  /// No description provided for @adPrivacyChoicesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review ad consent options'**
+  String get adPrivacyChoicesSubtitle;
+
+  /// No description provided for @adPrivacyChoicesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad privacy choices aren\'t available right now.'**
+  String get adPrivacyChoicesUnavailable;
+
   /// No description provided for @invalidLink.
   ///
   /// In en, this message translates to:

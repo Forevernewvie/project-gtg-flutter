@@ -5,7 +5,7 @@ title: 개인정보 처리방침
 # 개인정보 처리방침 (PROJECT GTG)
 
 시행일: 2026-03-08  
-최종 업데이트: 2026-03-28
+최종 업데이트: 2026-04-26
 
 PROJECT GTG(이하 "앱")는 푸쉬업, 풀업, 딥스 중심의 GTG(Grease The Groove) 운동 기록과 리마인더 기능을 제공하는 로컬 기반 모바일 앱입니다.  
 본 개인정보 처리방침은 앱에서 어떤 정보를 처리하는지, 어떤 외부 서비스가 관여하는지, 사용자가 어떤 선택권을 가지는지 설명합니다.
@@ -155,3 +155,158 @@ PROJECT GTG는 현재 사용자 계정 시스템이나 자체 백엔드를 운�
 
 - 중요한 변경이 있는 경우 시행일 또는 최종 업데이트 일자를 함께 갱신합니다.
 - 최신 버전은 앱에서 연결되는 공개 문서 URL을 기준으로 확인할 수 있습니다.
+
+---
+
+# Privacy Policy (PROJECT GTG)
+
+Effective date: 2026-03-08  
+Last updated: 2026-04-26
+
+PROJECT GTG ("the App") is a local-first mobile app for logging GTG (Grease The Groove) workouts focused on push-ups, pull-ups, and dips.  
+This Privacy Policy explains what information the App processes, which third-party services may be involved, and what choices users have.
+
+## 1. Scope of this Privacy Policy
+
+This policy applies to:
+
+- the PROJECT GTG app for Android and iOS
+- the Privacy Policy link opened from the app's Settings screen
+- third-party service SDKs that may be included in the app, such as advertising SDKs
+
+This policy does not directly apply to third-party websites or services outside the app. Those services are governed by their own policies.
+
+## 2. Information the App Processes
+
+### 2-1. Information entered or configured by the user
+
+The app may store the following information on the user's device:
+
+- Workout log data
+  - exercise type (push-ups, pull-ups, dips)
+  - repetition count
+  - time of the record
+- Onboarding preferences
+  - the user's selected primary exercise
+- Reminder settings
+  - whether reminders are enabled
+  - reminder interval
+  - maximum reminders per day
+  - quiet hours
+  - whether weekends are skipped
+- App settings
+  - theme preference (System, Light, Dark)
+
+This information is stored locally on the user's device by default and is not transmitted to a server operated by the app developer.
+
+### 2-2. Information that may be processed for advertising
+
+The app may use the Google AdMob SDK to display ads. At this time, ads may only be enabled in the **Android version** of the app and are limited to banner placements at the bottom of the Settings screen and the All Logs screen. In that case, Google may process information such as the following for ad delivery, measurement, quality improvement, and invalid traffic prevention:
+
+- advertising identifiers (for example, Advertising ID)
+- IP address
+- device and app information
+- diagnostic information
+- device or other identifiers (for example, device identifiers, account-level identifiers, or other identifiers processed by the SDK)
+- ad interaction information and ad-related in-app activity
+
+The exact scope and retention of this information may vary depending on Google policies and the user's device settings.
+
+- Google Privacy Policy: [https://policies.google.com/privacy](https://policies.google.com/privacy)
+- Google Ads Policy information: [https://policies.google.com/technologies/ads](https://policies.google.com/technologies/ads)
+
+## 3. Purposes of Processing
+
+The app processes information only for the following purposes:
+
+- storing and displaying workout logs
+- providing the Home dashboard, All Logs view, and calendar statistics
+- sending local reminder notifications configured by the user
+- maintaining app theme and usage preferences
+- serving ads in the Android version and managing ad quality and stability
+
+## 4. Whether Data Is Sent to Developer Servers
+
+PROJECT GTG does not currently operate a user account system or its own backend service.
+
+- workout logs, onboarding choices, reminder settings, and theme settings are stored locally by default
+- the app developer does not collect or sell workout logs through a developer-operated server
+- however, when the advertising SDK is used, a third party (Google) may process some information for advertising purposes
+
+## 5. Third-Party Processing and Disclosure
+
+The app may use the Google AdMob SDK to provide advertising features, in which case Google may process related information. The advertising SDK may currently be enabled only in the Android version.
+
+The main third-party processor currently identified is:
+
+- Google AdMob / Google Mobile Ads SDK
+
+The app developer does not sell workout or settings data to data brokers or marketing companies.
+
+## 6. Permissions and Device Access
+
+The app may access the following permissions or device capabilities to provide its features:
+
+- Notification permission
+  - requested only if the user explicitly enables reminders
+  - not forced on first launch
+- Internet/network access
+  - may be used for loading ads and opening external policy pages
+- Advertising identifier-related permission (Android)
+  - may be used as part of Google AdMob operation
+- Other ad/diagnostic-related information
+  - the Google Mobile Ads SDK may process diagnostic information and identifiers while handling ad requests, measurement, and stability checks
+
+## 7. Data Retention and Deletion
+
+### 7-1. Locally stored data
+
+- Workout logs and settings are stored on the user's device.
+- If the user deletes data through app features or uninstalls the app, that local data is generally removed.
+
+### 7-2. Advertising-related data
+
+- Advertising-related data may be processed and retained according to Google policies, Google account settings, and OS settings.
+- Deletion or restriction of that data may need to be managed through Google or the device operating system settings.
+
+## 8. User Choices
+
+Users may choose to:
+
+- not use the reminder feature
+- revoke notification permission through device settings
+- change ad personalization settings through Google or device settings
+- remove locally stored data by uninstalling the app
+
+## 9. Children's Privacy
+
+The app is not designed specifically for children.  
+However, it may be installed in environments used by people of all ages, and ad delivery may vary depending on Google policies, account settings, and device settings.
+
+## 10. Security
+
+The app primarily stores user data on the device itself.  
+However, external factors such as the security condition of the mobile device, OS vulnerabilities, or policy changes by third-party SDK providers may still create risks that cannot be fully eliminated.
+
+The app developer follows these principles:
+
+- no unnecessary server-side collection
+- use of the minimum permissions needed
+- review of policy changes and third-party SDK changes
+
+## 11. International Data Transfers
+
+When the advertising SDK is used, related data may be processed outside the Republic of Korea due to the nature of Google's infrastructure. In that case, such processing is governed by Google's policies and international data processing standards.
+
+## 12. Contact
+
+Questions, suggestions, and deletion-related requests may be submitted through:
+
+- GitHub Issues: [https://github.com/Forevernewvie/project-gtg-flutter/issues](https://github.com/Forevernewvie/project-gtg-flutter/issues)
+
+## 13. Changes to this Privacy Policy
+
+This policy may be updated if app features, advertising SDK configuration, legal requirements, or store policies change.
+
+- If there is a material change, the effective date or last updated date will also be updated.
+- The latest version can be checked through the public document URL linked from the app.
