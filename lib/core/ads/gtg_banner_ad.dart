@@ -43,7 +43,15 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
     _loadedForWidth = width;
 
     try {
-      await _service.ensureInitialized();
+      final canLoadAds = await _service.ensureInitialized();
+      if (!mounted) return;
+      if (!canLoadAds) {
+        setState(() {
+          _loading = false;
+          _failed = false;
+        });
+        return;
+      }
 
       final anchoredSize =
           await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width);

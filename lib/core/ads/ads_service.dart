@@ -1,22 +1,19 @@
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_config.dart';
+import 'ad_privacy_manager.dart';
 
 class AdsService {
-  bool _initialized = false;
-  Future<void>? _initFuture;
+  AdsService({AdPrivacyManager? privacyManager})
+    : _privacyManager = privacyManager ?? AdPrivacyManager.instance;
+
+  final AdPrivacyManager _privacyManager;
 
   bool get isEnabled => AdConfig.isEnabled;
 
-  Future<void> ensureInitialized() {
-    if (!isEnabled) return Future.value();
-
-    _initFuture ??= () async {
-      await MobileAds.instance.initialize();
-      _initialized = true;
-    }();
-
-    return _initFuture!;
+  Future<bool> ensureInitialized() {
+    if (!isEnabled) return Future<bool>.value(false);
+    return _privacyManager.ensureAdsCanLoad();
   }
 
   BannerAd createBannerAd({required AdSize size, BannerAdListener? listener}) {
@@ -25,7 +22,7 @@ class AdsService {
         'AdsService.createBannerAd called when ads are disabled.',
       );
     }
-    if (!_initialized) {
+    if (!_privacyManager.isMobileAdsInitialized) {
       throw StateError(
         'AdsService.createBannerAd called before ensureInitialized().',
       );

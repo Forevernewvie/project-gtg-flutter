@@ -140,6 +140,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicySubtitle => 'Ads and data usage';
 
   @override
+  String get adPrivacyChoicesTitle => 'Ad privacy choices';
+
+  @override
+  String get adPrivacyChoicesSubtitle => 'Review ad consent options';
+
+  @override
+  String get adPrivacyChoicesUnavailable =>
+      'Ad privacy choices aren\'t available right now.';
+
+  @override
   String get invalidLink => 'Invalid link.';
 
   @override
