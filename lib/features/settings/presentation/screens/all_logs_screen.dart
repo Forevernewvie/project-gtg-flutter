@@ -9,6 +9,22 @@ import 'package:project_gtg/features/workout/state/workout_stats_providers.dart'
 import 'package:project_gtg/l10n/app_localizations.dart';
 import 'package:project_gtg/l10n/exercise_type_l10n.dart';
 
+abstract final class _AllLogsPolicy {
+  static const EdgeInsets screenPadding = EdgeInsets.fromLTRB(
+    GtgUi.screenHorizontalPadding,
+    GtgUi.screenTopPadding,
+    GtgUi.screenHorizontalPadding,
+    GtgUi.screenBottomPadding + 4,
+  );
+
+  static const EdgeInsets bannerPadding = EdgeInsets.fromLTRB(
+    GtgUi.screenHorizontalPadding,
+    0,
+    GtgUi.screenHorizontalPadding,
+    10,
+  );
+}
+
 class AllLogsScreen extends ConsumerWidget {
   const AllLogsScreen({super.key});
 
@@ -22,11 +38,24 @@ class AllLogsScreen extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.allLogsTitle)),
         bottomNavigationBar: const GtgBannerAd(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+          padding: _AllLogsPolicy.bannerPadding,
         ),
         body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
-          children: <Widget>[_EmptyStateCard(message: l10n.noLogsHintHome)],
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          padding: _AllLogsPolicy.screenPadding,
+          children: <Widget>[
+            GtgPageIntro(
+              title: l10n.allLogsTitle,
+              subtitle: l10n.allLogsSubtitle,
+            ),
+            const SizedBox(height: GtgUi.primarySectionSpacing),
+            GtgEmptyState(
+              message: l10n.noLogsHintHome,
+              icon: Icons.list_alt_rounded,
+            ),
+          ],
         ),
       );
     }
@@ -36,17 +65,35 @@ class AllLogsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.allLogsTitle)),
       bottomNavigationBar: const GtgBannerAd(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+        padding: _AllLogsPolicy.bannerPadding,
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 32),
-        itemCount: sections.length,
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        padding: _AllLogsPolicy.screenPadding,
+        itemCount: sections.length + 1,
         itemBuilder: (context, index) {
-          final section = sections[index];
-          final isLast = index == sections.length - 1;
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                bottom: GtgUi.primarySectionSpacing,
+              ),
+              child: GtgPageIntro(
+                title: l10n.allLogsTitle,
+                subtitle: l10n.allLogsSubtitle,
+              ),
+            );
+          }
+
+          final sectionIndex = index - 1;
+          final section = sections[sectionIndex];
+          final isLast = sectionIndex == sections.length - 1;
 
           return Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+            padding: EdgeInsets.only(
+              bottom: isLast ? 0 : GtgUi.primarySectionSpacing,
+            ),
             child: _DaySectionCard(section: section),
           );
         },
@@ -80,29 +127,6 @@ class _DaySection {
   final List<ExerciseLog> logs;
 }
 
-class _EmptyStateCard extends StatelessWidget {
-  const _EmptyStateCard({required this.message});
-
-  final String message;
-
-  /// Builds the empty-state card shown before any workout has been logged.
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Text(
-          message,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _DaySectionCard extends StatelessWidget {
   const _DaySectionCard({required this.section});
 
@@ -120,10 +144,14 @@ class _DaySectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
             child: Column(
               children: <Widget>[
-                for (final log in section.logs)
+                for (var index = 0; index < section.logs.length; index++)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _LogRow(log: log),
+                    padding: EdgeInsets.only(
+                      bottom: index == section.logs.length - 1
+                          ? 0
+                          : GtgUi.secondarySectionSpacing,
+                    ),
+                    child: _LogRow(log: section.logs[index]),
                   ),
               ],
             ),
