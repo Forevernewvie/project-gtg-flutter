@@ -156,4 +156,42 @@ void main() {
     expect(find.text('5 sets'), findsWidgets);
     expect(find.text('3 sets left today'), findsOneWidget);
   });
+
+  testWidgets('GTG coach screen renders local insight guidance', (
+    tester,
+  ) async {
+    final now = DateTime(2026, 4, 22, 13);
+    final persistence = _MemoryPersistence()
+      .._prefs = const UserPreferences(
+        hasCompletedOnboarding: true,
+        primaryExercise: ExerciseType.pullUp,
+        primaryExerciseMaxReps: 0,
+        primaryExerciseDailySetTarget: 5,
+      );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          persistenceProvider.overrideWithValue(persistence),
+          clockProvider.overrideWithValue(_FixedClock(now)),
+        ],
+        child: testApp(const GtgCoachScreen(), locale: const Locale('en')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('coach.localInsights')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Local insights'), findsOneWidget);
+    expect(find.text('Private signals from your recent logs.'), findsOneWidget);
+    expect(
+      find.text('Add max reps to unlock personalized guidance.'),
+      findsOneWidget,
+    );
+  });
 }
