@@ -464,6 +464,42 @@ abstract class AppLocalizations {
   /// **'Max per day'**
   String get maxPerDayLabel;
 
+  /// No description provided for @reminderOptimizationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log-based suggestion'**
+  String get reminderOptimizationTitle;
+
+  /// No description provided for @reminderOptimizationApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get reminderOptimizationApply;
+
+  /// No description provided for @reminderOptimizationEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn reminders on to rebuild your GTG rhythm.'**
+  String get reminderOptimizationEnable;
+
+  /// No description provided for @reminderOptimizationReduceFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recent rhythm is light. Try a {count}-minute interval.'**
+  String reminderOptimizationReduceFrequency(int count);
+
+  /// No description provided for @reminderOptimizationSkipWeekends.
+  ///
+  /// In en, this message translates to:
+  /// **'You rarely log on weekends. Try weekends off.'**
+  String get reminderOptimizationSkipWeekends;
+
+  /// No description provided for @reminderOptimizationPreferredTime.
+  ///
+  /// In en, this message translates to:
+  /// **'You often log around {time}. Focus reminders near that window.'**
+  String reminderOptimizationPreferredTime(String time);
+
   /// No description provided for @quietHoursTitle.
   ///
   /// In en, this message translates to:
@@ -763,6 +799,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} sets'**
   String coachSetsShort(int count);
+
+  /// No description provided for @gtgInsightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local insights'**
+  String get gtgInsightsTitle;
+
+  /// No description provided for @gtgInsightsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Private signals from your recent logs.'**
+  String get gtgInsightsSubtitle;
+
+  /// No description provided for @gtgInsightBaselineMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Add max reps to unlock personalized guidance.'**
+  String get gtgInsightBaselineMissing;
+
+  /// No description provided for @gtgInsightConsistency.
+  ///
+  /// In en, this message translates to:
+  /// **'You trained on {count} days in the last 14 days.'**
+  String gtgInsightConsistency(int count);
+
+  /// No description provided for @gtgInsightTrainingWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Your most common training window is around {time}.'**
+  String gtgInsightTrainingWindow(String time);
+
+  /// No description provided for @gtgInsightRetestDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Your max test is getting old. Consider a fresh baseline.'**
+  String get gtgInsightRetestDue;
 
   /// No description provided for @splashTapToSkip.
   ///

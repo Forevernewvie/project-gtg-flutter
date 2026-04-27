@@ -99,6 +99,26 @@
     }
   },
   "maxPerDayLabel": "Max per day",
+  "reminderOptimizationTitle": "Log-based suggestion",
+  "reminderOptimizationApply": "Apply",
+  "reminderOptimizationEnable": "Turn reminders on to rebuild your GTG rhythm.",
+  "reminderOptimizationReduceFrequency": "Your recent rhythm is light. Try a {count}-minute interval.",
+  "@reminderOptimizationReduceFrequency": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderOptimizationSkipWeekends": "You rarely log on weekends. Try weekends off.",
+  "reminderOptimizationPreferredTime": "You often log around {time}. Focus reminders near that window.",
+  "@reminderOptimizationPreferredTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "quietHoursTitle": "Quiet hours",
   "startLabel": "Start",
   "endLabel": "End",
@@ -194,6 +214,26 @@
       }
     }
   },
+  "gtgInsightsTitle": "Local insights",
+  "gtgInsightsSubtitle": "Private signals from your recent logs.",
+  "gtgInsightBaselineMissing": "Add max reps to unlock personalized guidance.",
+  "gtgInsightConsistency": "You trained on {count} days in the last 14 days.",
+  "@gtgInsightConsistency": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gtgInsightTrainingWindow": "Your most common training window is around {time}.",
+  "@gtgInsightTrainingWindow": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "gtgInsightRetestDue": "Your max test is getting old. Consider a fresh baseline.",
   "splashTapToSkip": "Tap to skip",
   "exercisePushUp": "Push-ups",
   "exercisePullUp": "Pull-ups",

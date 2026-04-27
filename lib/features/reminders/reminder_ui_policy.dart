@@ -1,4 +1,5 @@
 import '../../l10n/app_localizations.dart';
+import 'reminder_optimization_policy.dart';
 
 /// Encapsulates reminder screen constants and localized copy rules.
 abstract final class ReminderUiPolicy {
@@ -21,6 +22,33 @@ abstract final class ReminderUiPolicy {
 
     final label = formatNextTime(l10n: l10n, now: now, next: nextTime);
     return l10n.enableRemindersNextScheduledSubtitle(label, plannedCount);
+  }
+
+  /// Returns localized copy for a reminder optimization suggestion.
+  static String buildOptimizationMessage({
+    required AppLocalizations l10n,
+    required ReminderOptimizationSuggestion suggestion,
+  }) {
+    return switch (suggestion.kind) {
+      ReminderOptimizationKind.enableReminders =>
+        l10n.reminderOptimizationEnable,
+      ReminderOptimizationKind.reduceFrequency =>
+        l10n.reminderOptimizationReduceFrequency(
+          suggestion.recommendedSettings.intervalMinutes,
+        ),
+      ReminderOptimizationKind.skipWeekends =>
+        l10n.reminderOptimizationSkipWeekends,
+      ReminderOptimizationKind.preferredTime =>
+        l10n.reminderOptimizationPreferredTime(
+          formatHourLabel(suggestion.hour ?? 0),
+        ),
+    };
+  }
+
+  /// Formats an hour as a stable 24-hour label for concise recommendation copy.
+  static String formatHourLabel(int hour) {
+    final normalized = hour.clamp(0, 23);
+    return '${normalized.toString().padLeft(2, '0')}:00';
   }
 
   /// Formats the next reminder time using today/tomorrow-aware wording first.

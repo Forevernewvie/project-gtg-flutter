@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project_gtg/core/clock.dart';
+import 'package:project_gtg/core/models/exercise_log.dart';
+import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/models/reminder_settings.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
@@ -125,6 +127,95 @@ void main() {
     expect(notifications.cancelCalls, 1);
   });
 
+  testWidgets('enable suggestion uses permission-gated switch path', (
+    tester,
+  ) async {
+    final persistence = _MemoryPersistence(
+      reminderSettings: ReminderSettings.defaults,
+    );
+    final permission = _SpyPermissionClient(granted: false);
+    final notifications = _SpyNotificationClient();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          persistenceProvider.overrideWithValue(persistence),
+          reminderPermissionClientProvider.overrideWithValue(permission),
+          reminderNotificationClientProvider.overrideWithValue(notifications),
+          clockProvider.overrideWithValue(
+            _FixedClock(DateTime(2026, 4, 27, 14, 0)),
+          ),
+        ],
+        child: testApp(const ReminderSettingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('reminders.optimizationCard')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('reminders.optimizationApply')));
+    await tester.pumpAndSettle();
+
+    expect(permission.calls, 1);
+    expect(persistence.reminderSettings.enabled, isFalse);
+    expect(notifications.scheduleCalls, 0);
+    expect(notifications.cancelCalls, 1);
+  });
+
+  testWidgets('shows log-based suggestion and applies it only when tapped', (
+    tester,
+  ) async {
+    final persistence = _MemoryPersistence(
+      reminderSettings: ReminderSettings.defaults.copyWith(
+        enabled: true,
+        intervalMinutes: 30,
+        skipWeekends: true,
+      ),
+      logs: <ExerciseLog>[
+        _log('a', DateTime(2026, 4, 24, 9)),
+        _log('b', DateTime(2026, 4, 27, 12)),
+      ],
+    );
+    final permission = _SpyPermissionClient(granted: true);
+    final notifications = _SpyNotificationClient();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          persistenceProvider.overrideWithValue(persistence),
+          reminderPermissionClientProvider.overrideWithValue(permission),
+          reminderNotificationClientProvider.overrideWithValue(notifications),
+          clockProvider.overrideWithValue(
+            _FixedClock(DateTime(2026, 4, 27, 14, 0)),
+          ),
+        ],
+        child: testApp(const ReminderSettingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('reminders.optimizationCard')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('기록 기반 제안'), findsOneWidget);
+    expect(find.textContaining('60분'), findsOneWidget);
+    expect(persistence.reminderSettings.intervalMinutes, 30);
+
+    await tester.tap(find.byKey(const Key('reminders.optimizationApply')));
+    await tester.pumpAndSettle();
+
+    expect(persistence.reminderSettings.intervalMinutes, 60);
+  });
+
   testWidgets(
     'reminder settings stays usable on compact screens with large text',
     (tester) async {
@@ -175,10 +266,16 @@ class _FixedClock implements Clock {
 }
 
 class _MemoryPersistence extends GtgPersistence {
-  _MemoryPersistence({required ReminderSettings reminderSettings})
-    : _reminderSettings = reminderSettings;
+  _MemoryPersistence({
+    required ReminderSettings reminderSettings,
+    List<ExerciseLog> logs = const <ExerciseLog>[],
+  }) : _reminderSettings = reminderSettings,
+       _logs = logs;
 
   ReminderSettings _reminderSettings;
+  List<ExerciseLog> _logs;
+
+  ReminderSettings get reminderSettings => _reminderSettings;
 
   @override
   Future<ReminderSettings> loadReminderSettings() async => _reminderSettings;
@@ -187,6 +284,23 @@ class _MemoryPersistence extends GtgPersistence {
   Future<void> saveReminderSettings(ReminderSettings settings) async {
     _reminderSettings = settings;
   }
+
+  @override
+  Future<List<ExerciseLog>> loadLogs() async => _logs;
+
+  @override
+  Future<void> saveLogs(List<ExerciseLog> logs) async {
+    _logs = logs;
+  }
+}
+
+ExerciseLog _log(String id, DateTime timestamp) {
+  return ExerciseLog(
+    id: id,
+    type: ExerciseType.pushUp,
+    reps: 5,
+    timestamp: timestamp,
+  );
 }
 
 class _SpyPermissionClient implements ReminderPermissionClient {

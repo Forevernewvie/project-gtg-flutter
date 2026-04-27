@@ -99,6 +99,26 @@
     }
   },
   "maxPerDayLabel": "하루 최대",
+  "reminderOptimizationTitle": "기록 기반 제안",
+  "reminderOptimizationApply": "적용",
+  "reminderOptimizationEnable": "GTG 리듬을 다시 만들 수 있게 리마인더를 켜보세요.",
+  "reminderOptimizationReduceFrequency": "최근 리듬이 가벼워요. {count}분 간격을 시도해보세요.",
+  "@reminderOptimizationReduceFrequency": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderOptimizationSkipWeekends": "주말 기록이 거의 없어요. 주말 쉬기를 시도해보세요.",
+  "reminderOptimizationPreferredTime": "{time} 전후 기록이 많아요. 그 시간대에 알림을 집중해보세요.",
+  "@reminderOptimizationPreferredTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "quietHoursTitle": "조용한 시간",
   "startLabel": "시작",
   "endLabel": "끝",
@@ -194,6 +214,26 @@
       }
     }
   },
+  "gtgInsightsTitle": "로컬 인사이트",
+  "gtgInsightsSubtitle": "최근 기록에서만 계산한 개인 신호입니다.",
+  "gtgInsightBaselineMissing": "최대 반복 수를 추가하면 개인화 가이드를 열 수 있어요.",
+  "gtgInsightConsistency": "최근 14일 동안 {count}일 운동했어요.",
+  "@gtgInsightConsistency": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "gtgInsightTrainingWindow": "가장 자주 기록한 시간대는 {time} 전후예요.",
+  "@gtgInsightTrainingWindow": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "gtgInsightRetestDue": "최대 반복 측정이 오래됐어요. 기준을 새로 잡아보세요.",
   "splashTapToSkip": "탭하여 스킵",
   "exercisePushUp": "푸쉬업",
   "exercisePullUp": "풀업",

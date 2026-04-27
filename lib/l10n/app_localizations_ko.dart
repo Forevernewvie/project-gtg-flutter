@@ -203,6 +203,29 @@ class AppLocalizationsKo extends AppLocalizations {
   String get maxPerDayLabel => '하루 최대';
 
   @override
+  String get reminderOptimizationTitle => '기록 기반 제안';
+
+  @override
+  String get reminderOptimizationApply => '적용';
+
+  @override
+  String get reminderOptimizationEnable => 'GTG 리듬을 다시 만들 수 있게 리마인더를 켜보세요.';
+
+  @override
+  String reminderOptimizationReduceFrequency(int count) {
+    return '최근 리듬이 가벼워요. $count분 간격을 시도해보세요.';
+  }
+
+  @override
+  String get reminderOptimizationSkipWeekends =>
+      '주말 기록이 거의 없어요. 주말 쉬기를 시도해보세요.';
+
+  @override
+  String reminderOptimizationPreferredTime(String time) {
+    return '$time 전후 기록이 많아요. 그 시간대에 알림을 집중해보세요.';
+  }
+
+  @override
   String get quietHoursTitle => '조용한 시간';
 
   @override
@@ -367,6 +390,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String coachSetsShort(int count) {
     return '$count세트';
   }
+
+  @override
+  String get gtgInsightsTitle => '로컬 인사이트';
+
+  @override
+  String get gtgInsightsSubtitle => '최근 기록에서만 계산한 개인 신호입니다.';
+
+  @override
+  String get gtgInsightBaselineMissing => '최대 반복 수를 추가하면 개인화 가이드를 열 수 있어요.';
+
+  @override
+  String gtgInsightConsistency(int count) {
+    return '최근 14일 동안 $count일 운동했어요.';
+  }
+
+  @override
+  String gtgInsightTrainingWindow(String time) {
+    return '가장 자주 기록한 시간대는 $time 전후예요.';
+  }
+
+  @override
+  String get gtgInsightRetestDue => '최대 반복 측정이 오래됐어요. 기준을 새로 잡아보세요.';
 
   @override
   String get splashTapToSkip => '탭하여 스킵';

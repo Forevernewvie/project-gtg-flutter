@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:project_gtg/core/models/reminder_settings.dart';
+import 'package:project_gtg/features/reminders/reminder_optimization_policy.dart';
 import 'package:project_gtg/features/reminders/reminder_ui_policy.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
 
@@ -43,5 +45,21 @@ void main() {
     );
 
     expect(label, '2/20 08:05');
+  });
+
+  test('buildOptimizationMessage describes the suggested interval', () {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+
+    final message = ReminderUiPolicy.buildOptimizationMessage(
+      l10n: l10n,
+      suggestion: ReminderOptimizationSuggestion(
+        kind: ReminderOptimizationKind.reduceFrequency,
+        recommendedSettings: ReminderSettings.defaults.copyWith(
+          intervalMinutes: 90,
+        ),
+      ),
+    );
+
+    expect(message, contains('90'));
   });
 }

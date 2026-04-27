@@ -6,6 +6,7 @@ import 'package:project_gtg/core/logging/app_logger.dart';
 import 'package:project_gtg/core/logging/logger_provider.dart';
 import 'package:project_gtg/core/models/reminder_settings.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/reminders/reminder_optimization_policy.dart';
 import 'package:project_gtg/features/reminders/reminder_ui_policy.dart';
 import 'package:project_gtg/features/reminders/state/reminder_controller.dart';
 import 'package:project_gtg/features/reminders/state/reminder_providers.dart';
@@ -69,6 +70,26 @@ class _ReminderSettingsScreenState
     }
   }
 
+  /// Applies suggestion output while preserving permission-gated enablement.
+  Future<void> _applyOptimizationSuggestion(
+    ReminderOptimizationSuggestion suggestion,
+    ReminderSettings currentSettings,
+  ) async {
+    if (!currentSettings.enabled && suggestion.recommendedSettings.enabled) {
+      await _setEnabled(true);
+      if (suggestion.kind == ReminderOptimizationKind.enableReminders) return;
+      if (!mounted) return;
+      final enabled = ref
+          .read(reminderControllerProvider)
+          .asData
+          ?.value
+          .enabled;
+      if (enabled != true) return;
+    }
+
+    await _updateSettings(suggestion.recommendedSettings);
+  }
+
   /// Builds reminder settings sections (toggle, schedule, quiet hours) from reactive state.
   @override
   Widget build(BuildContext context) {
@@ -78,6 +99,9 @@ class _ReminderSettingsScreenState
     final asyncSettings = ref.watch(reminderControllerProvider);
     final settings = asyncSettings.asData?.value ?? ReminderSettings.defaults;
     final plannedTimes = ref.watch(plannedReminderTimesProvider);
+    final optimizationSuggestion = ref.watch(
+      reminderOptimizationSuggestionProvider,
+    );
     final now = ref.watch(clockProvider).now();
     final nextTime = plannedTimes.isNotEmpty ? plannedTimes.first : null;
 
@@ -147,6 +171,18 @@ class _ReminderSettingsScreenState
               ],
             ),
           ),
+          if (optimizationSuggestion != null) ...<Widget>[
+            const SizedBox(height: GtgUi.primarySectionSpacing),
+            _ReminderOptimizationCard(
+              suggestion: optimizationSuggestion,
+              onApply: _busy
+                  ? null
+                  : () => _applyOptimizationSuggestion(
+                      optimizationSuggestion,
+                      settings,
+                    ),
+            ),
+          ],
           if (asyncSettings.isLoading) ...<Widget>[
             const SizedBox(height: 16),
             const Center(child: CircularProgressIndicator()),
@@ -286,6 +322,39 @@ class _WeekendsToggleRow extends StatelessWidget {
       ),
       expandSecondary: false,
       compactSecondaryAlignment: Alignment.centerRight,
+    );
+  }
+}
+
+class _ReminderOptimizationCard extends StatelessWidget {
+  const _ReminderOptimizationCard({
+    required this.suggestion,
+    required this.onApply,
+  });
+
+  final ReminderOptimizationSuggestion suggestion;
+  final VoidCallback? onApply;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GtgSectionCard(
+      key: const Key('reminders.optimizationCard'),
+      icon: Icons.auto_awesome_rounded,
+      accent: colorScheme.tertiary,
+      title: l10n.reminderOptimizationTitle,
+      subtitle: ReminderUiPolicy.buildOptimizationMessage(
+        l10n: l10n,
+        suggestion: suggestion,
+      ),
+      trailing: TextButton(
+        key: const Key('reminders.optimizationApply'),
+        onPressed: onApply,
+        child: Text(l10n.reminderOptimizationApply),
+      ),
+      child: const SizedBox.shrink(),
     );
   }
 }

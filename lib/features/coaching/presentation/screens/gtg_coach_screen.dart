@@ -7,7 +7,9 @@ import '../../../../features/onboarding/state/user_preferences_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../l10n/exercise_type_l10n.dart';
 import '../../gtg_coach_policy.dart';
+import '../../gtg_insight_engine.dart';
 import '../../state/gtg_coach_providers.dart';
+import '../../state/gtg_insight_providers.dart';
 
 /// Settings surface for the app's lightweight GTG coaching layer.
 class GtgCoachScreen extends ConsumerWidget {
@@ -47,6 +49,7 @@ class GtgCoachScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final summary = ref.watch(gtgCoachSummaryProvider);
+    final insights = ref.watch(gtgInsightsProvider);
     final materialL10n = MaterialLocalizations.of(context);
     final lastTestedLabel = summary.lastMaxTestedAt == null
         ? l10n.coachLastTestedNever
@@ -184,10 +187,71 @@ class GtgCoachScreen extends ConsumerWidget {
               ],
             ),
           ),
+          if (insights.isNotEmpty) ...<Widget>[
+            const SizedBox(height: GtgUi.primarySectionSpacing),
+            _CoachInsightsCard(insights: insights),
+          ],
         ],
       ),
     );
   }
+}
+
+class _CoachInsightsCard extends StatelessWidget {
+  const _CoachInsightsCard({required this.insights});
+
+  final List<GtgInsight> insights;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GtgSectionCard(
+      key: const Key('coach.localInsights'),
+      icon: Icons.insights_rounded,
+      accent: colorScheme.tertiary,
+      title: l10n.gtgInsightsTitle,
+      subtitle: l10n.gtgInsightsSubtitle,
+      child: Column(
+        children: <Widget>[
+          for (var i = 0; i < insights.length; i++) ...<Widget>[
+            _CoachInfoBanner(
+              icon: _insightIcon(insights[i].kind),
+              message: _formatInsight(l10n, insights[i]),
+            ),
+            if (i != insights.length - 1)
+              const SizedBox(height: GtgUi.controlSpacing),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+IconData _insightIcon(GtgInsightKind kind) {
+  return switch (kind) {
+    GtgInsightKind.baselineMissing => Icons.fitness_center_rounded,
+    GtgInsightKind.consistency => Icons.event_available_rounded,
+    GtgInsightKind.trainingWindow => Icons.schedule_rounded,
+    GtgInsightKind.retestDue => Icons.refresh_rounded,
+  };
+}
+
+String _formatInsight(AppLocalizations l10n, GtgInsight insight) {
+  return switch (insight.kind) {
+    GtgInsightKind.baselineMissing => l10n.gtgInsightBaselineMissing,
+    GtgInsightKind.consistency => l10n.gtgInsightConsistency(insight.count),
+    GtgInsightKind.trainingWindow => l10n.gtgInsightTrainingWindow(
+      _formatHourLabel(insight.hour ?? 0),
+    ),
+    GtgInsightKind.retestDue => l10n.gtgInsightRetestDue,
+  };
+}
+
+String _formatHourLabel(int hour) {
+  final normalized = hour.clamp(0, 23);
+  return '${normalized.toString().padLeft(2, '0')}:00';
 }
 
 class _CoachStatRow extends StatelessWidget {

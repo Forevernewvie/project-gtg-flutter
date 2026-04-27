@@ -209,6 +209,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maxPerDayLabel => 'Max per day';
 
   @override
+  String get reminderOptimizationTitle => 'Log-based suggestion';
+
+  @override
+  String get reminderOptimizationApply => 'Apply';
+
+  @override
+  String get reminderOptimizationEnable =>
+      'Turn reminders on to rebuild your GTG rhythm.';
+
+  @override
+  String reminderOptimizationReduceFrequency(int count) {
+    return 'Your recent rhythm is light. Try a $count-minute interval.';
+  }
+
+  @override
+  String get reminderOptimizationSkipWeekends =>
+      'You rarely log on weekends. Try weekends off.';
+
+  @override
+  String reminderOptimizationPreferredTime(String time) {
+    return 'You often log around $time. Focus reminders near that window.';
+  }
+
+  @override
   String get quietHoursTitle => 'Quiet hours';
 
   @override
@@ -380,6 +404,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String coachSetsShort(int count) {
     return '$count sets';
   }
+
+  @override
+  String get gtgInsightsTitle => 'Local insights';
+
+  @override
+  String get gtgInsightsSubtitle => 'Private signals from your recent logs.';
+
+  @override
+  String get gtgInsightBaselineMissing =>
+      'Add max reps to unlock personalized guidance.';
+
+  @override
+  String gtgInsightConsistency(int count) {
+    return 'You trained on $count days in the last 14 days.';
+  }
+
+  @override
+  String gtgInsightTrainingWindow(String time) {
+    return 'Your most common training window is around $time.';
+  }
+
+  @override
+  String get gtgInsightRetestDue =>
+      'Your max test is getting old. Consider a fresh baseline.';
 
   @override
   String get splashTapToSkip => 'Tap to skip';
