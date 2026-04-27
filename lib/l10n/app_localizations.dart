@@ -680,6 +680,24 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get coachTodayLabel;
 
+  /// No description provided for @coachCompletedSetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed sets'**
+  String get coachCompletedSetsLabel;
+
+  /// No description provided for @coachTargetSetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target sets'**
+  String get coachTargetSetsLabel;
+
+  /// No description provided for @coachRemainingSetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining sets'**
+  String get coachRemainingSetsLabel;
+
   /// No description provided for @coachCardReadySubtitle.
   ///
   /// In en, this message translates to:

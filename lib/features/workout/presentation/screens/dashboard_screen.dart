@@ -524,6 +524,21 @@ class _CoachReadyState extends StatelessWidget {
           ),
         ),
         const SizedBox(height: GtgUi.controlSpacing),
+        GtgResponsivePair(
+          primary: _CoachValueTile(
+            label: l10n.coachCompletedSetsLabel,
+            value: l10n.coachSetsShort(summary.completedSetsToday),
+            accent: accent,
+            keyValue: 'completedSets',
+          ),
+          secondary: _CoachValueTile(
+            label: l10n.coachTargetSetsLabel,
+            value: l10n.coachSetsShort(summary.dailySetTarget),
+            accent: accent,
+            keyValue: 'targetSets',
+          ),
+        ),
+        const SizedBox(height: GtgUi.controlSpacing),
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
           child: LinearProgressIndicator(

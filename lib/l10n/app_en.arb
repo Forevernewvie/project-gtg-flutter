@@ -1,11 +1,9 @@
 {
   "@@locale": "en",
   "appTitle": "PROJECT GTG",
-
   "navHome": "Home",
   "navCalendar": "Calendar",
   "navSettings": "Settings",
-
   "dashboardTitle": "Today's Routine",
   "dashboardSubtitle": "Not perfect, just frequent. One set at a time.",
   "activeDaysPill": "Active {count} days",
@@ -16,7 +14,6 @@
       }
     }
   },
-
   "quickLogTitle": "Quick Log",
   "quickLogHelper": "Adjust reps, then tap Record.",
   "decreaseValue": "Decrease",
@@ -27,7 +24,6 @@
   "recentLogsTitle": "Recent Logs",
   "noLogsHint": "No logs yet. Log your first set above.",
   "noLogsHintHome": "No logs yet. Log a set on Home.",
-
   "calendarTitle": "Rhythm Calendar",
   "calendarSubtitleHeatmap": "Darker cells mean more reps. Monthly heatmap.",
   "today": "Today",
@@ -44,7 +40,6 @@
     }
   },
   "noLogsForDay": "No logs for this day. Log a set on Home.",
-
   "settingsTitle": "Settings",
   "settingsThemeTitle": "Theme",
   "settingsThemeSubtitle": "Choose app appearance. Applied immediately.",
@@ -77,7 +72,6 @@
   },
   "appUpdateLater": "Later",
   "appUpdateNow": "Update",
-
   "remindersHeadline": "Quiet and consistent",
   "remindersSubheadline": "We only schedule within the time left today.",
   "enableRemindersTitle": "Enable reminders",
@@ -129,7 +123,6 @@
       }
     }
   },
-
   "onboardingLater": "Later",
   "onboardingSubtitle": "Not perfect, just frequent. Start in 1 minute.",
   "onboardingQuestion": "Which move will you focus on?",
@@ -142,7 +135,6 @@
   "onboardingPushUpSubtitle": "Fastest routine. Start anywhere.",
   "onboardingPullUpSubtitle": "Pulling strength. Form matters.",
   "onboardingDipsSubtitle": "Push strength. Watch your shoulders.",
-
   "coachFocusTitle": "Focus move",
   "coachFocusSubtitle": "Keep your primary move fresh and repeatable.",
   "coachFocusMoveLabel": "Primary move",
@@ -157,6 +149,9 @@
   "coachPlanTitle": "Today's plan",
   "coachPlanSubtitle": "Progress is counted from today's logs for your primary move.",
   "coachTodayLabel": "Today",
+  "coachCompletedSetsLabel": "Completed sets",
+  "coachTargetSetsLabel": "Target sets",
+  "coachRemainingSetsLabel": "Remaining sets",
   "coachCardReadySubtitle": "Today's GTG suggestion and progress",
   "coachCardSetupSubtitle": "Add your max reps to get a lighter GTG suggestion",
   "coachSetBaselineAction": "Add max",
@@ -199,13 +194,10 @@
       }
     }
   },
-
   "splashTapToSkip": "Tap to skip",
-
   "exercisePushUp": "Push-ups",
   "exercisePullUp": "Pull-ups",
   "exerciseDips": "Dips",
-
   "repsWithUnit": "{count} reps",
   "@repsWithUnit": {
     "placeholders": {
@@ -222,7 +214,6 @@
       }
     }
   },
-
   "notifTitle": "Time for a set",
   "notifBody": "Do one set: push-ups, pull-ups, or dips. Keep your rhythm today."
 }
