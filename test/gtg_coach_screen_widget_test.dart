@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:project_gtg/core/clock.dart';
+import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/models/reminder_settings.dart';
 import 'package:project_gtg/core/models/user_preferences.dart';
@@ -29,7 +30,16 @@ class _MemoryPersistence extends GtgPersistence {
     hasCompletedOnboarding: true,
     primaryExercise: ExerciseType.pullUp,
   );
+  List<ExerciseLog> _logs = const <ExerciseLog>[];
   ReminderSettings _settings = ReminderSettings.defaults;
+
+  @override
+  Future<List<ExerciseLog>> loadLogs() async => _logs;
+
+  @override
+  Future<void> saveLogs(List<ExerciseLog> logs) async {
+    _logs = List<ExerciseLog>.unmodifiable(logs);
+  }
 
   @override
   Future<UserPreferences> loadUserPreferences() async => _prefs;
@@ -89,5 +99,61 @@ void main() {
     expect(persistence._prefs.primaryExerciseMaxReps, 1);
     expect(persistence._prefs.primaryExerciseDailySetTarget, 9);
     expect(persistence._prefs.primaryExerciseLastMaxTestedAt, now);
+  });
+
+  testWidgets('GTG coach screen renders complete daily plan details', (
+    tester,
+  ) async {
+    final now = DateTime(2026, 4, 22, 13);
+    final persistence = _MemoryPersistence()
+      .._prefs = UserPreferences(
+        hasCompletedOnboarding: true,
+        primaryExercise: ExerciseType.pullUp,
+        primaryExerciseMaxReps: 12,
+        primaryExerciseDailySetTarget: 5,
+        primaryExerciseLastMaxTestedAt: DateTime(2026, 4, 20),
+      )
+      .._logs = <ExerciseLog>[
+        ExerciseLog(
+          id: '1',
+          type: ExerciseType.pullUp,
+          reps: 6,
+          timestamp: DateTime(2026, 4, 22, 8),
+        ),
+        ExerciseLog(
+          id: '2',
+          type: ExerciseType.pullUp,
+          reps: 6,
+          timestamp: DateTime(2026, 4, 22, 12),
+        ),
+      ];
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          persistenceProvider.overrideWithValue(persistence),
+          clockProvider.overrideWithValue(_FixedClock(now)),
+        ],
+        child: testApp(const GtgCoachScreen(), locale: const Locale('en')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('Completed sets'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Recommended GTG reps'), findsWidgets);
+    expect(find.text('6 reps'), findsWidgets);
+    expect(find.text('Today'), findsOneWidget);
+    expect(find.text('2/5 sets'), findsOneWidget);
+    expect(find.text('Completed sets'), findsOneWidget);
+    expect(find.text('2 sets'), findsOneWidget);
+    expect(find.text('Target sets'), findsOneWidget);
+    expect(find.text('5 sets'), findsWidgets);
+    expect(find.text('3 sets left today'), findsOneWidget);
   });
 }

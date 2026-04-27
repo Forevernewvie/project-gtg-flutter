@@ -34,7 +34,9 @@ void main() {
 
     expect(summary.recommendedReps, 5);
     expect(summary.completedSetsToday, 2);
+    expect(summary.completedRepsToday, 10);
     expect(summary.remainingSetsToday, 6);
+    expect(summary.progress, 0.25);
     expect(summary.retestDue, isTrue);
   });
 }

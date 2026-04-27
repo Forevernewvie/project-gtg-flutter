@@ -107,8 +107,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.byKey(const Key('dashboard.coach.today')), findsOneWidget);
+    expect(
+      find.byKey(const Key('dashboard.coach.completedSets')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('dashboard.coach.targetSets')), findsOneWidget);
     expect(find.byKey(const Key('dashboard.coachRemaining')), findsOneWidget);
     expect(find.text('5회'), findsWidgets);
+    expect(find.text('2세트'), findsWidgets);
+    expect(find.text('6세트'), findsWidgets);
     await tester.scrollUntilVisible(
       find.byKey(const Key('quicklog.pullUp.recommended')),
       200,
