@@ -134,13 +134,28 @@ class GtgCoachScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  l10n.coachTodayProgress(
-                    summary.completedSetsToday,
-                    summary.dailySetTarget,
+                GtgResponsivePair(
+                  primary: _CoachStatRow(
+                    label: l10n.coachRecommendedRepsLabel,
+                    value: l10n.repsWithUnit(summary.recommendedReps),
                   ),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
+                  secondary: _CoachStatRow(
+                    label: l10n.coachTodayLabel,
+                    value: l10n.coachTodayProgress(
+                      summary.completedSetsToday,
+                      summary.dailySetTarget,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: GtgUi.controlSpacing),
+                GtgResponsivePair(
+                  primary: _CoachStatRow(
+                    label: l10n.coachCompletedSetsLabel,
+                    value: l10n.coachSetsShort(summary.completedSetsToday),
+                  ),
+                  secondary: _CoachStatRow(
+                    label: l10n.coachTargetSetsLabel,
+                    value: l10n.coachSetsShort(summary.dailySetTarget),
                   ),
                 ),
                 const SizedBox(height: 10),

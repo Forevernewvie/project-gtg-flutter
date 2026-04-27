@@ -317,6 +317,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get coachTodayLabel => '오늘';
 
   @override
+  String get coachCompletedSetsLabel => '완료한 세트';
+
+  @override
+  String get coachTargetSetsLabel => '목표 세트';
+
+  @override
+  String get coachRemainingSetsLabel => '남은 세트';
+
+  @override
   String get coachCardReadySubtitle => '오늘의 GTG 추천과 진행 상황';
 
   @override

@@ -1,11 +1,9 @@
 {
   "@@locale": "ko",
   "appTitle": "PROJECT GTG",
-
   "navHome": "홈",
   "navCalendar": "캘린더",
   "navSettings": "설정",
-
   "dashboardTitle": "오늘의 루틴",
   "dashboardSubtitle": "완벽하게 말고, 자주. 한 세트씩만.",
   "activeDaysPill": "활동일 {count}일",
@@ -16,7 +14,6 @@
       }
     }
   },
-
   "quickLogTitle": "빠른 입력",
   "quickLogHelper": "횟수를 조정한 뒤 기록을 누르세요.",
   "decreaseValue": "감소",
@@ -27,7 +24,6 @@
   "recentLogsTitle": "최근 기록",
   "noLogsHint": "기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.",
   "noLogsHintHome": "기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.",
-
   "calendarTitle": "리듬 캘린더",
   "calendarSubtitleHeatmap": "색이 진할수록 횟수가 많습니다. (월간 히트맵)",
   "today": "오늘",
@@ -44,7 +40,6 @@
     }
   },
   "noLogsForDay": "이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.",
-
   "settingsTitle": "설정",
   "settingsThemeTitle": "테마",
   "settingsThemeSubtitle": "앱 화면 스타일을 선택하세요. 즉시 적용됩니다.",
@@ -77,7 +72,6 @@
   },
   "appUpdateLater": "나중에",
   "appUpdateNow": "업데이트",
-
   "remindersHeadline": "조용하게, 꾸준히",
   "remindersSubheadline": "반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.",
   "enableRemindersTitle": "리마인더 켜기",
@@ -129,7 +123,6 @@
       }
     }
   },
-
   "onboardingLater": "나중에",
   "onboardingSubtitle": "완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.",
   "onboardingQuestion": "주로 어떤 동작을 할까요?",
@@ -142,7 +135,6 @@
   "onboardingPushUpSubtitle": "가장 빠른 루틴. 어디서든 시작",
   "onboardingPullUpSubtitle": "상체 당기기. 폼이 핵심",
   "onboardingDipsSubtitle": "푸쉬 라인 강화. 어깨 각도 주의",
-
   "coachFocusTitle": "집중 동작",
   "coachFocusSubtitle": "주 종목을 무리 없이 자주 반복할 수 있게 맞춥니다.",
   "coachFocusMoveLabel": "주 종목",
@@ -157,6 +149,9 @@
   "coachPlanTitle": "오늘의 계획",
   "coachPlanSubtitle": "오늘 기록한 주 종목 로그를 기준으로 진행도를 계산합니다.",
   "coachTodayLabel": "오늘",
+  "coachCompletedSetsLabel": "완료한 세트",
+  "coachTargetSetsLabel": "목표 세트",
+  "coachRemainingSetsLabel": "남은 세트",
   "coachCardReadySubtitle": "오늘의 GTG 추천과 진행 상황",
   "coachCardSetupSubtitle": "최대 반복을 넣으면 홈이 더 가볍게 추천해줍니다.",
   "coachSetBaselineAction": "최대반복 추가",
@@ -199,13 +194,10 @@
       }
     }
   },
-
   "splashTapToSkip": "탭하여 스킵",
-
   "exercisePushUp": "푸쉬업",
   "exercisePullUp": "풀업",
   "exerciseDips": "딥스",
-
   "repsWithUnit": "{count}회",
   "@repsWithUnit": {
     "placeholders": {
@@ -222,7 +214,6 @@
       }
     }
   },
-
   "notifTitle": "한 세트 타이밍",
   "notifBody": "푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요."
 }

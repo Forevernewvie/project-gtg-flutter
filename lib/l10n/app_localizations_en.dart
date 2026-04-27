@@ -329,6 +329,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachTodayLabel => 'Today';
 
   @override
+  String get coachCompletedSetsLabel => 'Completed sets';
+
+  @override
+  String get coachTargetSetsLabel => 'Target sets';
+
+  @override
+  String get coachRemainingSetsLabel => 'Remaining sets';
+
+  @override
   String get coachCardReadySubtitle => 'Today\'s GTG suggestion and progress';
 
   @override
