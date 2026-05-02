@@ -134,6 +134,18 @@ abstract class AppLocalizations {
   /// **'Not perfect, just frequent. One set at a time.'**
   String get dashboardSubtitle;
 
+  /// No description provided for @dashboardReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for today'**
+  String get dashboardReadyTitle;
+
+  /// No description provided for @dashboardPrimarySetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with {exercise}: one set of {count} reps.'**
+  String dashboardPrimarySetHint(String exercise, int count);
+
   /// No description provided for @activeDaysPill.
   ///
   /// In en, this message translates to:
@@ -883,6 +895,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do one set: push-ups, pull-ups, or dips. Keep your rhythm today.'**
   String get notifBody;
+
+  /// No description provided for @missionTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s GTG mission'**
+  String get missionTodayTitle;
+
+  /// No description provided for @missionTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A small plan for coming back today, not a workout marathon.'**
+  String get missionTodaySubtitle;
+
+  /// No description provided for @missionRecoveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Return mission'**
+  String get missionRecoveryTitle;
+
+  /// No description provided for @missionRecoverySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You missed {count} days. One light set is enough to restart.'**
+  String missionRecoverySubtitle(int count);
+
+  /// No description provided for @missionCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission complete'**
+  String get missionCompleteTitle;
+
+  /// No description provided for @missionCompleteSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice rhythm. Extra sets are optional today.'**
+  String get missionCompleteSubtitle;
+
+  /// No description provided for @missionLogAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Log {count}'**
+  String missionLogAction(int count);
+
+  /// No description provided for @missionProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission progress'**
+  String get missionProgressLabel;
+
+  /// No description provided for @missionProgressValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{target} sets'**
+  String missionProgressValue(int done, int target);
+
+  /// No description provided for @missionNextSetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next set'**
+  String get missionNextSetLabel;
+
+  /// No description provided for @missionDoneValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get missionDoneValue;
+
+  /// No description provided for @missionRhythmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'7-day rhythm'**
+  String get missionRhythmLabel;
+
+  /// No description provided for @missionRhythmValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active days'**
+  String missionRhythmValue(int count);
+
+  /// No description provided for @calendarRhythmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You logged on {count7} of the last 7 days ({count14}/14). Keep the rhythm light and repeatable.'**
+  String calendarRhythmMessage(int count7, int count14);
+
+  /// No description provided for @calendarRecoveryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No penalty for a gap. You missed {count} days; restart with one easy set today.'**
+  String calendarRecoveryMessage(int count);
 }
 
 class _AppLocalizationsDelegate

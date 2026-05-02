@@ -7,6 +7,9 @@ import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/coaching/gtg_coach_policy.dart';
 import 'package:project_gtg/features/coaching/state/gtg_coach_providers.dart';
+import 'package:project_gtg/features/reminders/reminder_optimization_policy.dart';
+import 'package:project_gtg/features/reminders/reminder_ui_policy.dart';
+import 'package:project_gtg/features/reminders/state/reminder_providers.dart';
 import 'package:project_gtg/features/workout/presentation/exercise_ui_style.dart';
 import 'package:project_gtg/features/workout/presentation/workout_log_row.dart';
 import 'package:project_gtg/features/workout/state/workout_controller.dart';
@@ -54,6 +57,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       return const _DashboardStartupPlaceholder();
     }
 
+    final reminderSuggestion = ref.watch(
+      reminderOptimizationSuggestionProvider,
+    );
+
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -94,15 +101,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               GtgUi.screenHorizontalPadding,
               0,
               GtgUi.screenHorizontalPadding,
-              GtgUi.screenBottomPadding + 4,
+              reminderSuggestion == null
+                  ? GtgUi.screenBottomPadding + 4
+                  : GtgUi.primarySectionSpacing,
             ),
             child: const _RecentLogsCard(),
           ),
         ),
+        if (reminderSuggestion != null)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                GtgUi.screenHorizontalPadding,
+                0,
+                GtgUi.screenHorizontalPadding,
+                GtgUi.screenBottomPadding + 4,
+              ),
+              child: _ReminderNudgeCard(suggestion: reminderSuggestion),
+            ),
+          ),
       ],
     );
   }
@@ -191,8 +212,22 @@ class _HeroCard extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final todayTotal = ref.watch(todayTotalSumProvider);
-    final todayTotals = ref.watch(todayTotalsProvider);
     final activeDays = ref.watch(activeDaysLast14Provider);
+    final mission = ref.watch(dailyGtgMissionProvider);
+    final workoutState = ref.watch(workoutControllerProvider);
+    final primaryExerciseLabel = mission.exercise.label(l10n);
+    final logsReady = workoutState.hasValue;
+    final heroValue = !logsReady
+        ? l10n.loadingLogs
+        : todayTotal == 0
+        ? l10n.dashboardReadyTitle
+        : l10n.repsWithUnit(todayTotal);
+    final heroHint = logsReady
+        ? l10n.dashboardPrimarySetHint(
+            primaryExerciseLabel,
+            mission.recommendedReps,
+          )
+        : l10n.quickLogHelper;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -250,38 +285,34 @@ class _HeroCard extends ConsumerWidget {
                     Semantics(
                       header: true,
                       child: Text(
-                        l10n.repsWithUnit(todayTotal),
+                        heroValue,
                         key: const Key('dashboard.todayTotalValue'),
-                        style: Theme.of(context).textTheme.displayLarge
+                        style: Theme.of(context).textTheme.displayMedium
                             ?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: -1.1,
+                              letterSpacing: -0.9,
                             ),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.quickLogHelper,
+                      heroHint,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.88),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 18),
-                    GtgResponsiveGroup(
-                      spacing: 10,
-                      children: <Widget>[
-                        for (final type in ExerciseType.values)
-                          _MetricChip(
-                            label: type.label(l10n),
-                            value: '${todayTotals[type] ?? 0}',
-                            icon: ExerciseUiStyle.glyph(
-                              type,
-                              color: Colors.white,
-                            ),
-                          ),
-                      ],
+                    _HeroPrimaryActionRow(
+                      exerciseLabel: primaryExerciseLabel,
+                      recommendedReps: mission.recommendedReps,
+                      completedSets: mission.completedSets,
+                      targetSets: mission.targetSets,
+                      enabled: !mission.isComplete && workoutState.hasValue,
+                      onPressed: () => ref
+                          .read(workoutControllerProvider.notifier)
+                          .addLog(mission.exercise, mission.recommendedReps),
                     ),
                   ],
                 ),
@@ -395,66 +426,133 @@ class _HeroHeader extends StatelessWidget {
   }
 }
 
-/// Displays one exercise stat inside the hero card.
-class _MetricChip extends StatelessWidget {
-  const _MetricChip({
-    required this.label,
-    required this.value,
-    required this.icon,
+/// Renders one clear first-action row inside the hero card.
+class _HeroPrimaryActionRow extends StatelessWidget {
+  const _HeroPrimaryActionRow({
+    required this.exerciseLabel,
+    required this.recommendedReps,
+    required this.completedSets,
+    required this.targetSets,
+    required this.enabled,
+    required this.onPressed,
   });
 
-  final String label;
-  final String value;
-  final Widget icon;
+  final String exerciseLabel;
+  final int recommendedReps;
+  final int completedSets;
+  final int targetSets;
+  final bool enabled;
+  final VoidCallback onPressed;
 
-  /// Builds a compact stat chip with icon, label, and value.
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Row(
-          children: <Widget>[
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(12),
+        padding: const EdgeInsets.all(12),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxWidth < 360;
+            final summary = _HeroActionSummary(
+              exerciseLabel: exerciseLabel,
+              progressLabel: l10n.missionProgressValue(
+                completedSets,
+                targetSets,
               ),
-              child: Padding(padding: const EdgeInsets.all(8), child: icon),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            );
+            final action = FilledButton.icon(
+              key: const Key('dashboard.missionLogButton'),
+              onPressed: enabled ? onPressed : null,
+              icon: const Icon(Icons.add_task_rounded, size: 18),
+              label: Text(l10n.missionLogAction(recommendedReps)),
+            );
+
+            if (isCompact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.95),
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
+                  summary,
+                  const SizedBox(height: GtgUi.controlSpacing),
+                  action,
                 ],
-              ),
-            ),
-          ],
+              );
+            }
+
+            return Row(
+              children: <Widget>[
+                Expanded(child: summary),
+                const SizedBox(width: GtgUi.controlSpacing),
+                action,
+              ],
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+class _HeroActionSummary extends StatelessWidget {
+  const _HeroActionSummary({
+    required this.exerciseLabel,
+    required this.progressLabel,
+  });
+
+  final String exerciseLabel;
+  final String progressLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.16),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(9),
+            child: Icon(
+              Icons.flag_circle_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                exerciseLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                progressLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.78),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -488,6 +586,34 @@ class _CoachCard extends ConsumerWidget {
       child: summary.hasBaseline
           ? _CoachReadyState(summary: summary)
           : _CoachEmptyState(message: l10n.coachSetupHint),
+    );
+  }
+}
+
+class _ReminderNudgeCard extends StatelessWidget {
+  const _ReminderNudgeCard({required this.suggestion});
+
+  final ReminderOptimizationSuggestion suggestion;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GtgSectionCard(
+      key: const Key('dashboard.reminderNudgeCard'),
+      icon: Icons.notifications_active_rounded,
+      accent: colorScheme.tertiary,
+      title: l10n.reminderOptimizationTitle,
+      subtitle: ReminderUiPolicy.buildOptimizationMessage(
+        l10n: l10n,
+        suggestion: suggestion,
+      ),
+      trailing: TextButton(
+        onPressed: () => context.push('/settings/reminders'),
+        child: Text(l10n.reminderOptimizationApply),
+      ),
+      child: const SizedBox.shrink(),
     );
   }
 }

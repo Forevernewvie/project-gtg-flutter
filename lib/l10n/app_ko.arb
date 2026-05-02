@@ -6,6 +6,18 @@
   "navSettings": "설정",
   "dashboardTitle": "오늘의 루틴",
   "dashboardSubtitle": "완벽하게 말고, 자주. 한 세트씩만.",
+  "dashboardReadyTitle": "오늘 1세트 준비 완료",
+  "dashboardPrimarySetHint": "{exercise} {count}회, 딱 1세트부터 시작하세요.",
+  "@dashboardPrimarySetHint": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "activeDaysPill": "활동일 {count}일",
   "@activeDaysPill": {
     "placeholders": {
@@ -255,5 +267,68 @@
     }
   },
   "notifTitle": "한 세트 타이밍",
-  "notifBody": "푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요."
+  "notifBody": "푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.",
+  "missionTodayTitle": "오늘의 GTG 미션",
+  "missionTodaySubtitle": "긴 운동이 아니라 오늘 다시 오게 만드는 작은 계획입니다.",
+  "missionRecoveryTitle": "복귀 미션",
+  "missionRecoverySubtitle": "{count}일 쉬었어요. 가벼운 1세트면 리듬을 다시 시작할 수 있습니다.",
+  "@missionRecoverySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "missionCompleteTitle": "오늘 미션 완료",
+  "missionCompleteSubtitle": "좋은 리듬입니다. 오늘 추가 세트는 선택입니다.",
+  "missionLogAction": "{count}회 기록",
+  "@missionLogAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "missionProgressLabel": "미션 진행도",
+  "missionProgressValue": "{done}/{target}세트",
+  "@missionProgressValue": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "missionNextSetLabel": "다음 세트",
+  "missionDoneValue": "완료",
+  "missionRhythmLabel": "7일 리듬",
+  "missionRhythmValue": "{count}일 활동",
+  "@missionRhythmValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarRhythmMessage": "최근 7일 중 {count7}일 기록했습니다. 14일 기준 {count14}일 활동 중이에요.",
+  "@calendarRhythmMessage": {
+    "placeholders": {
+      "count7": {
+        "type": "int"
+      },
+      "count14": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarRecoveryMessage": "공백은 실패가 아닙니다. {count}일 쉬었으니 오늘은 쉬운 1세트로 재시작하세요.",
+  "@calendarRecoveryMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

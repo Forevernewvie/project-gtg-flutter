@@ -75,26 +75,13 @@ class GtgCoachScreen extends ConsumerWidget {
             accent: Theme.of(context).colorScheme.primary,
             title: l10n.coachFocusTitle,
             subtitle: l10n.coachFocusSubtitle,
-            child: Column(
-              children: <Widget>[
-                _CoachStatRow(
-                  label: l10n.coachFocusMoveLabel,
-                  value: summary.primaryExercise.label(l10n),
-                ),
-                const SizedBox(height: GtgUi.secondarySectionSpacing),
-                _CoachStatRow(
-                  label: l10n.coachRecommendedRepsLabel,
-                  value: summary.hasBaseline
-                      ? l10n.repsWithUnit(summary.recommendedReps)
-                      : l10n.coachNotSet,
-                  helper: l10n.coachRecommendedHint,
-                ),
-                const SizedBox(height: GtgUi.secondarySectionSpacing),
-                _CoachStatRow(
-                  label: l10n.coachLastTestedLabel,
-                  value: lastTestedLabel,
-                ),
-              ],
+            child: _CoachFocusSummary(
+              primaryExerciseLabel: summary.primaryExercise.label(l10n),
+              recommendedRepsLabel: summary.hasBaseline
+                  ? l10n.repsWithUnit(summary.recommendedReps)
+                  : l10n.coachNotSet,
+              lastTestedLabel: lastTestedLabel,
+              recommendedHelper: l10n.coachRecommendedHint,
             ),
           ),
           const SizedBox(height: GtgUi.primarySectionSpacing),
@@ -193,6 +180,113 @@ class GtgCoachScreen extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _CoachFocusSummary extends StatelessWidget {
+  const _CoachFocusSummary({
+    required this.primaryExerciseLabel,
+    required this.recommendedRepsLabel,
+    required this.lastTestedLabel,
+    required this.recommendedHelper,
+  });
+
+  final String primaryExerciseLabel;
+  final String recommendedRepsLabel;
+  final String lastTestedLabel;
+  final String recommendedHelper;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _CoachAlignedStatRow(
+          label: l10n.coachFocusMoveLabel,
+          value: primaryExerciseLabel,
+        ),
+        const SizedBox(height: GtgUi.secondarySectionSpacing),
+        _CoachAlignedStatRow(
+          label: l10n.coachRecommendedRepsLabel,
+          value: recommendedRepsLabel,
+          helper: recommendedHelper,
+        ),
+        const SizedBox(height: GtgUi.secondarySectionSpacing),
+        _CoachAlignedStatRow(
+          label: l10n.coachLastTestedLabel,
+          value: lastTestedLabel,
+        ),
+      ],
+    );
+  }
+}
+
+class _CoachAlignedStatRow extends StatelessWidget {
+  const _CoachAlignedStatRow({
+    required this.label,
+    required this.value,
+    this.helper,
+  });
+
+  final String label;
+  final String value;
+  final String? helper;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = GtgUi.isCompactWidth(constraints.maxWidth);
+        if (isCompact) {
+          return _CoachStatRow(label: label, value: value, helper: helper);
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              width: 176,
+              child: Text(
+                label,
+                style: textTheme.labelLarge?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            const SizedBox(width: GtgUi.controlSpacing),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    value,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  if (helper case final helper?) ...<Widget>[
+                    const SizedBox(height: 4),
+                    Text(
+                      helper,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -6,6 +6,18 @@
   "navSettings": "Settings",
   "dashboardTitle": "Today's Routine",
   "dashboardSubtitle": "Not perfect, just frequent. One set at a time.",
+  "dashboardReadyTitle": "Ready for today",
+  "dashboardPrimarySetHint": "Start with {exercise}: one set of {count} reps.",
+  "@dashboardPrimarySetHint": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "activeDaysPill": "Active {count} days",
   "@activeDaysPill": {
     "placeholders": {
@@ -255,5 +267,68 @@
     }
   },
   "notifTitle": "Time for a set",
-  "notifBody": "Do one set: push-ups, pull-ups, or dips. Keep your rhythm today."
+  "notifBody": "Do one set: push-ups, pull-ups, or dips. Keep your rhythm today.",
+  "missionTodayTitle": "Today's GTG mission",
+  "missionTodaySubtitle": "A small plan for coming back today, not a workout marathon.",
+  "missionRecoveryTitle": "Return mission",
+  "missionRecoverySubtitle": "You missed {count} days. One light set is enough to restart.",
+  "@missionRecoverySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "missionCompleteTitle": "Mission complete",
+  "missionCompleteSubtitle": "Nice rhythm. Extra sets are optional today.",
+  "missionLogAction": "Log {count}",
+  "@missionLogAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "missionProgressLabel": "Mission progress",
+  "missionProgressValue": "{done}/{target} sets",
+  "@missionProgressValue": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "missionNextSetLabel": "Next set",
+  "missionDoneValue": "Done",
+  "missionRhythmLabel": "7-day rhythm",
+  "missionRhythmValue": "{count} active days",
+  "@missionRhythmValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarRhythmMessage": "You logged on {count7} of the last 7 days ({count14}/14). Keep the rhythm light and repeatable.",
+  "@calendarRhythmMessage": {
+    "placeholders": {
+      "count7": {
+        "type": "int"
+      },
+      "count14": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarRecoveryMessage": "No penalty for a gap. You missed {count} days; restart with one easy set today.",
+  "@calendarRecoveryMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

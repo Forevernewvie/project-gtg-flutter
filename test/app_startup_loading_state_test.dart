@@ -89,11 +89,25 @@ void main() {
         primaryExercise: ExerciseType.pushUp,
       ),
     );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    final loadingMissionButton = tester.widget<FilledButton>(
+      find.byKey(const Key('dashboard.missionLogButton')),
+    );
+    expect(loadingMissionButton.onPressed, isNull);
+    expect(find.text('Loading logs...'), findsWidgets);
+    expect(find.text('Ready for today'), findsNothing);
+
     logsCompleter.complete(const <ExerciseLog>[]);
 
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('dashboard.coachCard')), findsOneWidget);
+    final readyMissionButton = tester.widget<FilledButton>(
+      find.byKey(const Key('dashboard.missionLogButton')),
+    );
+    expect(readyMissionButton.onPressed, isNotNull);
+    expect(find.byKey(const Key('dashboard.missionCard')), findsNothing);
     expect(find.byKey(const Key('dashboard.todayTotalValue')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

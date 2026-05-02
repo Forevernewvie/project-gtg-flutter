@@ -192,7 +192,7 @@ const _viewports = <Size>[
 const _screenshotViewports = <Size>[Size(360, 640), Size(768, 1024)];
 const _textScales = <double>[0.85, 1.0, 1.3, 1.6, 2.0];
 const _screenshotScales = <double>[1.0, 1.6];
-const _themePreferences = <AppThemePreference>[
+const _persistedCompatibilityThemes = <AppThemePreference>[
   AppThemePreference.light,
   AppThemePreference.dark,
 ];
@@ -379,7 +379,7 @@ Future<void> _runCoreMatrixForLocale(
 }) async {
   var caseIndex = 0;
 
-  for (final themePreference in _themePreferences) {
+  for (final themePreference in _persistedCompatibilityThemes) {
     for (final viewport in _viewports) {
       for (final textScale in _textScales) {
         caseIndex += 1;
@@ -410,6 +410,8 @@ Future<void> _runCoreMatrixForLocale(
         }, stage: '$caseTag-home');
 
         await tester.pumpAndSettle(_surfaceSettleDuration);
+        final nav = find.byType(NavigationBar).first;
+        expect(Theme.of(tester.element(nav)).brightness, Brightness.dark);
         expect(
           find.byKey(const Key('dashboard.todayTotalValue')),
           findsAtLeastNWidgets(1),
@@ -450,11 +452,10 @@ Future<void> _runCoreMatrixForLocale(
         );
         expect(find.text(labels.remindersTitle), findsAtLeastNWidgets(1));
         expect(find.text(labels.allLogsTitle), findsAtLeastNWidgets(1));
-        await _ensureVisibleWithScroll(
-          tester,
-          find.byKey(const Key('settings.theme.segmented')),
-          stage: '$caseTag-settings-theme-selector',
-        );
+        expect(find.text(labels.settingsThemeSystem), findsNothing);
+        expect(find.text(labels.settingsThemeLight), findsNothing);
+        expect(find.text(labels.settingsThemeDark), findsNothing);
+        expect(find.byKey(const Key('settings.theme.segmented')), findsNothing);
         await _ensureVisibleWithScroll(
           tester,
           find.text(labels.privacyPolicyTitle),
@@ -557,7 +558,7 @@ Future<void> _runOnboardingMatrixForLocale(
 }) async {
   var caseIndex = 0;
 
-  for (final themePreference in _themePreferences) {
+  for (final themePreference in _persistedCompatibilityThemes) {
     for (final viewport in _viewports) {
       for (final textScale in _textScales) {
         caseIndex += 1;
@@ -621,8 +622,8 @@ Future<void> _runOnboardingMatrixForLocale(
   }
 }
 
-/// Verifies ThemeMode.system follows platform brightness across matrix combinations.
-Future<void> _runSystemThemeFollowMatrixForLocale(
+/// Verifies the app remains dark across platform brightness combinations.
+Future<void> _runForcedDarkThemeMatrixForLocale(
   WidgetTester tester, {
   required Locale locale,
 }) async {
@@ -634,7 +635,7 @@ Future<void> _runSystemThemeFollowMatrixForLocale(
       for (final textScale in _textScales) {
         caseIndex += 1;
         final caseTag =
-            'system-${locale.languageCode}-$caseIndex-${brightness.name}-${viewport.width}x${viewport.height}-x$textScale';
+            'forced-dark-${locale.languageCode}-$caseIndex-${brightness.name}-${viewport.width}x${viewport.height}-x$textScale';
 
         _configureTestSurface(
           tester,
@@ -659,7 +660,7 @@ Future<void> _runSystemThemeFollowMatrixForLocale(
 
         final nav = find.byType(NavigationBar).first;
         final effectiveBrightness = Theme.of(tester.element(nav)).brightness;
-        expect(effectiveBrightness, brightness);
+        expect(effectiveBrightness, Brightness.dark);
         _assertNoUnexpectedException(tester, stage: '$caseTag-final');
       }
     }
@@ -725,7 +726,9 @@ Future<void> _runScreenshotSmokeForLocale(
 }
 
 void main() {
-  testWidgets('core screens matrix EN (light/dark)', (tester) async {
+  testWidgets('core screens matrix EN (persisted theme compatibility)', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runCoreMatrixForLocale(
       tester,
@@ -734,7 +737,9 @@ void main() {
     );
   });
 
-  testWidgets('core screens matrix KO (light/dark)', (tester) async {
+  testWidgets('core screens matrix KO (persisted theme compatibility)', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runCoreMatrixForLocale(
       tester,
@@ -743,7 +748,7 @@ void main() {
     );
   });
 
-  testWidgets('onboarding matrix EN (light/dark)', (tester) async {
+  testWidgets('onboarding matrix EN (light/dark preview)', (tester) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runOnboardingMatrixForLocale(
       tester,
@@ -752,7 +757,7 @@ void main() {
     );
   });
 
-  testWidgets('onboarding matrix KO (light/dark)', (tester) async {
+  testWidgets('onboarding matrix KO (light/dark preview)', (tester) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runOnboardingMatrixForLocale(
       tester,
@@ -761,17 +766,17 @@ void main() {
     );
   });
 
-  testWidgets('system theme follows platform brightness EN', (tester) async {
+  testWidgets('app stays dark across platform brightness EN', (tester) async {
     addTearDown(() => _resetTestSurface(tester));
-    await _runSystemThemeFollowMatrixForLocale(
+    await _runForcedDarkThemeMatrixForLocale(
       tester,
       locale: const Locale('en'),
     );
   });
 
-  testWidgets('system theme follows platform brightness KO', (tester) async {
+  testWidgets('app stays dark across platform brightness KO', (tester) async {
     addTearDown(() => _resetTestSurface(tester));
-    await _runSystemThemeFollowMatrixForLocale(
+    await _runForcedDarkThemeMatrixForLocale(
       tester,
       locale: const Locale('ko'),
     );

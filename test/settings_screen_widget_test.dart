@@ -149,9 +149,7 @@ void main() {
       expect(find.text('브라우저를 열 수 없습니다.'), findsOneWidget);
     });
 
-    testWidgets('theme options persist selection through settings tiles', (
-      tester,
-    ) async {
+    testWidgets('theme selector is removed from settings', (tester) async {
       final persistence = _MemoryPersistence();
 
       await tester.pumpWidget(
@@ -162,28 +160,15 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(persistence._themePreference, AppThemePreference.system);
-      expect(
-        find.byKey(const Key('settings.theme.option.system')),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(const Key('settings.theme.option.dark')),
-        findsOneWidget,
-      );
-
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('settings.theme.option.dark')),
-        300,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('settings.theme.option.dark')));
-      await tester.pumpAndSettle();
-
-      expect(persistence._themePreference, AppThemePreference.dark);
-      expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+      expect(find.text('테마'), findsNothing);
+      expect(find.text('시스템'), findsNothing);
+      expect(find.text('라이트'), findsNothing);
+      expect(find.text('다크'), findsNothing);
+      expect(find.byKey(const Key('settings.theme.segmented')), findsNothing);
+      expect(find.byKey(const Key('settings.theme.option.dark')), findsNothing);
+      expect(find.text('GTG 코치'), findsOneWidget);
+      expect(find.text('리마인더'), findsOneWidget);
+      expect(find.text('전체 기록'), findsOneWidget);
     });
   });
 }

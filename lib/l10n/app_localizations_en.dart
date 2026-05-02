@@ -28,6 +28,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Not perfect, just frequent. One set at a time.';
 
   @override
+  String get dashboardReadyTitle => 'Ready for today';
+
+  @override
+  String dashboardPrimarySetHint(String exercise, int count) {
+    return 'Start with $exercise: one set of $count reps.';
+  }
+
+  @override
   String activeDaysPill(int count) {
     return 'Active $count days';
   }
@@ -457,4 +465,63 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notifBody =>
       'Do one set: push-ups, pull-ups, or dips. Keep your rhythm today.';
+
+  @override
+  String get missionTodayTitle => 'Today\'s GTG mission';
+
+  @override
+  String get missionTodaySubtitle =>
+      'A small plan for coming back today, not a workout marathon.';
+
+  @override
+  String get missionRecoveryTitle => 'Return mission';
+
+  @override
+  String missionRecoverySubtitle(int count) {
+    return 'You missed $count days. One light set is enough to restart.';
+  }
+
+  @override
+  String get missionCompleteTitle => 'Mission complete';
+
+  @override
+  String get missionCompleteSubtitle =>
+      'Nice rhythm. Extra sets are optional today.';
+
+  @override
+  String missionLogAction(int count) {
+    return 'Log $count';
+  }
+
+  @override
+  String get missionProgressLabel => 'Mission progress';
+
+  @override
+  String missionProgressValue(int done, int target) {
+    return '$done/$target sets';
+  }
+
+  @override
+  String get missionNextSetLabel => 'Next set';
+
+  @override
+  String get missionDoneValue => 'Done';
+
+  @override
+  String get missionRhythmLabel => '7-day rhythm';
+
+  @override
+  String missionRhythmValue(int count) {
+    return '$count active days';
+  }
+
+  @override
+  String calendarRhythmMessage(int count7, int count14) {
+    return 'You logged on $count7 of the last 7 days ($count14/14). Keep the rhythm light and repeatable.';
+  }
+
+  @override
+  String calendarRecoveryMessage(int count) {
+    return 'No penalty for a gap. You missed $count days; restart with one easy set today.';
+  }
 }

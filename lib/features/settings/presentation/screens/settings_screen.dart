@@ -4,24 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_gtg/core/ads/ad_privacy_manager.dart';
 import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
-import 'package:project_gtg/core/models/app_theme_preference.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/settings/state/settings_action_service.dart';
-import 'package:project_gtg/features/settings/state/theme_preference_controller.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
-
-/// Describes one selectable theme option shown in settings.
-final class _ThemeOption {
-  const _ThemeOption({
-    required this.preference,
-    required this.label,
-    required this.icon,
-  });
-
-  final AppThemePreference preference;
-  final String label;
-  final IconData icon;
-}
 
 /// Renders top-level settings while keeping navigation and feature flows intact.
 class SettingsScreen extends ConsumerWidget {
@@ -65,52 +50,11 @@ class SettingsScreen extends ConsumerWidget {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  /// Persists a theme preference change through the settings action service.
-  Future<void> _setThemePreference(
-    WidgetRef ref,
-    AppThemePreference preference,
-  ) async {
-    await ref
-        .read(settingsActionServiceProvider)
-        .setThemePreference(preference);
-  }
-
-  /// Returns the ordered theme options used by the settings selector.
-  List<_ThemeOption> _buildThemeOptions(AppLocalizations l10n) {
-    return <_ThemeOption>[
-      _ThemeOption(
-        preference: AppThemePreference.system,
-        label: l10n.settingsThemeSystem,
-        icon: Icons.brightness_auto_rounded,
-      ),
-      _ThemeOption(
-        preference: AppThemePreference.light,
-        label: l10n.settingsThemeLight,
-        icon: Icons.light_mode_rounded,
-      ),
-      _ThemeOption(
-        preference: AppThemePreference.dark,
-        label: l10n.settingsThemeDark,
-        icon: Icons.dark_mode_rounded,
-      ),
-    ];
-  }
-
-  /// Builds reminders/logs/theme/policy settings UI using persisted app preferences.
+  /// Builds reminders/logs/policy settings UI without theme preference controls.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final themePreferenceAsync = ref.watch(themePreferenceControllerProvider);
-    final themePreference =
-        themePreferenceAsync.asData?.value ?? AppThemePreference.system;
-    final currentThemeLabel = switch (themePreference) {
-      AppThemePreference.system => l10n.settingsThemeSystem,
-      AppThemePreference.light => l10n.settingsThemeLight,
-      AppThemePreference.dark => l10n.settingsThemeDark,
-    };
-    final themeOptions = _buildThemeOptions(l10n);
-
     return ListView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -122,10 +66,7 @@ class SettingsScreen extends ConsumerWidget {
         GtgUi.screenBottomPadding,
       ),
       children: <Widget>[
-        GtgPageIntro(
-          title: l10n.settingsTitle,
-          trailing: _SettingsStatusPill(label: currentThemeLabel),
-        ),
+        GtgPageIntro(title: l10n.settingsTitle),
         const SizedBox(height: GtgUi.primarySectionSpacing),
         _SettingsActionsSection(
           primaryAccent: colorScheme.primary,
@@ -139,18 +80,6 @@ class SettingsScreen extends ConsumerWidget {
           onOpenCoach: () => context.push('/settings/coach'),
           onOpenReminders: () => context.push('/settings/reminders'),
           onOpenLogs: () => context.push('/settings/logs'),
-        ),
-        const SizedBox(height: GtgUi.primarySectionSpacing),
-        _SettingsThemeSection(
-          accent: colorScheme.primary,
-          title: l10n.settingsThemeTitle,
-          subtitle: l10n.settingsThemeSubtitle,
-          options: themeOptions,
-          selectedPreference: themePreference,
-          enabled: !themePreferenceAsync.isLoading,
-          onSelected: (preference) async {
-            await _setThemePreference(ref, preference);
-          },
         ),
         const SizedBox(height: GtgUi.primarySectionSpacing),
         _SettingsAboutSection(
@@ -233,51 +162,6 @@ class _SettingsActionsSection extends StatelessWidget {
   }
 }
 
-class _SettingsThemeSection extends StatelessWidget {
-  const _SettingsThemeSection({
-    required this.accent,
-    required this.title,
-    required this.subtitle,
-    required this.options,
-    required this.selectedPreference,
-    required this.enabled,
-    required this.onSelected,
-  });
-
-  final Color accent;
-  final String title;
-  final String subtitle;
-  final List<_ThemeOption> options;
-  final AppThemePreference selectedPreference;
-  final bool enabled;
-  final ValueChanged<AppThemePreference> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return GtgSectionCard(
-      icon: Icons.palette_outlined,
-      accent: accent,
-      title: title,
-      subtitle: subtitle,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(GtgUi.cardRadius - 2),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: _ThemePreferenceGroup(
-            options: options,
-            selectedPreference: selectedPreference,
-            enabled: enabled,
-            onSelected: onSelected,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _SettingsAboutSection extends StatelessWidget {
   const _SettingsAboutSection({
     required this.accent,
@@ -343,32 +227,6 @@ class _SettingsAboutSection extends StatelessWidget {
   }
 }
 
-class _SettingsStatusPill extends StatelessWidget {
-  const _SettingsStatusPill({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(GtgUi.pillRadius),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
-        ),
-      ),
-    );
-  }
-}
-
-/// Renders one tappable settings row with icon, copy, and trailing affordance.
 class _SettingsActionTile extends StatelessWidget {
   const _SettingsActionTile({
     required this.icon,
@@ -452,70 +310,6 @@ class _SettingsActionTile extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Renders the theme options as stable full-width selection tiles.
-class _ThemePreferenceGroup extends StatelessWidget {
-  const _ThemePreferenceGroup({
-    required this.options,
-    required this.selectedPreference,
-    required this.enabled,
-    required this.onSelected,
-  });
-
-  final List<_ThemeOption> options;
-  final AppThemePreference selectedPreference;
-  final bool enabled;
-  final ValueChanged<AppThemePreference> onSelected;
-
-  /// Builds a vertically stacked group that remains stable across text scales.
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      key: const Key('settings.theme.segmented'),
-      children: <Widget>[
-        for (var index = 0; index < options.length; index++) ...<Widget>[
-          _ThemePreferenceTile(
-            option: options[index],
-            selected: options[index].preference == selectedPreference,
-            enabled: enabled,
-            onTap: () => onSelected(options[index].preference),
-          ),
-          if (index != options.length - 1)
-            const SizedBox(height: GtgUi.secondarySectionSpacing),
-        ],
-      ],
-    );
-  }
-}
-
-/// Renders one full-width theme option row with selected-state feedback.
-class _ThemePreferenceTile extends StatelessWidget {
-  const _ThemePreferenceTile({
-    required this.option,
-    required this.selected,
-    required this.enabled,
-    required this.onTap,
-  });
-
-  final _ThemeOption option;
-  final bool selected;
-  final bool enabled;
-  final VoidCallback onTap;
-
-  /// Builds a resilient theme-selection tile with clear affordance and status.
-  @override
-  Widget build(BuildContext context) {
-    return GtgSelectableCard(
-      key: Key('settings.theme.option.${option.preference.name}'),
-      icon: option.icon,
-      accent: Theme.of(context).colorScheme.primary,
-      title: option.label,
-      selected: selected,
-      onTap: onTap,
-      enabled: enabled,
     );
   }
 }

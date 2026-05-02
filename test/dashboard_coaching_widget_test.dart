@@ -101,6 +101,14 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('dashboard.missionCard')), findsNothing);
+    expect(find.byKey(const Key('dashboard.missionLogButton')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('dashboard.coachCard')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(find.byKey(const Key('dashboard.coachCard')), findsOneWidget);
     expect(
       find.byKey(const Key('dashboard.coach.recommended')),

@@ -49,7 +49,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('dashboard.todayTotalValue')), findsOneWidget);
-    expect(find.text('0회'), findsWidgets);
+    expect(find.text('오늘 1세트 준비 완료'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('quicklog.pushUp.record')),

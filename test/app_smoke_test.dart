@@ -43,6 +43,24 @@ void main() {
     expect(find.text('홈'), findsOneWidget);
   });
 
+  testWidgets('app uses dark theme even when platform is light', (
+    tester,
+  ) async {
+    addTearDown(() {
+      tester.platformDispatcher.clearPlatformBrightnessTestValue();
+    });
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+
+    await tester.pumpWidget(
+      const ProviderScope(child: GtgApp(locale: Locale('en'))),
+    );
+    await tester.pumpAndSettle();
+
+    final nav = find.byType(NavigationBar);
+    expect(nav, findsOneWidget);
+    expect(Theme.of(tester.element(nav)).brightness, Brightness.dark);
+  });
+
   testWidgets('app falls back to English for non-Korean device locales', (
     tester,
   ) async {

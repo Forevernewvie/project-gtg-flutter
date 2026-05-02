@@ -8,6 +8,7 @@ import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/calendar/calendar_utils.dart';
 import 'package:project_gtg/features/calendar/calendar_view_model.dart';
+import 'package:project_gtg/features/coaching/state/gtg_coach_providers.dart';
 import 'package:project_gtg/features/workout/presentation/exercise_ui_style.dart';
 import 'package:project_gtg/features/workout/presentation/workout_log_row.dart';
 import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
@@ -77,6 +78,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
 
     final colorScheme = Theme.of(context).colorScheme;
+    final rhythm = ref.watch(gtgRhythmSummaryProvider);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
@@ -150,6 +152,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         accent: colorScheme.secondary,
                       ),
                     ],
+                  ),
+                  const SizedBox(height: GtgUi.contentSpacing),
+                  _RhythmRecoveryBanner(
+                    activeDaysLast7: rhythm.activeDaysLast7,
+                    activeDaysLast14: rhythm.activeDaysLast14,
+                    missedDaysSinceLastLog: rhythm.missedDaysSinceLastLog,
                   ),
                   const SizedBox(height: GtgUi.contentSpacing),
                   _WeekdayRow(
@@ -304,6 +312,41 @@ class _MonthNavigationButton extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       constraints: const BoxConstraints.tightFor(width: 40, height: 40),
       icon: Icon(icon, size: 22),
+    );
+  }
+}
+
+/// Shows forgiving weekly rhythm or recovery guidance above the heatmap.
+class _RhythmRecoveryBanner extends StatelessWidget {
+  const _RhythmRecoveryBanner({
+    required this.activeDaysLast7,
+    required this.activeDaysLast14,
+    required this.missedDaysSinceLastLog,
+  });
+
+  final int activeDaysLast7;
+  final int activeDaysLast14;
+  final int missedDaysSinceLastLog;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final needsRecovery = missedDaysSinceLastLog > 0;
+
+    return GtgInfoBanner(
+      key: const Key('calendar.rhythmRecoveryBanner'),
+      message: needsRecovery
+          ? l10n.calendarRecoveryMessage(missedDaysSinceLastLog)
+          : l10n.calendarRhythmMessage(activeDaysLast7, activeDaysLast14),
+      backgroundColor: needsRecovery
+          ? colorScheme.tertiaryContainer.withValues(alpha: 0.50)
+          : colorScheme.primaryContainer.withValues(alpha: 0.36),
+      borderColor: needsRecovery ? colorScheme.tertiary : colorScheme.primary,
+      iconBackground: true,
+      icon: needsRecovery
+          ? Icons.restart_alt_rounded
+          : Icons.calendar_month_rounded,
     );
   }
 }

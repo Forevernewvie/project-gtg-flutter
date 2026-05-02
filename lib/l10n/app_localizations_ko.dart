@@ -27,6 +27,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dashboardSubtitle => '완벽하게 말고, 자주. 한 세트씩만.';
 
   @override
+  String get dashboardReadyTitle => '오늘 1세트 준비 완료';
+
+  @override
+  String dashboardPrimarySetHint(String exercise, int count) {
+    return '$exercise $count회, 딱 1세트부터 시작하세요.';
+  }
+
+  @override
   String activeDaysPill(int count) {
     return '활동일 $count일';
   }
@@ -440,4 +448,61 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get notifBody => '푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.';
+
+  @override
+  String get missionTodayTitle => '오늘의 GTG 미션';
+
+  @override
+  String get missionTodaySubtitle => '긴 운동이 아니라 오늘 다시 오게 만드는 작은 계획입니다.';
+
+  @override
+  String get missionRecoveryTitle => '복귀 미션';
+
+  @override
+  String missionRecoverySubtitle(int count) {
+    return '$count일 쉬었어요. 가벼운 1세트면 리듬을 다시 시작할 수 있습니다.';
+  }
+
+  @override
+  String get missionCompleteTitle => '오늘 미션 완료';
+
+  @override
+  String get missionCompleteSubtitle => '좋은 리듬입니다. 오늘 추가 세트는 선택입니다.';
+
+  @override
+  String missionLogAction(int count) {
+    return '$count회 기록';
+  }
+
+  @override
+  String get missionProgressLabel => '미션 진행도';
+
+  @override
+  String missionProgressValue(int done, int target) {
+    return '$done/$target세트';
+  }
+
+  @override
+  String get missionNextSetLabel => '다음 세트';
+
+  @override
+  String get missionDoneValue => '완료';
+
+  @override
+  String get missionRhythmLabel => '7일 리듬';
+
+  @override
+  String missionRhythmValue(int count) {
+    return '$count일 활동';
+  }
+
+  @override
+  String calendarRhythmMessage(int count7, int count14) {
+    return '최근 7일 중 $count7일 기록했습니다. 14일 기준 $count14일 활동 중이에요.';
+  }
+
+  @override
+  String calendarRecoveryMessage(int count) {
+    return '공백은 실패가 아닙니다. $count일 쉬었으니 오늘은 쉬운 1세트로 재시작하세요.';
+  }
 }

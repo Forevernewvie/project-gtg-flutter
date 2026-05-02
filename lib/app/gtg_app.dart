@@ -7,8 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../core/ads/ad_config.dart';
 import '../core/ads/ad_privacy_manager.dart';
 import '../core/gtg_theme.dart';
-import '../core/models/app_theme_preference.dart';
-import '../features/settings/state/theme_preference_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'root_overlays.dart';
 import 'router.dart';
@@ -32,7 +30,6 @@ class GtgApp extends ConsumerStatefulWidget {
 
 class _GtgAppState extends ConsumerState<GtgApp> {
   late final GoRouter _router = createRouter();
-  late final ThemeData _lightTheme = GtgTheme.light();
   late final ThemeData _darkTheme = GtgTheme.dark();
 
   @override
@@ -45,10 +42,6 @@ class _GtgAppState extends ConsumerState<GtgApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themePreferenceAsync = ref.watch(themePreferenceControllerProvider);
-    final themePreference =
-        themePreferenceAsync.asData?.value ?? AppThemePreference.system;
-
     return MaterialApp.router(
       locale: widget.locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -58,9 +51,9 @@ class _GtgAppState extends ConsumerState<GtgApp> {
           : null,
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       debugShowCheckedModeBanner: false,
-      theme: _lightTheme,
+      theme: _darkTheme,
       darkTheme: _darkTheme,
-      themeMode: themePreference.themeMode,
+      themeMode: ThemeMode.dark,
       routerConfig: _router,
       builder: (context, child) {
         return RootOverlays(child: child ?? const SizedBox.shrink());
