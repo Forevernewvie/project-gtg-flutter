@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="PROJECT GTG — Flutter 기반 로컬 퍼스트 GTG 운동 앱. 제품 기획, UI/UX 의사결정, 아키텍처, 테스트/릴리즈 운영 과정을 정리한 case study."
+      content="PROJECT GTG — Flutter로 만든 GTG 운동 기록 앱. 만들면서 바꾼 판단, 화면 설계 이유, 구조와 검증 과정을 정리했습니다."
     />
-    <meta property="og:title" content="PROJECT GTG | Flutter Mobile App Case Study" />
+    <meta property="og:title" content="PROJECT GTG | Flutter 앱 제작 기록" />
     <meta
       property="og:description"
-      content="운동 기록 앱을 제품 관점에서 설계하고 Flutter/Riverpod/local-first 아키텍처로 구현한 모바일 앱 case study."
+      content="짧고 자주 하는 운동을 기록하기 위해 만든 Flutter 앱의 제작 과정과 기술 정리."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="./screenshots/android_home.png" />
-    <title>PROJECT GTG | Flutter Mobile App Case Study</title>
+    <title>PROJECT GTG | Flutter 앱 제작 기록</title>
     <style>
       :root {
         color-scheme: dark;
@@ -554,11 +554,11 @@
           <span>PROJECT GTG</span>
         </a>
         <nav class="nav-links" aria-label="페이지 섹션">
-          <a href="#case-study">Case Study</a>
-          <a href="#ux">UX Decisions</a>
-          <a href="#tech">Tech</a>
-          <a href="#quality">Quality</a>
-          <a href="./privacy_policy.html">Privacy</a>
+          <a href="#case-study">요약</a>
+          <a href="#ux">UX</a>
+          <a href="#tech">구현</a>
+          <a href="#quality">검증</a>
+          <a href="./privacy_policy.html">개인정보</a>
         </nav>
       </div>
     </header>
@@ -566,16 +566,16 @@
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div>
-          <p class="eyebrow">Flutter · Local-first · Product Engineering</p>
-          <h1 id="hero-title">운동 앱을 “기록 도구”가 아니라 습관 제품으로 설계했습니다.</h1>
+          <p class="eyebrow">Flutter · GTG Workout Log · Android</p>
+          <h1 id="hero-title">짧게 자주 하는 운동을 놓치지 않게 기록하는 앱</h1>
           <p class="lead">
-            PROJECT GTG는 푸쉬업·풀업·딥스를 짧고 자주 수행하는 GTG 방식에 맞춘 모바일 앱입니다.
-            이 페이지는 제품 문제 정의, UI/UX 선택 이유, Flutter 아키텍처,
-            테스트와 릴리즈 운영까지 실제 앱 제작 과정을 정리한 case study입니다.
+            PROJECT GTG는 푸쉬업·풀업·딥스를 하루 중 여러 번 가볍게 수행하는 GTG 방식에 맞춰 만든 앱입니다.
+            처음에는 기능을 더 넣는 쪽으로 생각했지만, 실제로는 “켜자마자 기록할 수 있는가”가 더 중요했습니다.
+            그 판단을 기준으로 화면과 구조를 계속 줄여갔습니다.
           </p>
           <div class="hero-actions">
             <a class="button primary" href="https://github.com/Forevernewvie/project-gtg-flutter">GitHub 코드 보기</a>
-            <a class="button" href="./version.json">업데이트 JSON</a>
+            <a class="button" href="./version.json">업데이트 파일</a>
           </div>
           <div class="metrics" aria-label="프로젝트 요약 수치">
             <div class="metric"><strong>115+</strong><span>자동화 테스트 통과</span></div>
@@ -593,41 +593,41 @@
       <section id="case-study" aria-labelledby="case-study-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Case Study</p>
-            <h2 id="case-study-title">문제 → 결정 → 구현 → 검증</h2>
+            <p class="kicker">요약</p>
+            <h2 id="case-study-title">실제로 바꿔본 것들</h2>
           </div>
           <p>
-            좋은 제품 case study는 화면 나열보다 “왜 이렇게 만들었는지”가 보여야 합니다.
-            그래서 GTG를 실제 제품처럼 문제 정의와 트레이드오프 중심으로 정리했습니다.
+            화면을 예쁘게 만드는 것보다, 사용자가 앱을 여는 순간 무엇을 해야 하는지가 더 중요했습니다.
+            처음 만든 모습에서 덜어내고 남긴 것들을 기준으로 정리했습니다.
           </p>
         </div>
         <div class="grid two storyline">
           <article class="card">
-            <h3>문제: 운동 앱의 첫 경험이 너무 무겁다</h3>
+            <h3>첫 실행은 최대한 가볍게</h3>
             <p>
-              GTG는 실패 직전까지 몰아붙이는 운동이 아니라, 하루 중 짧은 세트를 반복해 습관을 만드는 방식입니다.
-              따라서 첫 화면은 설명보다 “지금 1세트 기록”을 빠르게 유도해야 했습니다.
+              GTG는 긴 운동 세션보다 짧은 세트를 자주 반복하는 방식입니다.
+              그래서 첫 화면에서 설명을 읽게 하기보다, 바로 오늘의 기록을 남길 수 있게 만드는 쪽을 우선했습니다.
             </p>
           </article>
           <article class="card">
-            <h3>결정: 서버보다 로컬 퍼스트</h3>
+            <h3>서버 없이도 먼저 쓸 수 있게</h3>
             <p>
-              초기 버전은 계정·동기화보다 빠른 실행과 안정성이 더 중요하다고 판단했습니다.
-              로컬 저장을 기본으로 두고, PocketBase 연동은 구성값이 있을 때만 작동하는 확장 지점으로 분리했습니다.
+              이 앱의 핵심 기능은 운동 기록과 확인입니다. 계정이나 동기화가 없어도 가치가 있어야 한다고 봤습니다.
+              그래서 기록은 로컬에 먼저 저장하고, 서버 연동은 나중에 켤 수 있는 구조만 남겼습니다.
             </p>
           </article>
           <article class="card">
-            <h3>구현: 기능별 상태와 저장소 경계 분리</h3>
+            <h3>기능은 나누고, 저장 방식은 감췄습니다</h3>
             <p>
-              Riverpod provider, repository interface, feature screen을 분리해 대시보드·캘린더·코치·설정 기능이
-              서로 직접 의존하지 않도록 설계했습니다.
+              대시보드, 캘린더, 코치, 설정이 서로의 내부 구현을 직접 알지 않도록 나눴습니다.
+              화면은 Riverpod 상태를 보고, 저장 방식은 repository 계층 뒤로 숨겼습니다.
             </p>
           </article>
           <article class="card">
-            <h3>검증: 출시 전 회귀 테스트와 스모크 기준</h3>
+            <h3>수정 후에는 테스트로 확인</h3>
             <p>
-              위젯/유닛/레이아웃 테스트와 Android 스모크 체크를 QA 매트릭스로 관리했습니다.
-              최근 변경 기준 전체 테스트는 115개 통과, 2개 스킵 상태입니다.
+              화면과 흐름을 계속 줄이다 보니, 의도치 않게 기록/설정/알림이 깨지지 않는지 확인할 기준이 필요했습니다.
+              위젯/유닛/레이아웃 테스트를 나눠두고, 최근 기준 전체 테스트는 115개 통과, 2개 스킵 상태입니다.
             </p>
           </article>
         </div>
@@ -636,34 +636,35 @@
       <section id="decisions" aria-labelledby="decisions-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Product Decisions</p>
-            <h2 id="decisions-title">핵심 제품 결정</h2>
+            <p class="kicker">결정</p>
+            <h2 id="decisions-title">처음과 달라진 부분</h2>
           </div>
-          <p>각 결정은 사용자의 첫 행동, 운영 비용, 향후 확장성을 기준으로 판단했습니다.</p>
+          <p>처음에는 온보딩, 서버 동기화, 설정 항목을 더 적극적으로 넣었습니다. 만들다 보니 지금 버전에 필요한 것과 나중에 붙여도 되는 것이 갈렸습니다.</p>
         </div>
         <div class="grid three">
           <article class="card">
-            <h3>1. 온보딩 제거</h3>
+            <h3>온보딩 제거</h3>
             <p>
-              첫 실행 온보딩을 과감히 제거했습니다. 운동 앱의 핵심 행동은 설명 읽기가 아니라 기록 시작이므로,
-              홈 진입을 우선해 이탈 가능성을 낮추는 방향을 택했습니다.
+              처음에는 운동 선택과 기준 반복 수를 받는 온보딩이 있었습니다.
+              그런데 운동 앱을 처음 켠 사람에게 필요한 건 설명보다 “한 세트 기록해보기”라고 보고, 첫 진입은 바로 홈으로 바꿨습니다.
             </p>
-            <div class="tag-row"><span class="tag green">Activation</span><span class="tag">Friction reduction</span></div>
+            <div class="tag-row"><span class="tag green">첫 진입</span><span class="tag">마찰 줄이기</span></div>
           </article>
           <article class="card">
-            <h3>2. 서버 기능 보류</h3>
+            <h3>서버 기능 보류</h3>
             <p>
-              서버가 있으면 멋져 보이지만 현재 가치에는 필수적이지 않았습니다. 비용과 운영 리스크를 줄이고,
-              앱은 오프라인에서 완결되도록 유지했습니다.
+              동기화 기능을 붙일 수 있게 PocketBase 연동 코드는 준비했지만, 지금 버전에서는 서버를 운영하지 않기로 했습니다.
+              기록 앱은 인터넷이 없어도 동작해야 하고, 초기에는 운영비보다 안정성이 더 중요하다고 봤습니다.
             </p>
-            <div class="tag-row"><span class="tag yellow">Product trade-off</span><span class="tag">Local-first</span></div>
+            <div class="tag-row"><span class="tag yellow">운영비 보류</span><span class="tag">로컬 저장</span></div>
           </article>
           <article class="card">
-            <h3>3. 코치 기능의 점진적 확장</h3>
+            <h3>코치 기능은 로컬 규칙부터</h3>
             <p>
-              GTG Coach는 로컬 룰 엔진으로 기본 추천을 제공하고, 추후 서버 추천이 가능하도록 같은 모델 형태로 확장했습니다.
+              GTG Coach는 먼저 로컬 규칙으로 추천을 만듭니다.
+              기록이 며칠 비었는지, 기준 반복 수가 오래됐는지 같은 단순한 신호부터 사용하고, 나중에 서버 추천으로 바꿔도 화면 모델은 유지되게 했습니다.
             </p>
-            <div class="tag-row"><span class="tag">Extensible architecture</span><span class="tag green">Fallback</span></div>
+            <div class="tag-row"><span class="tag">확장 가능</span><span class="tag green">로컬 대안</span></div>
           </article>
         </div>
       </section>
@@ -671,55 +672,55 @@
       <section aria-labelledby="screens-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Screens</p>
+            <p class="kicker">화면</p>
             <h2 id="screens-title">핵심 화면</h2>
           </div>
-          <p>홈은 빠른 기록, 캘린더는 회고, 설정은 관리 기능으로 역할을 분리했습니다.</p>
+          <p>각 화면은 한 가지 역할만 뚜렷하게 갖도록 나눴습니다.</p>
         </div>
         <div class="screens" aria-label="PROJECT GTG 앱 스크린샷 목록">
-          <figure class="screen-shot"><img src="./screenshots/android_home.png" alt="홈 화면" /><span>Home · 빠른 기록</span></figure>
-          <figure class="screen-shot"><img src="./screenshots/android_calendar.png" alt="캘린더 화면" /><span>Calendar · 히트맵</span></figure>
-          <figure class="screen-shot"><img src="./screenshots/android_reminders.png" alt="리마인더 설정 화면" /><span>Reminders · 습관 알림</span></figure>
-          <figure class="screen-shot"><img src="./screenshots/android_all_logs.png" alt="전체 기록 화면" /><span>Logs · 기록 검토</span></figure>
-          <figure class="screen-shot"><img src="./screenshots/android_settings.png" alt="설정 화면" /><span>Settings · 관리</span></figure>
+          <figure class="screen-shot"><img src="./screenshots/android_home.png" alt="홈 화면" /><span>Home · 오늘 기록</span></figure>
+          <figure class="screen-shot"><img src="./screenshots/android_calendar.png" alt="캘린더 화면" /><span>Calendar · 운동 흐름</span></figure>
+          <figure class="screen-shot"><img src="./screenshots/android_reminders.png" alt="리마인더 설정 화면" /><span>Reminders · 알림 설정</span></figure>
+          <figure class="screen-shot"><img src="./screenshots/android_all_logs.png" alt="전체 기록 화면" /><span>Logs · 전체 기록</span></figure>
+          <figure class="screen-shot"><img src="./screenshots/android_settings.png" alt="설정 화면" /><span>Settings · 관리 화면</span></figure>
         </div>
       </section>
 
       <section id="ux" aria-labelledby="ux-title">
         <div class="section-head">
           <div>
-            <p class="kicker">UI/UX Rationale</p>
-            <h2 id="ux-title">왜 이런 UX를 택했나</h2>
+            <p class="kicker">UX 메모</p>
+            <h2 id="ux-title">화면을 이렇게 잡은 이유</h2>
           </div>
-          <p>GTG 사용자는 오래 탐색하지 않습니다. 앱을 여는 순간 바로 기록하거나, 오늘의 리듬을 확인해야 합니다.</p>
+          <p>운동 중에 앱을 오래 들여다보지 않는다는 전제로 화면을 잡았습니다.</p>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>즉시 행동 가능한 홈</h3>
+            <h3>홈에서는 바로 기록</h3>
             <p>
-              홈 화면의 우선순위는 “오늘 몇 세트를 했는가”와 “지금 바로 추가할 수 있는가”입니다.
-              그래서 상세 설정은 뒤로 빼고, 기록 CTA와 요약 정보를 전면에 배치했습니다.
+              홈에서는 오늘 몇 세트를 했는지 보고 바로 추가할 수 있어야 합니다.
+              자세한 설정이나 설명은 뒤로 빼고, 기록 버튼과 오늘 요약을 먼저 보이게 했습니다.
             </p>
           </article>
           <article class="card">
-            <h3>운동 앱에 맞춘 다크 톤</h3>
+            <h3>운동 중 보기 편한 어두운 화면</h3>
             <p>
-              너무 밝은 화면은 운동 중 확인하는 앱과 맞지 않는다고 판단했습니다.
-              어두운 배경, 높은 대비의 포인트 컬러, 카드형 섹션으로 피로도를 낮추고 집중감을 만들었습니다.
+              운동 중 잠깐 확인하는 앱이라 너무 밝은 화면은 부담스럽다고 느꼈습니다.
+              그래서 다크 톤을 기본으로 두고, 중요한 숫자와 버튼만 눈에 띄게 만들었습니다.
             </p>
           </article>
           <article class="card">
-            <h3>설정 화면 정보량 분리</h3>
+            <h3>설정은 목적별로 나누기</h3>
             <p>
-              설정에 모든 기능을 몰아넣으면 관리 화면이 복잡해집니다.
-              GTG Coach, 리마인더, 전체 기록 같은 목적별 하위 화면으로 나눠 탐색 부담을 낮췄습니다.
+              설정 화면에 기능이 계속 쌓이면서 한 번 정리가 필요했습니다.
+              코치, 리마인더, 전체 기록처럼 목적이 다른 항목은 별도 화면으로 빼서 관리 화면을 가볍게 했습니다.
             </p>
           </article>
           <article class="card">
-            <h3>초보자 안내는 흐름 안으로</h3>
+            <h3>설명은 사용 흐름 안에서</h3>
             <p>
-              별도 온보딩 대신 화면 안의 문구와 코치 카드로 안내합니다.
-              사용자는 설명을 통과해야 하는 것이 아니라, 사용하면서 의미를 이해하게 됩니다.
+              GTG를 모르는 사람도 처음부터 긴 설명을 읽을 필요는 없다고 봤습니다.
+              대신 홈과 코치 화면에서 필요한 문장만 짧게 보여주고, 사용하면서 이해하게 만들었습니다.
             </p>
           </article>
         </div>
@@ -728,60 +729,60 @@
       <section id="tech" aria-labelledby="tech-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Technical Design</p>
-            <h2 id="tech-title">기술 설명</h2>
+            <p class="kicker">구현</p>
+            <h2 id="tech-title">구현 방식</h2>
           </div>
-          <p>Flutter 앱이지만 핵심은 “상태, 저장소, 확장성, 테스트 가능성”입니다.</p>
+          <p>화면보다 오래 고민한 부분은 상태와 저장소의 경계였습니다.</p>
         </div>
         <article class="card architecture">
           <div class="layers">
             <div class="layer">
               <strong>Presentation</strong>
               <div>
-                <code>DashboardScreen</code>, <code>CalendarScreen</code>, <code>GtgCoachScreen</code>, <code>SettingsScreen</code>.
-                기능별 화면을 분리하고 공통 UI 토큰은 <code>GtgUi</code>, <code>GtgTheme</code>로 재사용합니다.
+                <code>DashboardScreen</code>, <code>CalendarScreen</code>, <code>GtgCoachScreen</code>, <code>SettingsScreen</code>으로 화면을 나눴습니다.
+                반복되는 카드, 여백, 색상은 <code>GtgUi</code>, <code>GtgTheme</code> 쪽으로 모았습니다.
               </div>
             </div>
             <div class="layer">
               <strong>State</strong>
               <div>
-                <code>flutter_riverpod</code> 기반 controller/provider 구성. 화면은 provider를 구독하고,
-                저장·계산·알림 로직은 feature state 계층에 둡니다.
+                상태 관리는 <code>flutter_riverpod</code>를 사용했습니다.
+                화면은 provider를 읽고, 저장·계산·알림 처리는 각 기능의 state 계층에서 맡도록 분리했습니다.
               </div>
             </div>
             <div class="layer">
               <strong>Domain</strong>
               <div>
-                GTG Coach 정책, 운동 통계, 리마인더 플래너를 순수 로직에 가깝게 분리해 유닛 테스트하기 쉽게 만들었습니다.
+                GTG Coach 정책, 운동 통계, 리마인더 계산은 화면 밖으로 빼서 유닛 테스트하기 쉽게 만들었습니다.
               </div>
             </div>
             <div class="layer">
               <strong>Data</strong>
               <div>
-                <code>WorkoutLogRepository</code>, <code>UserPreferencesRepository</code> 등 repository interface로 저장소를 감쌉니다.
-                현재는 로컬 퍼스트이며, PocketBase는 설정된 경우에만 동기화됩니다.
+                <code>WorkoutLogRepository</code>, <code>UserPreferencesRepository</code> 같은 인터페이스로 저장소를 감쌌습니다.
+                현재는 로컬 저장이 기본이고, PocketBase는 설정값이 있을 때만 동기화됩니다.
               </div>
             </div>
             <div class="layer">
               <strong>Ops</strong>
               <div>
-                GitHub Pages의 <code>version.json</code>으로 업데이트 안내를 제공하고, CI/릴리즈 스크립트로 분석·테스트·빌드 기준을 관리합니다.
+                GitHub Pages의 <code>version.json</code>으로 업데이트 안내를 제공하고, CI에서 format/analyze/test/build를 확인합니다.
               </div>
             </div>
           </div>
         </article>
         <div class="grid three" style="margin-top: 16px">
           <article class="card">
-            <h3>Navigation</h3>
-            <p><code>go_router</code>의 <code>StatefulShellRoute</code>로 홈/캘린더/설정 탭 상태를 유지합니다.</p>
+            <h3>라우팅</h3>
+            <p><code>go_router</code>의 <code>StatefulShellRoute</code>로 홈/캘린더/설정 탭을 구성했습니다.</p>
           </article>
           <article class="card">
-            <h3>Persistence</h3>
-            <p>로컬 저장소 실패 시 기본값 fallback, 손상 JSON 격리, 임시 파일 정리까지 테스트합니다.</p>
+            <h3>저장소</h3>
+            <p>저장소 실패 시 기본값으로 돌아가고, 손상된 JSON은 격리하도록 처리했습니다.</p>
           </article>
           <article class="card">
-            <h3>Localization</h3>
-            <p>ARB 기반 한국어/영어 지원으로 스토어 배포와 해외 사용자 확장을 고려했습니다.</p>
+            <h3>다국어</h3>
+            <p>ARB 기반으로 한국어/영어 문구를 관리합니다.</p>
           </article>
         </div>
       </section>
@@ -789,15 +790,15 @@
       <section id="quality" aria-labelledby="quality-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Quality & Release</p>
-            <h2 id="quality-title">품질과 출시 준비</h2>
+            <p class="kicker">검증</p>
+            <h2 id="quality-title">검증과 출시 준비</h2>
           </div>
-          <p>사이드 프로젝트라도 “돌아갑니다”가 아니라 “어떻게 검증했는가”를 보여주는 것이 중요합니다.</p>
+          <p>혼자 만든 앱이라도 수정 후 확인할 기준은 필요했습니다.</p>
         </div>
         <div class="grid two">
           <article class="card">
-            <h3>검증 커맨드</h3>
-            <p>최근 변경 후 아래 검증을 통과했습니다.</p>
+            <h3>확인한 것</h3>
+            <p>최근 변경 후 아래 항목을 확인했습니다.</p>
             <ul>
               <li><code>flutter analyze</code> — No issues found</li>
               <li><code>flutter test --dart-define=UI_TESTING=true</code> — 115 passed, 2 skipped</li>
@@ -808,7 +809,7 @@
             <h3>QA 매트릭스</h3>
             <p>
               홈 빠른 기록, 캘린더 히트맵, 리마인더 권한, 설정 라우팅, 저장소 손상 복구,
-              Android 레이아웃 대응을 테스트 파일과 연결해 관리합니다.
+              Android 레이아웃 대응을 테스트 파일과 연결해 두었습니다.
             </p>
             <div class="tag-row"><a class="tag" href="./qa/pre_release_test_matrix.md">QA Matrix</a><a class="tag" href="./store/play_console_checklist.md">Store Checklist</a></div>
           </article>
@@ -818,47 +819,47 @@
       <section aria-labelledby="evidence-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Code Evidence</p>
-            <h2 id="evidence-title">코드로 확인할 수 있는 근거</h2>
+            <p class="kicker">코드</p>
+            <h2 id="evidence-title">관련 코드</h2>
           </div>
-          <p>구현 근거를 바로 확인할 수 있도록 핵심 파일을 연결했습니다.</p>
+          <p>페이지에서 설명한 내용과 연결되는 파일입니다.</p>
         </div>
         <div class="grid two code-links">
           <article class="card">
-            <h3>제품/앱 구조</h3>
+            <h3>앱 구조</h3>
             <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/app/router.dart">lib/app/router.dart — 탭 라우팅</a>
             <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/app/root_overlays.dart">lib/app/root_overlays.dart — 스플래시/업데이트 오버레이</a>
-            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/core/gtg_theme.dart">lib/core/gtg_theme.dart — 디자인 토큰 기반 테마</a>
+            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/core/gtg_theme.dart">lib/core/gtg_theme.dart — 테마와 공통 UI</a>
           </article>
           <article class="card">
-            <h3>비즈니스 로직/데이터</h3>
-            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/features/coaching/adaptive_gtg_coach.dart">adaptive_gtg_coach.dart — 로컬 코치 룰 엔진</a>
-            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/data/persistence/persistence_repositories.dart">persistence_repositories.dart — repository 경계</a>
-            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/data/remote/cloud_sync_service.dart">cloud_sync_service.dart — 선택적 동기화 확장점</a>
+            <h3>로직과 데이터</h3>
+            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/features/coaching/adaptive_gtg_coach.dart">adaptive_gtg_coach.dart — 코치 추천 규칙</a>
+            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/data/persistence/persistence_repositories.dart">persistence_repositories.dart — repository 구조</a>
+            <a href="https://github.com/Forevernewvie/project-gtg-flutter/blob/main/lib/data/remote/cloud_sync_service.dart">cloud_sync_service.dart — 선택적 동기화</a>
           </article>
         </div>
       </section>
 
       <section aria-labelledby="closing-title">
         <article class="card">
-          <p class="kicker">Closing</p>
-          <h2 id="closing-title">이 프로젝트가 보여주는 역량</h2>
+          <p class="kicker">정리</p>
+          <h2 id="closing-title">남긴 기준</h2>
           <p class="quote">
-            “사용자가 이탈하는 지점”을 제품 관점에서 정의하고, 그 결정을 코드 구조와 테스트로 끝까지 연결할 수 있는 개발자입니다.
-            단순히 Flutter 화면을 만든 것이 아니라, 로컬 퍼스트 전략, 기능 우선순위, 확장 가능한 데이터 경계,
-            출시 검증까지 실제 앱 운영 흐름으로 설계했습니다.
+            PROJECT GTG는 기능을 계속 더하기보다, 사용자가 바로 기록할 수 있는 흐름을 우선한 앱입니다.
+            서버 연동이나 온보딩처럼 넣을 수 있는 기능도 현재 가치에 맞지 않으면 보류했고,
+            그 결정이 코드 구조와 테스트에도 남도록 정리했습니다.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="https://github.com/Forevernewvie/project-gtg-flutter">Repository</a>
-            <a class="button" href="./privacy_policy.html">Privacy Policy</a>
-            <a class="button" href="./store/play_listing_ko.md">Store Copy KO</a>
+            <a class="button primary" href="https://github.com/Forevernewvie/project-gtg-flutter">GitHub 저장소</a>
+            <a class="button" href="./privacy_policy.html">개인정보 처리방침</a>
+            <a class="button" href="./store/play_listing_ko.md">스토어 문구</a>
           </div>
         </article>
       </section>
 
       <footer class="footer">
         <span>© 2026 PROJECT GTG</span>
-        <span>Built for GitHub Pages · Flutter mobile app case study</span>
+        <span>Flutter로 만든 Android 앱 · GitHub Pages에 정리</span>
       </footer>
     </main>
   </body>

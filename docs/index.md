@@ -1,11 +1,14 @@
 ---
-title: PROJECT GTG Case Study
+title: PROJECT GTG 제작 기록
 ---
 
-# PROJECT GTG Case Study
+# PROJECT GTG 제작 기록
 
-Flutter 기반 로컬 퍼스트 운동 앱 PROJECT GTG의 제품/기술 case study입니다.
+PROJECT GTG는 푸쉬업, 풀업, 딥스처럼 짧게 자주 하는 운동을 기록하기 위해 만든 Flutter 앱입니다.
+처음에는 온보딩, 설정 항목, 서버 동기화처럼 넣고 싶은 기능이 많았지만, 만들면서 “앱을 켠 순간 바로 기록할 수 있는가”를 더 중요한 기준으로 잡았습니다.
 
-- [Case Study 메인](index.html)
+이 문서는 화면 소개만 하기보다, 실제로 어떤 기능을 덜어냈고 어떤 구조는 남겨뒀는지 정리한 제작 기록입니다.
+
+- [제작 기록 메인](index.html)
 - [개인정보 처리방침](privacy_policy.html)
-- [업데이트 JSON](version.json)
+- [업데이트 파일](version.json)
