@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="PROJECT GTG — Flutter 기반 로컬 퍼스트 운동 앱 포트폴리오. 4년차 모바일 앱 개발자의 제품 기획, UI/UX 의사결정, 아키텍처, 테스트/릴리즈 역량을 정리한 GitHub Pages case study."
+      content="PROJECT GTG — Flutter 기반 로컬 퍼스트 GTG 운동 앱. 제품 기획, UI/UX 의사결정, 아키텍처, 테스트/릴리즈 운영 과정을 정리한 case study."
     />
-    <meta property="og:title" content="PROJECT GTG | Flutter Mobile App Portfolio" />
+    <meta property="og:title" content="PROJECT GTG | Flutter Mobile App Case Study" />
     <meta
       property="og:description"
-      content="운동 기록 앱을 제품 관점에서 설계하고 Flutter/Riverpod/local-first 아키텍처로 구현한 취업용 포트폴리오 case study."
+      content="운동 기록 앱을 제품 관점에서 설계하고 Flutter/Riverpod/local-first 아키텍처로 구현한 모바일 앱 case study."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="./screenshots/android_home.png" />
-    <title>PROJECT GTG | Flutter Mobile App Portfolio</title>
+    <title>PROJECT GTG | Flutter Mobile App Case Study</title>
     <style>
       :root {
         color-scheme: dark;
@@ -549,7 +549,7 @@
     <a class="skip-link" href="#case-study">본문으로 건너뛰기</a>
     <header class="nav" aria-label="상단 내비게이션">
       <div class="nav-inner">
-        <a class="brand" href="#top" aria-label="PROJECT GTG 포트폴리오 홈">
+        <a class="brand" href="#top" aria-label="PROJECT GTG 홈">
           <span class="brand-mark">G</span>
           <span>PROJECT GTG</span>
         </a>
@@ -566,16 +566,15 @@
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div>
-          <p class="eyebrow">Flutter · Local-first · Product Engineering Portfolio</p>
+          <p class="eyebrow">Flutter · Local-first · Product Engineering</p>
           <h1 id="hero-title">운동 앱을 “기록 도구”가 아니라 습관 제품으로 설계했습니다.</h1>
           <p class="lead">
             PROJECT GTG는 푸쉬업·풀업·딥스를 짧고 자주 수행하는 GTG 방식에 맞춘 모바일 앱입니다.
-            이 포트폴리오는 4년차 개발자 관점에서 제품 문제 정의, UI/UX 선택 이유, Flutter 아키텍처,
-            테스트와 릴리즈 운영까지 한 번에 설명하는 case study입니다.
+            이 페이지는 제품 문제 정의, UI/UX 선택 이유, Flutter 아키텍처,
+            테스트와 릴리즈 운영까지 실제 앱 제작 과정을 정리한 case study입니다.
           </p>
           <div class="hero-actions">
             <a class="button primary" href="https://github.com/Forevernewvie/project-gtg-flutter">GitHub 코드 보기</a>
-            <a class="button" href="#interview-hooks">면접 포인트 보기</a>
             <a class="button" href="./version.json">업데이트 JSON</a>
           </div>
           <div class="metrics" aria-label="프로젝트 요약 수치">
@@ -598,7 +597,7 @@
             <h2 id="case-study-title">문제 → 결정 → 구현 → 검증</h2>
           </div>
           <p>
-            면접관이 보기 좋은 포트폴리오는 화면 나열보다 “왜 이렇게 만들었는지”가 보여야 합니다.
+            좋은 제품 case study는 화면 나열보다 “왜 이렇게 만들었는지”가 보여야 합니다.
             그래서 GTG를 실제 제품처럼 문제 정의와 트레이드오프 중심으로 정리했습니다.
           </p>
         </div>
@@ -634,13 +633,13 @@
         </div>
       </section>
 
-      <section id="interview-hooks" aria-labelledby="hooks-title">
+      <section id="decisions" aria-labelledby="decisions-title">
         <div class="section-head">
           <div>
-            <p class="kicker">Interview Hooks</p>
-            <h2 id="hooks-title">면접관을 이끌 포인트</h2>
+            <p class="kicker">Product Decisions</p>
+            <h2 id="decisions-title">핵심 제품 결정</h2>
           </div>
-          <p>각 항목은 “왜?”라는 후속 질문으로 이어지도록 설계했습니다.</p>
+          <p>각 결정은 사용자의 첫 행동, 운영 비용, 향후 확장성을 기준으로 판단했습니다.</p>
         </div>
         <div class="grid three">
           <article class="card">
@@ -732,7 +731,7 @@
             <p class="kicker">Technical Design</p>
             <h2 id="tech-title">기술 설명</h2>
           </div>
-          <p>Flutter 앱이지만 포트폴리오 관점에서는 “상태, 저장소, 확장성, 테스트 가능성”이 핵심입니다.</p>
+          <p>Flutter 앱이지만 핵심은 “상태, 저장소, 확장성, 테스트 가능성”입니다.</p>
         </div>
         <article class="card architecture">
           <div class="layers">
@@ -822,7 +821,7 @@
             <p class="kicker">Code Evidence</p>
             <h2 id="evidence-title">코드로 확인할 수 있는 근거</h2>
           </div>
-          <p>면접에서 바로 열어볼 수 있도록 핵심 파일을 연결했습니다.</p>
+          <p>구현 근거를 바로 확인할 수 있도록 핵심 파일을 연결했습니다.</p>
         </div>
         <div class="grid two code-links">
           <article class="card">
@@ -858,8 +857,8 @@
       </section>
 
       <footer class="footer">
-        <span>© 2026 PROJECT GTG Portfolio</span>
-        <span>Built for GitHub Pages · Flutter side project case study</span>
+        <span>© 2026 PROJECT GTG</span>
+        <span>Built for GitHub Pages · Flutter mobile app case study</span>
       </footer>
     </main>
   </body>
