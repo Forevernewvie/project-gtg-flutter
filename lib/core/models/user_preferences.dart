@@ -16,7 +16,7 @@ class UserPreferences {
   final DateTime? primaryExerciseLastMaxTestedAt;
 
   static const UserPreferences defaults = UserPreferences(
-    hasCompletedOnboarding: false,
+    hasCompletedOnboarding: true,
     primaryExercise: ExerciseType.pushUp,
   );
 

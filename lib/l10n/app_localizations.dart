@@ -985,6 +985,112 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No penalty for a gap. You missed {count} days; restart with one easy set today.'**
   String calendarRecoveryMessage(int count);
+
+  /// No description provided for @cloudSyncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Sync'**
+  String get cloudSyncTitle;
+
+  /// No description provided for @cloudSyncConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'PocketBase is configured. Logs and coach settings sync automatically.'**
+  String get cloudSyncConfigured;
+
+  /// No description provided for @cloudSyncNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.'**
+  String get cloudSyncNotConfigured;
+
+  /// No description provided for @adaptiveCoachTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adaptive Coach'**
+  String get adaptiveCoachTitle;
+
+  /// No description provided for @adaptiveCoachSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server-ready guidance with local fallback rules.'**
+  String get adaptiveCoachSubtitle;
+
+  /// No description provided for @adaptiveCoachRemoteSource.
+  ///
+  /// In en, this message translates to:
+  /// **'PocketBase'**
+  String get adaptiveCoachRemoteSource;
+
+  /// No description provided for @adaptiveCoachLocalSource.
+  ///
+  /// In en, this message translates to:
+  /// **'local rules'**
+  String get adaptiveCoachLocalSource;
+
+  /// No description provided for @adaptiveCoachIntensityRecover.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery'**
+  String get adaptiveCoachIntensityRecover;
+
+  /// No description provided for @adaptiveCoachIntensityMaintain.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain'**
+  String get adaptiveCoachIntensityMaintain;
+
+  /// No description provided for @adaptiveCoachIntensityProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get adaptiveCoachIntensityProgress;
+
+  /// No description provided for @adaptiveCoachReasonRetestDue.
+  ///
+  /// In en, this message translates to:
+  /// **'max test is due'**
+  String get adaptiveCoachReasonRetestDue;
+
+  /// No description provided for @adaptiveCoachReasonRestartAfterGap.
+  ///
+  /// In en, this message translates to:
+  /// **'recent gap detected'**
+  String get adaptiveCoachReasonRestartAfterGap;
+
+  /// No description provided for @adaptiveCoachReasonRecoverVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'recovery volume recommended'**
+  String get adaptiveCoachReasonRecoverVolume;
+
+  /// No description provided for @adaptiveCoachReasonMaintainVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'steady volume recommended'**
+  String get adaptiveCoachReasonMaintainVolume;
+
+  /// No description provided for @adaptiveCoachReasonProgressVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'stable rhythm detected'**
+  String get adaptiveCoachReasonProgressVolume;
+
+  /// No description provided for @adaptiveCoachRecommendationLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{intensity} · {reason} · source: {source}'**
+  String adaptiveCoachRecommendationLine(
+    String intensity,
+    String reason,
+    String source,
+  );
+
+  /// No description provided for @adaptiveCoachRecommendedSetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended sets'**
+  String get adaptiveCoachRecommendedSetsLabel;
 }
 
 class _AppLocalizationsDelegate

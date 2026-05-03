@@ -51,7 +51,7 @@ void main() {
       final before = await container.read(
         userPreferencesControllerProvider.future,
       );
-      expect(before.hasCompletedOnboarding, isFalse);
+      expect(before.hasCompletedOnboarding, isTrue);
       expect(before.primaryExercise, ExerciseType.pushUp);
 
       await container

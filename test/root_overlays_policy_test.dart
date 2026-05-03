@@ -69,7 +69,7 @@ void main() {
     );
   });
 
-  test('onboarding shows only after splash for incomplete preferences', () {
+  test('onboarding is disabled even for incomplete first-run preferences', () {
     expect(
       RootOverlaysPolicy.shouldShowOnboarding(
         environment: _prodEnv,
@@ -79,7 +79,7 @@ void main() {
           primaryExercise: ExerciseType.pushUp,
         ),
       ),
-      isTrue,
+      isFalse,
     );
     expect(
       RootOverlaysPolicy.shouldShowOnboarding(

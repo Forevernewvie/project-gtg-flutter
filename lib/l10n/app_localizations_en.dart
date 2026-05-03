@@ -524,4 +524,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String calendarRecoveryMessage(int count) {
     return 'No penalty for a gap. You missed $count days; restart with one easy set today.';
   }
+
+  @override
+  String get cloudSyncTitle => 'Cloud Sync';
+
+  @override
+  String get cloudSyncConfigured =>
+      'PocketBase is configured. Logs and coach settings sync automatically.';
+
+  @override
+  String get cloudSyncNotConfigured =>
+      'Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.';
+
+  @override
+  String get adaptiveCoachTitle => 'Adaptive Coach';
+
+  @override
+  String get adaptiveCoachSubtitle =>
+      'Server-ready guidance with local fallback rules.';
+
+  @override
+  String get adaptiveCoachRemoteSource => 'PocketBase';
+
+  @override
+  String get adaptiveCoachLocalSource => 'local rules';
+
+  @override
+  String get adaptiveCoachIntensityRecover => 'Recovery';
+
+  @override
+  String get adaptiveCoachIntensityMaintain => 'Maintain';
+
+  @override
+  String get adaptiveCoachIntensityProgress => 'Progress';
+
+  @override
+  String get adaptiveCoachReasonRetestDue => 'max test is due';
+
+  @override
+  String get adaptiveCoachReasonRestartAfterGap => 'recent gap detected';
+
+  @override
+  String get adaptiveCoachReasonRecoverVolume => 'recovery volume recommended';
+
+  @override
+  String get adaptiveCoachReasonMaintainVolume => 'steady volume recommended';
+
+  @override
+  String get adaptiveCoachReasonProgressVolume => 'stable rhythm detected';
+
+  @override
+  String adaptiveCoachRecommendationLine(
+    String intensity,
+    String reason,
+    String source,
+  ) {
+    return '$intensity · $reason · source: $source';
+  }
+
+  @override
+  String get adaptiveCoachRecommendedSetsLabel => 'Recommended sets';
 }

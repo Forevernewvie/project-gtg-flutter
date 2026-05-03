@@ -6,6 +6,7 @@ import '../../../../core/ui/gtg_ui.dart';
 import '../../../../features/onboarding/state/user_preferences_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../l10n/exercise_type_l10n.dart';
+import '../../../../data/remote/pocketbase_models.dart';
 import '../../gtg_coach_policy.dart';
 import '../../gtg_insight_engine.dart';
 import '../../state/gtg_coach_providers.dart';
@@ -50,6 +51,9 @@ class GtgCoachScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final summary = ref.watch(gtgCoachSummaryProvider);
     final insights = ref.watch(gtgInsightsProvider);
+    final adaptiveRecommendation = ref.watch(
+      adaptiveGtgCoachRecommendationProvider,
+    );
     final materialL10n = MaterialLocalizations.of(context);
     final lastTestedLabel = summary.lastMaxTestedAt == null
         ? l10n.coachLastTestedNever
@@ -174,6 +178,16 @@ class GtgCoachScreen extends ConsumerWidget {
               ],
             ),
           ),
+          adaptiveRecommendation.when(
+            data: (recommendation) => Column(
+              children: <Widget>[
+                const SizedBox(height: GtgUi.primarySectionSpacing),
+                _AdaptiveCoachCard(recommendation: recommendation),
+              ],
+            ),
+            loading: () => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
           if (insights.isNotEmpty) ...<Widget>[
             const SizedBox(height: GtgUi.primarySectionSpacing),
             _CoachInsightsCard(insights: insights),
@@ -289,6 +303,79 @@ class _CoachAlignedStatRow extends StatelessWidget {
       },
     );
   }
+}
+
+class _AdaptiveCoachCard extends StatelessWidget {
+  const _AdaptiveCoachCard({required this.recommendation});
+
+  final GtgCoachRecommendation recommendation;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final source = recommendation.isRemote
+        ? l10n.adaptiveCoachRemoteSource
+        : l10n.adaptiveCoachLocalSource;
+
+    return GtgSectionCard(
+      key: const Key('coach.adaptiveRecommendation'),
+      icon: Icons.cloud_sync_rounded,
+      accent: colorScheme.primary,
+      title: l10n.adaptiveCoachTitle,
+      subtitle: l10n.adaptiveCoachSubtitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GtgResponsivePair(
+            primary: _CoachStatRow(
+              label: l10n.adaptiveCoachRecommendedSetsLabel,
+              value: l10n.coachSetsShort(recommendation.recommendedSets),
+            ),
+            secondary: _CoachStatRow(
+              label: l10n.coachRecommendedRepsLabel,
+              value: l10n.repsWithUnit(recommendation.recommendedRepsPerSet),
+            ),
+          ),
+          const SizedBox(height: GtgUi.controlSpacing),
+          _CoachInfoBanner(
+            icon: _adaptiveIcon(recommendation.intensity),
+            message: l10n.adaptiveCoachRecommendationLine(
+              _formatIntensity(l10n, recommendation.intensity),
+              _formatRecommendationReason(l10n, recommendation.reasonCode),
+              source,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+IconData _adaptiveIcon(GtgCoachIntensity intensity) {
+  return switch (intensity) {
+    GtgCoachIntensity.recover => Icons.spa_rounded,
+    GtgCoachIntensity.maintain => Icons.check_circle_rounded,
+    GtgCoachIntensity.progress => Icons.trending_up_rounded,
+  };
+}
+
+String _formatIntensity(AppLocalizations l10n, GtgCoachIntensity intensity) {
+  return switch (intensity) {
+    GtgCoachIntensity.recover => l10n.adaptiveCoachIntensityRecover,
+    GtgCoachIntensity.maintain => l10n.adaptiveCoachIntensityMaintain,
+    GtgCoachIntensity.progress => l10n.adaptiveCoachIntensityProgress,
+  };
+}
+
+String _formatRecommendationReason(AppLocalizations l10n, String reasonCode) {
+  return switch (reasonCode) {
+    'retest_due' => l10n.adaptiveCoachReasonRetestDue,
+    'restart_after_gap' => l10n.adaptiveCoachReasonRestartAfterGap,
+    'recover_volume' => l10n.adaptiveCoachReasonRecoverVolume,
+    'progress_volume' => l10n.adaptiveCoachReasonProgressVolume,
+    _ => l10n.adaptiveCoachReasonMaintainVolume,
+  };
 }
 
 class _CoachInsightsCard extends StatelessWidget {

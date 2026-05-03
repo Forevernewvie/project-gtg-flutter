@@ -15,7 +15,6 @@ import 'package:project_gtg/core/platform/app_build_info.dart';
 import 'package:project_gtg/data/persistence/directory_provider.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
-import 'package:project_gtg/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:project_gtg/features/update/models/app_update_info.dart';
 import 'package:project_gtg/features/update/services/app_update_checker.dart';
 
@@ -103,7 +102,7 @@ class _NoopLogger implements AppLogger {
 
 void main() {
   testWidgets(
-    'RootOverlays completes first-run onboarding and dismisses overlay',
+    'RootOverlays skips first-run onboarding and shows app content immediately',
     (tester) async {
       final persistence = _MemoryPersistence();
 
@@ -125,28 +124,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(OnboardingScreen), findsOneWidget);
-
-      await tester.tap(find.text('Pull-ups'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('onboarding.maxReps.plus')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('onboarding.maxReps.plus')));
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.text('Next'),
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Next'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(OnboardingScreen), findsNothing);
       expect(find.text('base-child'), findsOneWidget);
-      expect(persistence._prefs.hasCompletedOnboarding, isTrue);
-      expect(persistence._prefs.primaryExercise, ExerciseType.pullUp);
-      expect(persistence._prefs.primaryExerciseMaxReps, 2);
+      expect(persistence._prefs.hasCompletedOnboarding, isFalse);
+      expect(persistence._prefs.primaryExercise, ExerciseType.pushUp);
     },
   );
 

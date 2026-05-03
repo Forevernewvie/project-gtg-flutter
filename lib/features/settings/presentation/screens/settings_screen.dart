@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:project_gtg/core/ads/ad_privacy_manager.dart';
 import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/data/remote/cloud_sync_service.dart';
 import 'package:project_gtg/features/settings/state/settings_action_service.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
 
@@ -55,6 +56,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final cloudSync = ref.watch(cloudSyncAvailabilityProvider);
     return ListView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -80,6 +82,14 @@ class SettingsScreen extends ConsumerWidget {
           onOpenCoach: () => context.push('/settings/coach'),
           onOpenReminders: () => context.push('/settings/reminders'),
           onOpenLogs: () => context.push('/settings/logs'),
+        ),
+        const SizedBox(height: GtgUi.primarySectionSpacing),
+        _SettingsCloudSyncSection(
+          accent: colorScheme.tertiary,
+          title: l10n.cloudSyncTitle,
+          subtitle: cloudSync.isConfigured
+              ? l10n.cloudSyncConfigured
+              : l10n.cloudSyncNotConfigured,
         ),
         const SizedBox(height: GtgUi.primarySectionSpacing),
         _SettingsAboutSection(
@@ -158,6 +168,30 @@ class _SettingsActionsSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SettingsCloudSyncSection extends StatelessWidget {
+  const _SettingsCloudSyncSection({
+    required this.accent,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final Color accent;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return GtgSectionCard(
+      key: const Key('settings.cloudSync'),
+      icon: Icons.cloud_sync_rounded,
+      accent: accent,
+      title: title,
+      subtitle: subtitle,
+      child: const SizedBox.shrink(),
     );
   }
 }

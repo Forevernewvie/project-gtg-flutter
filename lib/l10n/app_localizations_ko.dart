@@ -505,4 +505,62 @@ class AppLocalizationsKo extends AppLocalizations {
   String calendarRecoveryMessage(int count) {
     return '공백은 실패가 아닙니다. $count일 쉬었으니 오늘은 쉬운 1세트로 재시작하세요.';
   }
+
+  @override
+  String get cloudSyncTitle => '클라우드 동기화';
+
+  @override
+  String get cloudSyncConfigured => 'PocketBase가 설정되어 기록과 코치 설정을 자동 동기화합니다.';
+
+  @override
+  String get cloudSyncNotConfigured =>
+      '동기화를 켜려면 GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, GTG_POCKETBASE_PASSWORD를 설정하세요.';
+
+  @override
+  String get adaptiveCoachTitle => '적응형 코치';
+
+  @override
+  String get adaptiveCoachSubtitle => '서버 추천을 우선 사용하고, 없으면 로컬 규칙으로 안내합니다.';
+
+  @override
+  String get adaptiveCoachRemoteSource => 'PocketBase';
+
+  @override
+  String get adaptiveCoachLocalSource => '로컬 규칙';
+
+  @override
+  String get adaptiveCoachIntensityRecover => '회복';
+
+  @override
+  String get adaptiveCoachIntensityMaintain => '유지';
+
+  @override
+  String get adaptiveCoachIntensityProgress => '증가';
+
+  @override
+  String get adaptiveCoachReasonRetestDue => '최대 반복 재측정 필요';
+
+  @override
+  String get adaptiveCoachReasonRestartAfterGap => '최근 공백 감지';
+
+  @override
+  String get adaptiveCoachReasonRecoverVolume => '회복 볼륨 추천';
+
+  @override
+  String get adaptiveCoachReasonMaintainVolume => '안정 볼륨 추천';
+
+  @override
+  String get adaptiveCoachReasonProgressVolume => '안정적인 리듬 감지';
+
+  @override
+  String adaptiveCoachRecommendationLine(
+    String intensity,
+    String reason,
+    String source,
+  ) {
+    return '$intensity · $reason · 출처: $source';
+  }
+
+  @override
+  String get adaptiveCoachRecommendedSetsLabel => '추천 세트';
 }

@@ -25,18 +25,13 @@ abstract final class RootOverlaysPolicy {
     return !environment.isTestRuntime && environment.smokeScreenshots;
   }
 
-  /// Returns whether onboarding should appear once splash handling is complete.
+  /// Onboarding is intentionally disabled so first launch goes straight home.
   static bool shouldShowOnboarding({
     required RootOverlayEnvironment environment,
     required bool showSplash,
     required UserPreferences? preferences,
   }) {
-    return !showSplash &&
-        !environment.isTestRuntime &&
-        !environment.uiTesting &&
-        !environment.smokeScreenshots &&
-        preferences != null &&
-        !preferences.hasCompletedOnboarding;
+    return false;
   }
 
   /// Returns whether reminder synchronization should run for the lifecycle event.

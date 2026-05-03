@@ -330,5 +330,35 @@
         "type": "int"
       }
     }
-  }
+  },
+  "cloudSyncTitle": "Cloud Sync",
+  "cloudSyncConfigured": "PocketBase is configured. Logs and coach settings sync automatically.",
+  "cloudSyncNotConfigured": "Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.",
+  "adaptiveCoachTitle": "Adaptive Coach",
+  "adaptiveCoachSubtitle": "Server-ready guidance with local fallback rules.",
+  "adaptiveCoachRemoteSource": "PocketBase",
+  "adaptiveCoachLocalSource": "local rules",
+  "adaptiveCoachIntensityRecover": "Recovery",
+  "adaptiveCoachIntensityMaintain": "Maintain",
+  "adaptiveCoachIntensityProgress": "Progress",
+  "adaptiveCoachReasonRetestDue": "max test is due",
+  "adaptiveCoachReasonRestartAfterGap": "recent gap detected",
+  "adaptiveCoachReasonRecoverVolume": "recovery volume recommended",
+  "adaptiveCoachReasonMaintainVolume": "steady volume recommended",
+  "adaptiveCoachReasonProgressVolume": "stable rhythm detected",
+  "adaptiveCoachRecommendationLine": "{intensity} · {reason} · source: {source}",
+  "@adaptiveCoachRecommendationLine": {
+    "placeholders": {
+      "intensity": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "adaptiveCoachRecommendedSetsLabel": "Recommended sets"
 }
