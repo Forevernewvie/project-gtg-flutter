@@ -52,11 +52,11 @@ class WorkoutLogRow extends StatelessWidget {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(4),
                     child: ExerciseUiStyle.glyph(
                       log.type,
                       color: accent,
-                      size: 18,
+                      size: 30,
                     ),
                   ),
                 ),

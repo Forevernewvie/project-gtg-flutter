@@ -13,7 +13,6 @@ import 'package:project_gtg/core/models/user_preferences.dart';
 import 'package:project_gtg/data/persistence/directory_provider.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
-import 'package:project_gtg/data/remote/cloud_sync_service.dart';
 import 'package:project_gtg/features/settings/presentation/screens/settings_screen.dart';
 
 import 'test_app.dart';
@@ -150,43 +149,20 @@ void main() {
       expect(find.text('브라우저를 열 수 없습니다.'), findsOneWidget);
     });
 
-    testWidgets('shows cloud sync disabled and configured statuses', (
-      tester,
-    ) async {
+    testWidgets('does not show cloud sync in settings', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             persistenceProvider.overrideWithValue(_MemoryPersistence()),
-            cloudSyncAvailabilityProvider.overrideWithValue(
-              const CloudSyncAvailability(isConfigured: false, baseUrl: ''),
-            ),
           ],
           child: testApp(const Scaffold(body: SettingsScreen())),
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('클라우드 동기화'), findsOneWidget);
-      expect(find.textContaining('GTG_POCKETBASE_URL'), findsOneWidget);
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            persistenceProvider.overrideWithValue(_MemoryPersistence()),
-            cloudSyncAvailabilityProvider.overrideWithValue(
-              const CloudSyncAvailability(
-                isConfigured: true,
-                baseUrl: 'https://example.com/pb',
-              ),
-            ),
-          ],
-          child: testApp(const Scaffold(body: SettingsScreen())),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('클라우드 동기화'), findsOneWidget);
-      expect(find.textContaining('자동 동기화'), findsOneWidget);
+      expect(find.byKey(const Key('settings.cloudSync')), findsNothing);
+      expect(find.text('클라우드 동기화'), findsNothing);
+      expect(find.textContaining('GTG_POCKETBASE_URL'), findsNothing);
     });
 
     testWidgets('theme selector is removed from settings', (tester) async {

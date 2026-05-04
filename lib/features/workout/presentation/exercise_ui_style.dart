@@ -25,13 +25,53 @@ abstract final class ExerciseUiStyle {
     };
   }
 
-  /// Returns a compact custom glyph that better matches each exercise shape.
+  /// Returns the bundled GPT-generated exercise icon asset.
+  static String assetPath(ExerciseType type) {
+    return switch (type) {
+      ExerciseType.pushUp => 'assets/exercise_icons/push_up.png',
+      ExerciseType.pullUp => 'assets/exercise_icons/pull_up.png',
+      ExerciseType.dips => 'assets/exercise_icons/dips.png',
+    };
+  }
+
+  /// Returns a compact exercise icon, with the code-drawn glyph as a safe fallback.
   static Widget glyph(
     ExerciseType type, {
     required Color color,
     double size = 18,
   }) {
-    return ExerciseGlyph(type: type, color: color, size: size);
+    return ExerciseIcon(type: type, fallbackColor: color, size: size);
+  }
+}
+
+class ExerciseIcon extends StatelessWidget {
+  const ExerciseIcon({
+    super.key,
+    required this.type,
+    required this.fallbackColor,
+    this.size = 18,
+  });
+
+  final ExerciseType type;
+  final Color fallbackColor;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.22),
+      child: Image.asset(
+        ExerciseUiStyle.assetPath(type),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+        excludeFromSemantics: true,
+        errorBuilder: (context, error, stackTrace) {
+          return ExerciseGlyph(type: type, color: fallbackColor, size: size);
+        },
+      ),
+    );
   }
 }
 

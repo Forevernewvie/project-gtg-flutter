@@ -507,16 +507,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get cloudSyncTitle => '클라우드 동기화';
-
-  @override
-  String get cloudSyncConfigured => 'PocketBase가 설정되어 기록과 코치 설정을 자동 동기화합니다.';
-
-  @override
-  String get cloudSyncNotConfigured =>
-      '동기화를 켜려면 GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, GTG_POCKETBASE_PASSWORD를 설정하세요.';
-
-  @override
   String get adaptiveCoachTitle => '적응형 코치';
 
   @override
