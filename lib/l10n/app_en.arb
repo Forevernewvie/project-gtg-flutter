@@ -331,9 +331,6 @@
       }
     }
   },
-  "cloudSyncTitle": "Cloud Sync",
-  "cloudSyncConfigured": "PocketBase is configured. Logs and coach settings sync automatically.",
-  "cloudSyncNotConfigured": "Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.",
   "adaptiveCoachTitle": "Adaptive Coach",
   "adaptiveCoachSubtitle": "Server-ready guidance with local fallback rules.",
   "adaptiveCoachRemoteSource": "PocketBase",

@@ -986,24 +986,6 @@ abstract class AppLocalizations {
   /// **'No penalty for a gap. You missed {count} days; restart with one easy set today.'**
   String calendarRecoveryMessage(int count);
 
-  /// No description provided for @cloudSyncTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Cloud Sync'**
-  String get cloudSyncTitle;
-
-  /// No description provided for @cloudSyncConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'PocketBase is configured. Logs and coach settings sync automatically.'**
-  String get cloudSyncConfigured;
-
-  /// No description provided for @cloudSyncNotConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.'**
-  String get cloudSyncNotConfigured;
-
   /// No description provided for @adaptiveCoachTitle.
   ///
   /// In en, this message translates to:

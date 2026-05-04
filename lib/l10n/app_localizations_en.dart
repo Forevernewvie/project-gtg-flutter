@@ -526,17 +526,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get cloudSyncTitle => 'Cloud Sync';
-
-  @override
-  String get cloudSyncConfigured =>
-      'PocketBase is configured. Logs and coach settings sync automatically.';
-
-  @override
-  String get cloudSyncNotConfigured =>
-      'Add GTG_POCKETBASE_URL, GTG_POCKETBASE_EMAIL, and GTG_POCKETBASE_PASSWORD to enable sync.';
-
-  @override
   String get adaptiveCoachTitle => 'Adaptive Coach';
 
   @override

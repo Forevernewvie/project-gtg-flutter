@@ -63,4 +63,30 @@ void main() {
 
     expect(find.text('10회'), findsWidgets);
   });
+
+  testWidgets('home mission cannot log beyond the daily set target', (
+    tester,
+  ) async {
+    final persistence = InMemoryPersistence();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [persistenceProvider.overrideWithValue(persistence)],
+        child: const GtgApp(locale: Locale('ko')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final missionButton = find.byKey(const Key('dashboard.missionLogButton'));
+    expect(missionButton, findsOneWidget);
+
+    for (var i = 0; i < 9; i++) {
+      await tester.tap(missionButton, warnIfMissed: false);
+    }
+    await tester.pumpAndSettle();
+
+    expect(persistence._logs.length, 8);
+    expect(find.text('8/8세트'), findsOneWidget);
+    expect(tester.widget<FilledButton>(missionButton).onPressed, isNull);
+  });
 }

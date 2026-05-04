@@ -240,6 +240,7 @@ class _PickCard extends StatelessWidget {
         color: selected
             ? accent
             : Theme.of(context).colorScheme.onSurfaceVariant,
+        size: 30,
       ),
       accent: accent,
       title: type.label(AppLocalizations.of(context)!),

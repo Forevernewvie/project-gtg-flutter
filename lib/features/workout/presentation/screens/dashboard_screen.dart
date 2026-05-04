@@ -310,9 +310,7 @@ class _HeroCard extends ConsumerWidget {
                       completedSets: mission.completedSets,
                       targetSets: mission.targetSets,
                       enabled: !mission.isComplete && workoutState.hasValue,
-                      onPressed: () => ref
-                          .read(workoutControllerProvider.notifier)
-                          .addLog(mission.exercise, mission.recommendedReps),
+                      onPressed: () => _recordCurrentMissionSet(ref),
                     ),
                   ],
                 ),
@@ -322,6 +320,15 @@ class _HeroCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _recordCurrentMissionSet(WidgetRef ref) async {
+    final mission = ref.read(dailyGtgMissionProvider);
+    if (mission.isComplete) return;
+
+    await ref
+        .read(workoutControllerProvider.notifier)
+        .addLog(mission.exercise, mission.recommendedReps);
   }
 }
 
@@ -1081,8 +1088,8 @@ class _QuickLogRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ExerciseUiStyle.glyph(type, color: accent, size: 18),
+                    padding: const EdgeInsets.all(4),
+                    child: ExerciseUiStyle.glyph(type, color: accent, size: 30),
                   ),
                 ),
                 const SizedBox(width: 10),
