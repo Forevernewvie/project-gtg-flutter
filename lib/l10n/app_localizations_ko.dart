@@ -55,6 +55,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reset => '초기화';
 
   @override
+  String get resetLogsTitle => '전체 기록을 초기화할까요?';
+
+  @override
+  String get resetLogsMessage => '이 기기에 저장된 모든 운동 기록이 삭제됩니다.';
+
+  @override
   String get record => '기록';
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project_gtg/app/gtg_app.dart';
+import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
 
 void main() {
   tearDown(() {
@@ -20,6 +21,33 @@ void main() {
     expect(find.text('캘린더'), findsOneWidget);
     expect(find.text('설정'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
+    final navigationBar = tester.widget<NavigationBar>(
+      find.byType(NavigationBar),
+    );
+    expect(
+      navigationBar.labelBehavior,
+      NavigationDestinationLabelBehavior.alwaysShow,
+    );
+    expect(find.byType(GtgBannerAd), findsOneWidget);
+  });
+
+  testWidgets('app shell keeps one shared ad banner across root tabs', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: GtgApp(locale: Locale('ko'))),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GtgBannerAd), findsOneWidget);
+
+    await tester.tap(find.text('캘린더'));
+    await tester.pumpAndSettle();
+    expect(find.byType(GtgBannerAd), findsOneWidget);
+
+    await tester.tap(find.text('설정'));
+    await tester.pumpAndSettle();
+    expect(find.byType(GtgBannerAd), findsOneWidget);
   });
 
   testWidgets('app keeps selected navigation label visible at large text', (

@@ -1,6 +1,7 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
 import 'package:project_gtg/core/clock.dart';
 import 'package:project_gtg/core/logging/app_logger.dart';
 import 'package:project_gtg/core/logging/logger_provider.dart';
@@ -107,6 +108,14 @@ class _ReminderSettingsScreenState
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.remindersTitle)),
+      bottomNavigationBar: const GtgBannerAd(
+        padding: EdgeInsets.fromLTRB(
+          GtgUi.screenHorizontalPadding,
+          0,
+          GtgUi.screenHorizontalPadding,
+          10,
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
           GtgUi.screenHorizontalPadding,

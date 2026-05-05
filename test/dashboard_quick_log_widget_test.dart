@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:project_gtg/app/gtg_app.dart';
 import 'package:project_gtg/core/models/exercise_log.dart';
+import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/data/persistence/directory_provider.dart';
 import 'package:project_gtg/data/persistence/gtg_persistence.dart';
 import 'package:project_gtg/data/persistence/persistence_provider.dart';
@@ -19,9 +20,11 @@ class _DummyDirectoryProvider implements DirectoryProvider {
 }
 
 class InMemoryPersistence extends GtgPersistence {
-  InMemoryPersistence() : super(directoryProvider: _DummyDirectoryProvider());
+  InMemoryPersistence({List<ExerciseLog> logs = const <ExerciseLog>[]})
+    : _logs = List<ExerciseLog>.unmodifiable(logs),
+      super(directoryProvider: _DummyDirectoryProvider());
 
-  List<ExerciseLog> _logs = const <ExerciseLog>[];
+  List<ExerciseLog> _logs;
 
   @override
   Future<List<ExerciseLog>> loadLogs() async {
@@ -88,5 +91,52 @@ void main() {
     expect(persistence._logs.length, 8);
     expect(find.text('8/8세트'), findsOneWidget);
     expect(tester.widget<FilledButton>(missionButton).onPressed, isNull);
+  });
+
+  testWidgets('reset requires confirmation before clearing all logs', (
+    tester,
+  ) async {
+    final persistence = InMemoryPersistence(
+      logs: <ExerciseLog>[
+        ExerciseLog(
+          id: 'seed',
+          type: ExerciseType.pushUp,
+          reps: 10,
+          timestamp: DateTime(2026, 3, 8, 7, 30),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [persistenceProvider.overrideWithValue(persistence)],
+        child: const GtgApp(locale: Locale('ko')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('초기화'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('초기화'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('전체 기록을 초기화할까요?'), findsOneWidget);
+    expect(persistence._logs, isNotEmpty);
+
+    await tester.tap(find.text('취소'));
+    await tester.pumpAndSettle();
+    expect(persistence._logs, isNotEmpty);
+
+    await tester.tap(find.text('초기화'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dashboard.confirmResetLogs')));
+    await tester.pumpAndSettle();
+
+    expect(persistence._logs, isEmpty);
   });
 }

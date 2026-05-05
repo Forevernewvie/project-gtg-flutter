@@ -182,6 +182,18 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get reset;
 
+  /// No description provided for @resetLogsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all logs?'**
+  String get resetLogsTitle;
+
+  /// No description provided for @resetLogsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes every logged set from this device.'**
+  String get resetLogsMessage;
+
   /// No description provided for @record.
   ///
   /// In en, this message translates to:
@@ -755,7 +767,7 @@ abstract class AppLocalizations {
   /// No description provided for @coachCardSetupSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Add your max reps to get a lighter GTG suggestion'**
+  /// **'Add max reps for lighter GTG sets'**
   String get coachCardSetupSubtitle;
 
   /// No description provided for @coachSetBaselineAction.
@@ -773,7 +785,7 @@ abstract class AppLocalizations {
   /// No description provided for @coachSetupHint.
   ///
   /// In en, this message translates to:
-  /// **'Save your current max for your focus move. Home will suggest a lighter GTG set and track today\'s progress.'**
+  /// **'Save your max reps to get lighter GTG sets and track today.'**
   String get coachSetupHint;
 
   /// No description provided for @coachNotSet.

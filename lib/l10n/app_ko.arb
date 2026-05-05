@@ -31,6 +31,8 @@
   "decreaseValue": "감소",
   "increaseValue": "증가",
   "reset": "초기화",
+  "resetLogsTitle": "전체 기록을 초기화할까요?",
+  "resetLogsMessage": "이 기기에 저장된 모든 운동 기록이 삭제됩니다.",
   "record": "기록",
   "loadingLogs": "기록을 불러오는 중입니다...",
   "recentLogsTitle": "최근 기록",

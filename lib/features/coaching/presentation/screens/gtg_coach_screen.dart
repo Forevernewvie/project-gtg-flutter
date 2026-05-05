@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/clock.dart';
+import '../../../../core/ads/gtg_banner_ad.dart';
 import '../../../../core/ui/gtg_ui.dart';
 import '../../../../features/onboarding/state/user_preferences_controller.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -61,6 +62,14 @@ class GtgCoachScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsCoachTitle)),
+      bottomNavigationBar: const GtgBannerAd(
+        padding: EdgeInsets.fromLTRB(
+          GtgUi.screenHorizontalPadding,
+          0,
+          GtgUi.screenHorizontalPadding,
+          10,
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
           GtgUi.screenHorizontalPadding,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_gtg/core/ads/ad_privacy_manager.dart';
-import 'package:project_gtg/core/ads/gtg_banner_ad.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/settings/state/settings_action_service.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
@@ -94,8 +93,6 @@ class SettingsScreen extends ConsumerWidget {
           onOpenAdPrivacyChoices: () => _openAdPrivacyChoices(context, ref),
           onOpenPrivacyPolicy: () => _openPrivacyPolicy(context, ref),
         ),
-        const SizedBox(height: GtgUi.primarySectionSpacing),
-        const GtgBannerAd(),
       ],
     );
   }

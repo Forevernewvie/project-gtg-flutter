@@ -56,6 +56,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
+  String get resetLogsTitle => 'Reset all logs?';
+
+  @override
+  String get resetLogsMessage =>
+      'This removes every logged set from this device.';
+
+  @override
   String get record => 'Log';
 
   @override
@@ -373,8 +380,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachCardReadySubtitle => 'Today\'s GTG suggestion and progress';
 
   @override
-  String get coachCardSetupSubtitle =>
-      'Add your max reps to get a lighter GTG suggestion';
+  String get coachCardSetupSubtitle => 'Add max reps for lighter GTG sets';
 
   @override
   String get coachSetBaselineAction => 'Add max';
@@ -384,7 +390,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coachSetupHint =>
-      'Save your current max for your focus move. Home will suggest a lighter GTG set and track today\'s progress.';
+      'Save your max reps to get lighter GTG sets and track today.';
 
   @override
   String get coachNotSet => 'Not set';

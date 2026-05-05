@@ -1,11 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../core/ads/ad_config.dart';
-import '../core/ads/ad_privacy_manager.dart';
 import '../core/gtg_theme.dart';
 import '../l10n/app_localizations.dart';
 import 'root_overlays.dart';
@@ -31,14 +27,6 @@ class GtgApp extends ConsumerStatefulWidget {
 class _GtgAppState extends ConsumerState<GtgApp> {
   late final GoRouter _router = createRouter();
   late final ThemeData _darkTheme = GtgTheme.dark();
-
-  @override
-  void initState() {
-    super.initState();
-    if (AdConfig.isEnabled) {
-      unawaited(AdPrivacyManager.instance.prepareForAppLaunch());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

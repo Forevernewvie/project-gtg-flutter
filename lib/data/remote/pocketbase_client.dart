@@ -52,7 +52,11 @@ final class PocketBaseRemoteSyncClient implements RemoteSyncClient {
     await _ensureAuth();
     final response = await _get(
       '/api/collections/gtg_workout_logs/records',
-      <String, String>{'perPage': '500', 'sort': 'loggedAt'},
+      <String, String>{
+        'perPage': '500',
+        'sort': 'loggedAt',
+        'filter': _authenticatedUserFilter,
+      },
     );
     final items = _items(response);
     return items
@@ -68,7 +72,8 @@ final class PocketBaseRemoteSyncClient implements RemoteSyncClient {
     for (final log in logs) {
       final existingId = await _findRecordId(
         collection: 'gtg_workout_logs',
-        filter: 'clientId = "${_escapeFilter(log.id)}"',
+        filter:
+            '$_authenticatedUserFilter && clientId = "${_escapeFilter(log.id)}"',
       );
       final payload = workoutLogPayload(
         log: log,
@@ -92,7 +97,11 @@ final class PocketBaseRemoteSyncClient implements RemoteSyncClient {
     await _ensureAuth();
     final response = await _get(
       '/api/collections/gtg_user_preferences/records',
-      <String, String>{'perPage': '1', 'sort': '-updated'},
+      <String, String>{
+        'perPage': '1',
+        'sort': '-updated',
+        'filter': _authenticatedUserFilter,
+      },
     );
     final items = _items(response);
     if (items.isEmpty) return null;
@@ -128,7 +137,11 @@ final class PocketBaseRemoteSyncClient implements RemoteSyncClient {
     await _ensureAuth();
     final response = await _get(
       '/api/collections/gtg_coach_recommendations/records',
-      <String, String>{'perPage': '1', 'sort': '-generatedAt'},
+      <String, String>{
+        'perPage': '1',
+        'sort': '-generatedAt',
+        'filter': _authenticatedUserFilter,
+      },
     );
     final items = _items(response);
     if (items.isEmpty) return null;
@@ -233,6 +246,8 @@ final class PocketBaseRemoteSyncClient implements RemoteSyncClient {
   String _escapeFilter(String value) {
     return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
   }
+
+  String get _authenticatedUserFilter => 'user = "${_escapeFilter(_userId!)}"';
 }
 
 final class PocketBaseClientException implements Exception {

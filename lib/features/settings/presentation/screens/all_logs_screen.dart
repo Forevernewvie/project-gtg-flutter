@@ -5,9 +5,9 @@ import 'package:project_gtg/core/date_utils.dart';
 import 'package:project_gtg/core/l10n/gtg_date_formatters.dart';
 import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
+import 'package:project_gtg/features/workout/presentation/workout_log_row.dart';
 import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
-import 'package:project_gtg/l10n/exercise_type_l10n.dart';
 
 abstract final class _AllLogsPolicy {
   static const EdgeInsets screenPadding = EdgeInsets.fromLTRB(
@@ -151,7 +151,7 @@ class _DaySectionCard extends StatelessWidget {
                           ? 0
                           : GtgUi.secondarySectionSpacing,
                     ),
-                    child: _LogRow(log: section.logs[index]),
+                    child: WorkoutLogRow(log: section.logs[index]),
                   ),
               ],
             ),
@@ -232,102 +232,6 @@ class _DayHeader extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _LogRow extends StatelessWidget {
-  const _LogRow({required this.log});
-
-  final ExerciseLog log;
-
-  /// Builds a responsive history row that stacks value content on constrained layouts.
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final time = TimeOfDay.fromDateTime(log.timestamp);
-    final hh = time.hour.toString().padLeft(2, '0');
-    final mm = time.minute.toString().padLeft(2, '0');
-
-    final valueText = Text(
-      l10n.repsWithUnit(log.reps),
-      style: Theme.of(
-        context,
-      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
-    );
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final textScale = MediaQuery.textScalerOf(context).scale(1);
-            final isCompact = GtgUi.useCompactLayout(
-              width: constraints.maxWidth,
-              textScale: textScale,
-              widthThreshold: GtgUi.compactDetailWidth,
-              textScaleThreshold: GtgUi.accessibilityTextScale,
-            );
-
-            if (isCompact) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    log.type.label(l10n),
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '$hh:$mm',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  valueText,
-                ],
-              );
-            }
-
-            return Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        log.type.label(l10n),
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '$hh:$mm',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                valueText,
-              ],
-            );
-          },
-        ),
-      ),
     );
   }
 }

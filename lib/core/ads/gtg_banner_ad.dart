@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -8,15 +10,19 @@ class GtgBannerAd extends StatefulWidget {
   const GtgBannerAd({
     super.key,
     this.padding = const EdgeInsets.fromLTRB(16, 0, 16, 14),
+    this.includeBottomSafeArea = true,
   });
 
   final EdgeInsets padding;
+  final bool includeBottomSafeArea;
 
   @override
   State<GtgBannerAd> createState() => _GtgBannerAdState();
 }
 
 class _GtgBannerAdState extends State<GtgBannerAd> {
+  static const Duration _retryDelay = Duration(seconds: 30);
+
   final AdsService _service = AdsService();
 
   BannerAd? _ad;
@@ -24,11 +30,24 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
   int? _loadedForWidth;
   bool _loading = false;
   bool _failed = false;
+  Timer? _retryTimer;
 
   @override
   void dispose() {
+    _retryTimer?.cancel();
     _ad?.dispose();
     super.dispose();
+  }
+
+  void _scheduleRetry() {
+    _retryTimer?.cancel();
+    _retryTimer = Timer(_retryDelay, () {
+      if (!mounted) return;
+      setState(() {
+        _loadedForWidth = null;
+        _failed = false;
+      });
+    });
   }
 
   Future<void> _loadForWidth(int width) async {
@@ -41,6 +60,7 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
     _loading = true;
     _failed = false;
     _loadedForWidth = width;
+    _retryTimer?.cancel();
 
     try {
       final canLoadAds = await _service.ensureInitialized();
@@ -50,6 +70,7 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
           _loading = false;
           _failed = false;
         });
+        _scheduleRetry();
         return;
       }
 
@@ -61,6 +82,7 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
           _failed = true;
           _loading = false;
         });
+        _scheduleRetry();
         return;
       }
 
@@ -80,12 +102,14 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
               _failed = true;
               _loading = false;
             });
+            _scheduleRetry();
           },
           onAdLoaded: (ad) {
             if (!mounted) {
               ad.dispose();
               return;
             }
+            _retryTimer?.cancel();
             setState(() {
               _ad = ad as BannerAd;
               _failed = false;
@@ -104,6 +128,7 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
         _failed = true;
         _loading = false;
       });
+      _scheduleRetry();
     }
   }
 
@@ -142,7 +167,9 @@ class _GtgBannerAdState extends State<GtgBannerAd> {
             ? availableWidth.toDouble()
             : adWidth;
         final adHeight = _adSize!.height.toDouble();
-        final safeBottom = MediaQuery.paddingOf(context).bottom;
+        final safeBottom = widget.includeBottomSafeArea
+            ? MediaQuery.paddingOf(context).bottom
+            : 0.0;
         final totalHeight =
             resolvedPadding.top +
             resolvedPadding.bottom +
