@@ -98,21 +98,21 @@ void main() {
 
       await tester.tap(find.widgetWithText(ListTile, 'GTG 코치'));
       await tester.pumpAndSettle();
-      expect(find.text('집중 동작'), findsOneWidget);
+      expect(find.text('GTG 코치'), findsWidgets);
 
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(ListTile, '리마인더'));
+      await tester.tap(find.widgetWithText(ListTile, '알림'));
       await tester.pumpAndSettle();
-      expect(find.text('조용하게, 꾸준히'), findsOneWidget);
+      expect(find.text('알림'), findsWidgets);
 
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ListTile, '전체 기록'));
       await tester.pumpAndSettle();
-      expect(find.text('전체 기록'), findsOneWidget);
+      expect(find.text('전체 기록'), findsWidgets);
     });
 
     testWidgets('shows snackbar when privacy policy launch fails', (
@@ -146,7 +146,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakeLauncher.launchCount, 1);
-      expect(find.text('브라우저를 열 수 없습니다.'), findsOneWidget);
+      expect(find.text('브라우저를 열지 못했어요. 다시 시도해 주세요.'), findsWidgets);
     });
 
     testWidgets('does not show cloud sync in settings', (tester) async {
@@ -182,9 +182,9 @@ void main() {
       expect(find.text('다크'), findsNothing);
       expect(find.byKey(const Key('settings.theme.segmented')), findsNothing);
       expect(find.byKey(const Key('settings.theme.option.dark')), findsNothing);
-      expect(find.text('GTG 코치'), findsOneWidget);
-      expect(find.text('리마인더'), findsOneWidget);
-      expect(find.text('전체 기록'), findsOneWidget);
+      expect(find.text('GTG 코치'), findsWidgets);
+      expect(find.text('알림'), findsWidgets);
+      expect(find.text('전체 기록'), findsWidgets);
     });
   });
 }

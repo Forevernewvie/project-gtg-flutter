@@ -18,7 +18,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('홈'), findsOneWidget);
-    expect(find.text('캘린더'), findsOneWidget);
+    expect(find.text('리듬'), findsOneWidget);
     expect(find.text('설정'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
     final navigationBar = tester.widget<NavigationBar>(
@@ -41,7 +41,7 @@ void main() {
 
     expect(find.byType(GtgBannerAd), findsOneWidget);
 
-    await tester.tap(find.text('캘린더'));
+    await tester.tap(find.text('리듬'));
     await tester.pumpAndSettle();
     expect(find.byType(GtgBannerAd), findsOneWidget);
 
@@ -101,7 +101,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Home'), findsOneWidget);
-    expect(find.text('Calendar'), findsOneWidget);
+    expect(find.text('Rhythm'), findsOneWidget);
     expect(find.text('Settings'), findsOneWidget);
   });
 
@@ -117,7 +117,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('홈'), findsOneWidget);
-    expect(find.text('캘린더'), findsOneWidget);
+    expect(find.text('리듬'), findsOneWidget);
     expect(find.text('설정'), findsOneWidget);
   });
 }

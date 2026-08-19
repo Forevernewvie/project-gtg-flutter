@@ -26,9 +26,6 @@ class ExerciseLog {
     final typeValue = json['type'];
     final typeKey = typeValue is String ? typeValue : '';
     final type = ExerciseTypeX.fromKey(typeKey);
-    if (type == null) {
-      throw const FormatException('Unknown exercise type');
-    }
 
     final repsValue = json['reps'];
     final reps = repsValue is int ? repsValue : int.tryParse('$repsValue') ?? 0;

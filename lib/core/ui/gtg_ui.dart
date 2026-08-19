@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'gtg_glass_card.dart';
+export 'gtg_glass_card.dart';
 
 /// Shared UI tokens and responsive rules used by GTG screens.
 abstract final class GtgUi {
@@ -153,42 +155,43 @@ class GtgSectionCard extends StatelessWidget {
     final hasHeader =
         title != null || subtitle != null || icon != null || trailing != null;
 
-    return Card(
-      child: Padding(
-        padding: padding,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final textScale = MediaQuery.textScalerOf(context).scale(1);
-            final useCompactHeader =
-                trailing != null &&
-                GtgUi.useCompactLayout(
-                  width: constraints.maxWidth,
-                  textScale: textScale,
-                  textScaleThreshold: GtgUi.elevatedTextScale,
-                );
-            final headerContent = _SectionCardHeaderContent(
-              icon: icon,
-              accent: resolvedAccent,
-              title: title,
-              subtitle: subtitle,
-            );
+    return GtgGlassCard(
+      padding: padding,
+      showGlow: true,
+      glowColor: resolvedAccent,
+      borderRadius: BorderRadius.circular(GtgUi.cardRadius),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final textScale = MediaQuery.textScalerOf(context).scale(1);
+          final useCompactHeader =
+              trailing != null &&
+              GtgUi.useCompactLayout(
+                width: constraints.maxWidth,
+                textScale: textScale,
+                textScaleThreshold: GtgUi.elevatedTextScale,
+              );
+          final headerContent = _SectionCardHeaderContent(
+            icon: icon,
+            accent: resolvedAccent,
+            title: title,
+            subtitle: subtitle,
+          );
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (hasHeader) ...<Widget>[
-                  _SectionCardHeaderLayout(
-                    headerContent: headerContent,
-                    trailing: trailing,
-                    useCompactHeader: useCompactHeader,
-                  ),
-                  const SizedBox(height: GtgUi.controlSpacing),
-                ],
-                child,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (hasHeader) ...<Widget>[
+                _SectionCardHeaderLayout(
+                  headerContent: headerContent,
+                  trailing: trailing,
+                  useCompactHeader: useCompactHeader,
+                ),
+                const SizedBox(height: GtgUi.controlSpacing),
               ],
-            );
-          },
-        ),
+              child,
+            ],
+          );
+        },
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/watch_sync/services/watch_sync_service.dart';
 import '../core/gtg_theme.dart';
 import '../l10n/app_localizations.dart';
 import 'root_overlays.dart';
@@ -27,6 +28,13 @@ class GtgApp extends ConsumerStatefulWidget {
 class _GtgAppState extends ConsumerState<GtgApp> {
   late final GoRouter _router = createRouter();
   late final ThemeData _darkTheme = GtgTheme.dark();
+
+  @override
+  void initState() {
+    super.initState();
+    // Start listening for Watch OS actions
+    ref.read(watchSyncServiceProvider).initialize();
+  }
 
   @override
   Widget build(BuildContext context) {

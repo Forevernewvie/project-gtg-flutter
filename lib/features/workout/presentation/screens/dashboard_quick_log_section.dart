@@ -35,11 +35,26 @@ class _QuickLogCardState extends ConsumerState<_QuickLogCard> {
     });
   }
 
+  bool _isRecording = false;
+
   /// Persists one quick-log entry using the current draft value for that exercise.
+  /// Includes debounce lock to prevent duplicate records on rapid tapping.
   Future<void> _recordExercise(ExerciseType type) async {
-    await ref
-        .read(workoutControllerProvider.notifier)
-        .addLog(type, _repsFor(type));
+    if (_isRecording) return;
+    setState(() {
+      _isRecording = true;
+    });
+    try {
+      await ref
+          .read(workoutControllerProvider.notifier)
+          .addLog(type, _repsFor(type));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRecording = false;
+        });
+      }
+    }
   }
 
   /// Confirms destructive history clearing before persisting an empty log list.
@@ -188,16 +203,11 @@ class _QuickLogRow extends StatelessWidget {
     );
     final keyBase = type.key;
 
-    return AnimatedContainer(
-      duration: GtgUi.emphasisAnimationDuration,
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: accent.withValues(alpha: 0.24)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-        child: LayoutBuilder(
+    return GtgGlassCard(
+      padding: const EdgeInsets.all(16),
+      showGlow: true,
+      glowColor: accent,
+      child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = GtgUi.isCompactWidth(
               constraints.maxWidth,
@@ -213,9 +223,9 @@ class _QuickLogRow extends StatelessWidget {
 
             final stepper = DecoratedBox(
               decoration: BoxDecoration(
-                color: colorScheme.surface.withValues(alpha: 0.92),
+                color: Colors.black26, // Darker stepper background
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: colorScheme.outlineVariant),
+                border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
@@ -233,8 +243,7 @@ class _QuickLogRow extends StatelessWidget {
                             tooltip: l10n.decreaseValue,
                             onPressed: onMinus,
                             style: IconButton.styleFrom(
-                              backgroundColor:
-                                  colorScheme.surfaceContainerHighest,
+                              backgroundColor: Colors.transparent, // Removed grey
                               minimumSize: const Size(40, 40),
                               padding: EdgeInsets.zero,
                             ),
@@ -245,7 +254,7 @@ class _QuickLogRow extends StatelessWidget {
                             tooltip: l10n.increaseValue,
                             onPressed: onPlus,
                             style: IconButton.styleFrom(
-                              backgroundColor: colorScheme.primaryContainer,
+                              backgroundColor: accent.withValues(alpha: 0.15),
                               foregroundColor: accent,
                               minimumSize: const Size(40, 40),
                               padding: EdgeInsets.zero,
@@ -403,7 +412,6 @@ class _QuickLogRow extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 }

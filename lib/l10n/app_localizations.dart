@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// No description provided for @navCalendar.
   ///
   /// In en, this message translates to:
-  /// **'Calendar'**
+  /// **'Rhythm'**
   String get navCalendar;
 
   /// No description provided for @navSettings.
@@ -125,43 +125,43 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Routine'**
+  /// **'COMMAND CENTER'**
   String get dashboardTitle;
 
   /// No description provided for @dashboardSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Not perfect, just frequent. One set at a time.'**
+  /// **'GREASE THE GROOVE. SUBMAXIMAL REPS. MAXIMUM STRENGTH.'**
   String get dashboardSubtitle;
 
   /// No description provided for @dashboardReadyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ready for today'**
+  /// **'STAY READY'**
   String get dashboardReadyTitle;
 
   /// No description provided for @dashboardPrimarySetHint.
   ///
   /// In en, this message translates to:
-  /// **'Start with {exercise}: one set of {count} reps.'**
+  /// **'EXECUTE {exercise}: {count} REPS. DO IT NOW.'**
   String dashboardPrimarySetHint(String exercise, int count);
 
   /// No description provided for @activeDaysPill.
   ///
   /// In en, this message translates to:
-  /// **'Active {count} days'**
+  /// **'ACTIVE {count} DAYS'**
   String activeDaysPill(int count);
 
   /// No description provided for @quickLogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Quick Log'**
+  /// **'LOG SET'**
   String get quickLogTitle;
 
   /// No description provided for @quickLogHelper.
   ///
   /// In en, this message translates to:
-  /// **'Adjust reps, then tap Record.'**
+  /// **'NO EXCUSES. ADD REPS AND HIT RECORD.'**
   String get quickLogHelper;
 
   /// No description provided for @decreaseValue.
@@ -179,67 +179,67 @@ abstract class AppLocalizations {
   /// No description provided for @reset.
   ///
   /// In en, this message translates to:
-  /// **'Reset'**
+  /// **'RESET'**
   String get reset;
 
   /// No description provided for @resetLogsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Reset all logs?'**
+  /// **'WIPE ALL LOGS?'**
   String get resetLogsTitle;
 
   /// No description provided for @resetLogsMessage.
   ///
   /// In en, this message translates to:
-  /// **'This removes every logged set from this device.'**
+  /// **'This will erase your entire history from this device.'**
   String get resetLogsMessage;
 
   /// No description provided for @record.
   ///
   /// In en, this message translates to:
-  /// **'Log'**
+  /// **'LOG IT'**
   String get record;
 
   /// No description provided for @loadingLogs.
   ///
   /// In en, this message translates to:
-  /// **'Loading logs...'**
+  /// **'LOADING ARSENAL...'**
   String get loadingLogs;
 
   /// No description provided for @recentLogsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Recent Logs'**
+  /// **'RECENT SETS'**
   String get recentLogsTitle;
 
   /// No description provided for @noLogsHint.
   ///
   /// In en, this message translates to:
-  /// **'No logs yet. Log your first set above.'**
+  /// **'NO SETS TODAY. GET ON THE BAR.'**
   String get noLogsHint;
 
   /// No description provided for @noLogsHintHome.
   ///
   /// In en, this message translates to:
-  /// **'No logs yet. Log a set on Home.'**
+  /// **'ZERO REPS. EXECUTE A SET NOW.'**
   String get noLogsHintHome;
 
   /// No description provided for @calendarTitle.
   ///
   /// In en, this message translates to:
-  /// **'Rhythm Calendar'**
+  /// **'BATTLE RHYTHM'**
   String get calendarTitle;
 
   /// No description provided for @calendarSubtitleHeatmap.
   ///
   /// In en, this message translates to:
-  /// **'Darker cells mean more reps. Monthly heatmap.'**
+  /// **'LIGHT IT UP. DARKER CELLS = MORE WORK.'**
   String get calendarSubtitleHeatmap;
 
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
-  /// **'Today'**
+  /// **'TODAY'**
   String get today;
 
   /// No description provided for @prevMonthTooltip.

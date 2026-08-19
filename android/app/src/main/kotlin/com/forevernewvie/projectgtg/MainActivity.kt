@@ -34,7 +34,7 @@ class MainActivity : FlutterActivity() {
                 result.success(
                     mapOf(
                         "versionName" to (packageInfo.versionName ?: ""),
-                        "versionCode" to packageInfo.longVersionCode.toInt(),
+                        "versionCode" to androidx.core.content.pm.PackageInfoCompat.getLongVersionCode(packageInfo).toInt(),
                         "packageName" to packageName,
                     ),
                 )

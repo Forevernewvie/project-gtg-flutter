@@ -1,7 +1,7 @@
 import '../../core/date_utils.dart';
 import '../../core/models/exercise_log.dart';
 import '../../core/models/user_preferences.dart';
-import '../../data/remote/pocketbase_models.dart';
+import 'models/gtg_coach_recommendation.dart';
 import 'gtg_coach_policy.dart';
 
 /// Local rule engine that mirrors the shape of server-generated coach guidance.

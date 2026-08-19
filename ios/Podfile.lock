@@ -13,6 +13,8 @@ PODS:
     - Google-Mobile-Ads-SDK (~> 12.14.0)
     - webview_flutter_wkwebview
   - GoogleUserMessagingPlatform (3.1.0)
+  - home_widget (0.0.1):
+    - Flutter
   - integration_test (0.0.1):
     - Flutter
   - isar_community_flutter_libs (1.0.0):
@@ -29,6 +31,7 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
+  - home_widget (from `.symlinks/plugins/home_widget/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - isar_community_flutter_libs (from `.symlinks/plugins/isar_community_flutter_libs/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -50,6 +53,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_timezone/ios"
   google_mobile_ads:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
+  home_widget:
+    :path: ".symlinks/plugins/home_widget/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
   isar_community_flutter_libs:
@@ -60,18 +65,19 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  app_settings: 0341ec6daa4f0c50f5a421bf0ad7c36084db6e90
+  app_settings: 9217ccbe946aa9a3751b5459dcf50dabc87517b2
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
-  flutter_timezone: 7c838e17ffd4645d261e87037e5bebf6d38fe544
+  flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
+  flutter_timezone: ac3da59ac941ff1c98a2e1f0293420e020120282
   Google-Mobile-Ads-SDK: 4534fd2dfcd3f705c5485a6633c5188d03d4eed2
-  google_mobile_ads: df3008bafbe1f2ad6862f87334e560d2f047f902
+  google_mobile_ads: 2ba32ffef4a026aa94f526774a40a14ca9662adf
   GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
-  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
-  isar_community_flutter_libs: bede843185a61a05ff364a05c9b23209523f7e0d
-  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
+  home_widget: fdbbfaa90f06f3022cb57f79678d4d58b9c5e140
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  isar_community_flutter_libs: cf478bdca01f7fb2bde0320930a785456748f1ad
+  url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
+  webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
 
 PODFILE CHECKSUM: 7cd6c405fc6784b6b0cb4879e252652feefaeb16
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.14.3

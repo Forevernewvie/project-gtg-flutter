@@ -253,12 +253,9 @@ class _SettingsActionTile extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            color: Color.alphaBlend(
-              accent.withValues(alpha: 0.08),
-              colorScheme.surface,
-            ),
+            color: const Color(0x08FFFFFF), // Fixed to be dark transparent
             borderRadius: BorderRadius.circular(GtgUi.cardRadius - 2),
-            border: Border.all(color: accent.withValues(alpha: 0.18)),
+            border: Border.all(color: const Color(0x1AFFFFFF)),
           ),
           child: ListTile(
             contentPadding: const EdgeInsets.fromLTRB(14, 6, 14, 6),
@@ -291,15 +288,15 @@ class _SettingsActionTile extends StatelessWidget {
             ),
             trailing: DecoratedBox(
               decoration: BoxDecoration(
-                color: colorScheme.surface.withValues(alpha: 0.88),
+                color: Colors.black26, // Replaced grey with dark transparent
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: colorScheme.outlineVariant),
+                border: Border.all(color: accent.withValues(alpha: 0.2)),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Icon(
                   trailingIcon,
-                  color: colorScheme.onSurfaceVariant,
+                  color: accent,
                   size: 18,
                 ),
               ),

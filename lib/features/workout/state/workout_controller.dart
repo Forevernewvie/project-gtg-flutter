@@ -6,6 +6,8 @@ import '../../../core/logging/logger_provider.dart';
 import '../../../core/models/exercise_log.dart';
 import '../../../core/models/exercise_type.dart';
 import '../../../data/persistence/persistence_repositories.dart';
+import '../../widget_sync/application/widget_sync_service.dart';
+import '../../widget_sync/domain/widget_data_model.dart';
 
 final workoutControllerProvider =
     AsyncNotifierProvider<WorkoutController, WorkoutState>(
@@ -58,6 +60,22 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
 
     try {
       await _repository.saveLogs(updated);
+      
+      // Keep native widget in sync with the new log
+      final now = ref.read(clockProvider).now();
+      final todayTotal = updated
+          .where((l) =>
+              l.type == type &&
+              l.timestamp.year == now.year &&
+              l.timestamp.month == now.month &&
+              l.timestamp.day == now.day)
+          .fold<int>(0, (sum, l) => sum + l.reps);
+
+      await WidgetSyncService.syncData(WidgetDataModel(
+        todayTotal: todayTotal,
+        targetTotal: 0,
+        primaryExercise: type,
+      ));
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist workout logs.',

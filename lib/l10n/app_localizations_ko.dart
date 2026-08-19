@@ -15,71 +15,71 @@ class AppLocalizationsKo extends AppLocalizations {
   String get navHome => '홈';
 
   @override
-  String get navCalendar => '캘린더';
+  String get navCalendar => '리듬';
 
   @override
   String get navSettings => '설정';
 
   @override
-  String get dashboardTitle => '오늘의 루틴';
+  String get dashboardTitle => '오늘의 운동';
 
   @override
-  String get dashboardSubtitle => '완벽하게 말고, 자주. 한 세트씩만.';
+  String get dashboardSubtitle => '작은 습관이 모여 완벽을 만들어요. 지치지 않게, 자주, 꾸준하게.';
 
   @override
-  String get dashboardReadyTitle => '오늘 1세트 준비 완료';
+  String get dashboardReadyTitle => '준비 완료';
 
   @override
   String dashboardPrimarySetHint(String exercise, int count) {
-    return '$exercise $count회, 딱 1세트부터 시작하세요.';
+    return '$exercise $count회, 지금 바로 시작해 볼까요?';
   }
 
   @override
   String activeDaysPill(int count) {
-    return '활동일 $count일';
+    return '$count일째 운동 중';
   }
 
   @override
-  String get quickLogTitle => '빠른 입력';
+  String get quickLogTitle => '세트 기록';
 
   @override
-  String get quickLogHelper => '횟수를 조정한 뒤 기록을 누르세요.';
+  String get quickLogHelper => '오늘 하루도 멋지게 숫자를 채워보세요.';
 
   @override
-  String get decreaseValue => '감소';
+  String get decreaseValue => '줄이기';
 
   @override
-  String get increaseValue => '증가';
+  String get increaseValue => '늘리기';
 
   @override
   String get reset => '초기화';
 
   @override
-  String get resetLogsTitle => '전체 기록을 초기화할까요?';
+  String get resetLogsTitle => '모든 기록을 지울까요?';
 
   @override
-  String get resetLogsMessage => '이 기기에 저장된 모든 운동 기록이 삭제됩니다.';
+  String get resetLogsMessage => '기기에 저장된 모든 운동 기록이 영구적으로 지워져요. 계속할까요?';
 
   @override
   String get record => '기록';
 
   @override
-  String get loadingLogs => '기록을 불러오는 중입니다...';
+  String get loadingLogs => '기록을 불러오고 있어요...';
 
   @override
   String get recentLogsTitle => '최근 기록';
 
   @override
-  String get noLogsHint => '기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.';
+  String get noLogsHint => '오늘 아직 기록이 없어요. 가볍게 한 세트 어떨까요?';
 
   @override
-  String get noLogsHintHome => '기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.';
+  String get noLogsHintHome => '오늘 운동 기록이 없어요. 홈에서 한 세트를 기록해 보세요.';
 
   @override
-  String get calendarTitle => '리듬 캘린더';
+  String get calendarTitle => '나의 리듬';
 
   @override
-  String get calendarSubtitleHeatmap => '색이 진할수록 횟수가 많습니다. (월간 히트맵)';
+  String get calendarSubtitleHeatmap => '색이 진해질수록 리듬이 탄탄해지고 있어요.';
 
   @override
   String get today => '오늘';
@@ -102,7 +102,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get noLogsForDay => '이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.';
+  String get noLogsForDay => '이날은 기록이 없어요. 홈에서 한 세트 기록해 보세요.';
 
   @override
   String get settingsTitle => '설정';
@@ -111,7 +111,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsThemeTitle => '테마';
 
   @override
-  String get settingsThemeSubtitle => '앱 화면 스타일을 선택하세요. 즉시 적용됩니다.';
+  String get settingsThemeSubtitle => '앱 화면 테마를 선택할 수 있어요.';
 
   @override
   String get settingsThemeSystem => '시스템';
@@ -123,22 +123,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsThemeDark => '다크';
 
   @override
-  String get remindersTitle => '리마인더';
+  String get remindersTitle => '알림';
 
   @override
-  String get remindersSubtitle => '반복 주기, 방해 금지 시간, 주말 제외를 설정합니다';
+  String get remindersSubtitle => '알림 주기와 조용한 시간을 설정할 수 있어요.';
 
   @override
   String get settingsCoachTitle => 'GTG 코치';
 
   @override
-  String get settingsCoachSubtitle => '최대 반복, GTG 추천 횟수, 오늘 계획을 관리합니다.';
+  String get settingsCoachSubtitle => '목표 횟수와 추천 계획을 관리할 수 있어요.';
 
   @override
   String get allLogsTitle => '전체 기록';
 
   @override
-  String get allLogsSubtitle => '날짜별/종목별로 모아보기';
+  String get allLogsSubtitle => '모든 기록을 날짜와 종목별로 확인해요.';
 
   @override
   String get aboutTitle => '앱 정보';
@@ -147,32 +147,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get privacyPolicyTitle => '개인정보 처리방침';
 
   @override
-  String get privacyPolicySubtitle => '광고/데이터 처리 안내';
+  String get privacyPolicySubtitle => '데이터 처리에 대한 안내를 확인해요.';
 
   @override
   String get adPrivacyChoicesTitle => '광고 개인정보 선택';
 
   @override
-  String get adPrivacyChoicesSubtitle => '광고 동의 옵션 다시 보기';
+  String get adPrivacyChoicesSubtitle => '광고 동의 설정을 다시 확인해요.';
 
   @override
-  String get adPrivacyChoicesUnavailable => '지금은 광고 개인정보 옵션을 열 수 없습니다.';
+  String get adPrivacyChoicesUnavailable => '지금은 광고 옵션을 열 수 없어요.';
 
   @override
-  String get invalidLink => '링크가 올바르지 않습니다.';
+  String get invalidLink => '올바른 링크가 아니에요.';
 
   @override
-  String get cannotOpenBrowser => '브라우저를 열 수 없습니다.';
+  String get cannotOpenBrowser => '브라우저를 열지 못했어요. 다시 시도해 주세요.';
 
   @override
-  String get openExternalFailed => '열 수 없습니다.';
+  String get openExternalFailed => '링크를 열지 못했어요.';
 
   @override
   String get appUpdateTitle => '업데이트 가능';
 
   @override
   String appUpdateBody(String version) {
-    return '새 버전($version)이 나왔습니다. 최신 개선 사항을 위해 지금 업데이트해보세요.';
+    return '새로운 버전($version)이 있어요. 최신 기능과 함께 더 나은 앱을 경험해 보세요.';
   }
 
   @override
@@ -185,17 +185,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remindersHeadline => '조용하게, 꾸준히';
 
   @override
-  String get remindersSubheadline => '반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.';
+  String get remindersSubheadline => '알림 주기를 설정하면 하루 일과에 맞춰 알림을 보내드려요.';
 
   @override
-  String get enableRemindersTitle => '리마인더 켜기';
+  String get enableRemindersTitle => '알림 켜기';
 
   @override
   String get enableRemindersOffSubtitle => '원할 때만 켜고 끌 수 있어요.';
 
   @override
   String get enableRemindersNoSlotsSubtitle =>
-      '예약할 시간이 없어요. 조용한 시간/주말 쉬기 설정을 확인해주세요.';
+      '알림을 보낼 시간이 없어요. 조용한 시간이나 주말 쉬기 설정을 확인해 주세요.';
 
   @override
   String enableRemindersNextScheduledSubtitle(String time, int count) {
@@ -217,26 +217,26 @@ class AppLocalizationsKo extends AppLocalizations {
   String get maxPerDayLabel => '하루 최대';
 
   @override
-  String get reminderOptimizationTitle => '기록 기반 제안';
+  String get reminderOptimizationTitle => '기록 맞춤 제안';
 
   @override
   String get reminderOptimizationApply => '적용';
 
   @override
-  String get reminderOptimizationEnable => 'GTG 리듬을 다시 만들 수 있게 리마인더를 켜보세요.';
+  String get reminderOptimizationEnable => '운동 리듬을 찾을 수 있도록 알림을 켜볼까요?';
 
   @override
   String reminderOptimizationReduceFrequency(int count) {
-    return '최근 리듬이 가벼워요. $count분 간격을 시도해보세요.';
+    return '최근 리듬이 여유로워요. $count분 간격으로 알림을 받아보세요.';
   }
 
   @override
   String get reminderOptimizationSkipWeekends =>
-      '주말 기록이 거의 없어요. 주말 쉬기를 시도해보세요.';
+      '주말에는 기록이 적네요. 주말 쉬기 옵션을 켜보는 건 어떨까요?';
 
   @override
   String reminderOptimizationPreferredTime(String time) {
-    return '$time 전후 기록이 많아요. 그 시간대에 알림을 집중해보세요.';
+    return '$time 즈음에 기록이 많아요. 이 시간에 집중해서 알림을 받아보세요.';
   }
 
   @override
@@ -252,13 +252,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weekendsOffTitle => '주말 쉬기';
 
   @override
-  String get weekendsOffSubtitle => '토/일에는 예약하지 않음';
+  String get weekendsOffSubtitle => '주말에는 알림을 보내지 않아요.';
 
   @override
-  String get silentNotificationsInfo => '알림은 소리 없이 조용히 표시됩니다.';
+  String get silentNotificationsInfo => '알림은 소리 없이 조용하게 울려요.';
 
   @override
-  String get permissionDenied => '알림 권한이 필요합니다. 설정에서 허용해주세요.';
+  String get permissionDenied => '알림 권한이 필요해요. 기기 설정에서 허용해 주세요.';
 
   @override
   String get openSettings => '설정';
@@ -277,84 +277,83 @@ class AppLocalizationsKo extends AppLocalizations {
   String get onboardingLater => '나중에';
 
   @override
-  String get onboardingSubtitle => '완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.';
+  String get onboardingSubtitle => '완벽함보다 꾸준함이 중요해요. 1분만 설정하면 바로 시작할 수 있어요.';
 
   @override
-  String get onboardingQuestion => '주로 어떤 동작을 할까요?';
+  String get onboardingQuestion => '어떤 운동을 주로 하시나요?';
 
   @override
-  String get onboardingHint => '기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.';
+  String get onboardingHint => '선택한 운동이 홈 화면 가장 앞에 나타나요.';
 
   @override
-  String get onboardingBaselineTitle => '선택 입력: 최대 반복';
+  String get onboardingBaselineTitle => '선택: 최대 횟수 입력';
 
   @override
   String get onboardingBaselineSubtitle =>
-      '지금 넣어도 되고, 건너뛰어도 됩니다. 나중에 GTG 코치가 더 가볍게 추천할 때 사용합니다.';
+      '지금 입력하지 않아도 괜찮아요. 코치가 알맞은 횟수를 추천할 때 참고해요.';
 
   @override
-  String get onboardingBaselineFieldLabel => '현재 깔끔한 최대 반복';
+  String get onboardingBaselineFieldLabel => '한 번에 할 수 있는 최대 횟수';
 
   @override
-  String get onboardingBaselineFieldHint =>
-      '건너뛰어도 괜찮아요. 나중에 GTG 코치에서 추가할 수 있어요.';
+  String get onboardingBaselineFieldHint => '건너뛰어도 나중에 언제든 추가할 수 있어요.';
 
   @override
   String get onboardingNext => '다음';
 
   @override
-  String get onboardingPushUpSubtitle => '가장 빠른 루틴. 어디서든 시작';
+  String get onboardingPushUpSubtitle => '언제 어디서나 간편하게 시작해요.';
 
   @override
-  String get onboardingPullUpSubtitle => '상체 당기기. 폼이 핵심';
+  String get onboardingPullUpSubtitle => '정확한 자세로 당기는 상체 운동이에요.';
 
   @override
-  String get onboardingDipsSubtitle => '푸쉬 라인 강화. 어깨 각도 주의';
+  String get onboardingDipsSubtitle => '올바른 각도로 미는 힘을 길러요.';
 
   @override
-  String get coachFocusTitle => '집중 동작';
+  String get coachFocusTitle => '목표 운동';
 
   @override
-  String get coachFocusSubtitle => '주 종목을 무리 없이 자주 반복할 수 있게 맞춥니다.';
+  String get coachFocusSubtitle => '무리하지 않고 꾸준히 할 수 있게 목표를 맞춰드릴게요.';
 
   @override
-  String get coachFocusMoveLabel => '주 종목';
+  String get coachFocusMoveLabel => '주요 운동';
 
   @override
-  String get coachRecommendedRepsLabel => '추천 GTG 횟수';
+  String get coachRecommendedRepsLabel => '추천 횟수';
 
   @override
-  String get coachRecommendedHint => '최대 반복의 절반 정도로 유지해 매 세트를 여유 있게 가져갑니다.';
+  String get coachRecommendedHint => '최대 횟수의 절반 정도로 설정하면 여유롭게 리듬을 유지할 수 있어요.';
 
   @override
-  String get coachLastTestedLabel => '마지막 최대 반복 측정';
+  String get coachLastTestedLabel => '마지막 최대 횟수 측정일';
 
   @override
-  String get coachLastTestedNever => '아직 없음';
+  String get coachLastTestedNever => '기록 없음';
 
   @override
   String get coachBaselineTitle => '기준 설정';
 
   @override
-  String get coachBaselineSubtitle => '현재 최대 반복과 하루 세트 목표를 설정하세요.';
+  String get coachBaselineSubtitle => '현재 최대 횟수와 하루 목표 세트를 설정해 주세요.';
 
   @override
-  String get coachBaselineLabel => '현재 최대 반복';
+  String get coachBaselineLabel => '현재 최대 횟수';
 
   @override
-  String get coachDailySetGoalLabel => '하루 세트 목표';
+  String get coachDailySetGoalLabel => '하루 목표 세트';
 
   @override
   String get coachPlanTitle => '오늘의 계획';
 
   @override
-  String get coachPlanSubtitle => '오늘 기록한 주 종목 로그를 기준으로 진행도를 계산합니다.';
+  String get coachPlanSubtitle => '오늘 기록한 운동을 바탕으로 진행 상황을 보여드릴게요.';
 
   @override
   String get coachTodayLabel => '오늘';
 
   @override
-  String get coachCompletedSetsLabel => '완료한 세트';
+  String get coachCompletedSetsLabel => '완료 세트';
 
   @override
   String get coachTargetSetsLabel => '목표 세트';
@@ -363,31 +362,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get coachRemainingSetsLabel => '남은 세트';
 
   @override
-  String get coachCardReadySubtitle => '오늘의 GTG 추천과 진행 상황';
+  String get coachCardReadySubtitle => '오늘의 추천 목표와 진행도를 확인해요.';
 
   @override
-  String get coachCardSetupSubtitle => '최대 반복을 넣으면 홈이 더 가볍게 추천해줍니다.';
+  String get coachCardSetupSubtitle => '최대 횟수를 입력하면 더 적절한 목표를 추천해 드릴게요.';
 
   @override
-  String get coachSetBaselineAction => '최대반복 추가';
+  String get coachSetBaselineAction => '최대 횟수 입력';
 
   @override
   String get coachAdjustAction => '조정';
 
   @override
-  String get coachSetupHint =>
-      '주 종목의 현재 최대 반복을 저장하세요. 홈이 더 가벼운 GTG 세트를 추천하고 오늘 진행도를 보여줍니다.';
+  String get coachSetupHint => '최대 횟수를 저장하면 무리하지 않는 선에서 알맞은 세트를 추천해 드릴게요.';
 
   @override
   String get coachNotSet => '미설정';
 
   @override
   String get coachRetestDueMessage =>
-      '2주 이상 지났어요. 최대 반복을 다시 측정해 추천값을 새로 맞춰보세요.';
+      '2주가 지났어요. 최대 횟수를 다시 측정하면 목표를 새롭게 맞출 수 있어요.';
 
   @override
   String coachQuickLogRecommended(int count) {
-    return 'GTG $count회';
+    return '추천 $count회';
   }
 
   @override
@@ -397,7 +395,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String coachRemainingSets(int count) {
-    return '오늘 $count세트 남음';
+    return '오늘은 $count세트 남았어요';
   }
 
   @override
@@ -406,17 +404,18 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get gtgInsightsTitle => '로컬 인사이트';
+  String get gtgInsightsTitle => '나의 기록 분석';
 
   @override
-  String get gtgInsightsSubtitle => '최근 기록에서만 계산한 개인 신호입니다.';
+  String get gtgInsightsSubtitle => '최근 기록을 분석해서 찾은 나만의 패턴이에요.';
 
   @override
-  String get gtgInsightBaselineMissing => '최대 반복 수를 추가하면 개인화 가이드를 열 수 있어요.';
+  String get gtgInsightBaselineMissing =>
+      '최대 횟수를 입력하면 나에게 딱 맞는 가이드를 받아볼 수 있어요.';
 
   @override
   String gtgInsightConsistency(int count) {
-    return '최근 14일 동안 $count일 운동했어요.';
+    return '최근 14일 중 $count일 동안 운동했어요.';
   }
 
   @override
@@ -425,10 +424,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get gtgInsightRetestDue => '최대 반복 측정이 오래됐어요. 기준을 새로 잡아보세요.';
+  String get gtgInsightRetestDue => '최대 횟수를 측정한 지 오래됐어요. 새로운 기준을 세워볼까요?';
 
   @override
-  String get splashTapToSkip => '탭하여 스킵';
+  String get splashTapToSkip => '화면을 눌러 건너뛰기';
 
   @override
   String get exercisePushUp => '푸쉬업';
@@ -450,30 +449,30 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get notifTitle => '한 세트 타이밍';
+  String get notifTitle => '운동할 시간';
 
   @override
-  String get notifBody => '푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.';
+  String get notifBody => '가볍게 한 세트 기록하고 오늘의 리듬을 이어가 보세요.';
 
   @override
-  String get missionTodayTitle => '오늘의 GTG 미션';
+  String get missionTodayTitle => '오늘의 미션';
 
   @override
-  String get missionTodaySubtitle => '긴 운동이 아니라 오늘 다시 오게 만드는 작은 계획입니다.';
+  String get missionTodaySubtitle => '오늘 다시 운동하게 만드는 작고 꾸준한 계획이에요.';
 
   @override
   String get missionRecoveryTitle => '복귀 미션';
 
   @override
   String missionRecoverySubtitle(int count) {
-    return '$count일 쉬었어요. 가벼운 1세트면 리듬을 다시 시작할 수 있습니다.';
+    return '$count일 동안 쉬었어요. 가볍게 1세트만 기록하고 리듬을 다시 깨워볼까요?';
   }
 
   @override
-  String get missionCompleteTitle => '오늘 미션 완료';
+  String get missionCompleteTitle => '오늘의 미션 완료!';
 
   @override
-  String get missionCompleteSubtitle => '좋은 리듬입니다. 오늘 추가 세트는 선택입니다.';
+  String get missionCompleteSubtitle => '멋진 리듬이에요. 오늘의 추가 운동은 선택 사항입니다.';
 
   @override
   String missionLogAction(int count) {
@@ -481,7 +480,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get missionProgressLabel => '미션 진행도';
+  String get missionProgressLabel => '진행 상황';
 
   @override
   String missionProgressValue(int done, int target) {
@@ -495,7 +494,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get missionDoneValue => '완료';
 
   @override
-  String get missionRhythmLabel => '7일 리듬';
+  String get missionRhythmLabel => '주간 리듬';
 
   @override
   String missionRhythmValue(int count) {
@@ -504,25 +503,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String calendarRhythmMessage(int count7, int count14) {
-    return '최근 7일 중 $count7일 기록했습니다. 14일 기준 $count14일 활동 중이에요.';
+    return '최근 7일 동안 $count7일 운동했어요. (14일 기준 $count14일)';
   }
 
   @override
   String calendarRecoveryMessage(int count) {
-    return '공백은 실패가 아닙니다. $count일 쉬었으니 오늘은 쉬운 1세트로 재시작하세요.';
+    return '쉬어가는 것도 중요해요. $count일 쉬었으니 오늘은 가볍게 1세트만 시작해 보세요.';
   }
 
   @override
-  String get adaptiveCoachTitle => '적응형 코치';
+  String get adaptiveCoachTitle => '맞춤 코치';
 
   @override
-  String get adaptiveCoachSubtitle => '서버 추천을 우선 사용하고, 없으면 로컬 규칙으로 안내합니다.';
+  String get adaptiveCoachSubtitle => '가장 알맞은 운동 계획을 찾아서 추천해 드려요.';
 
   @override
   String get adaptiveCoachRemoteSource => 'PocketBase';
 
   @override
-  String get adaptiveCoachLocalSource => '로컬 규칙';
+  String get adaptiveCoachLocalSource => '기기 설정';
 
   @override
   String get adaptiveCoachIntensityRecover => '회복';
@@ -534,19 +533,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adaptiveCoachIntensityProgress => '증가';
 
   @override
-  String get adaptiveCoachReasonRetestDue => '최대 반복 재측정 필요';
+  String get adaptiveCoachReasonRetestDue => '최대 횟수 측정 필요';
 
   @override
-  String get adaptiveCoachReasonRestartAfterGap => '최근 공백 감지';
+  String get adaptiveCoachReasonRestartAfterGap => '최근 휴식 감지';
 
   @override
-  String get adaptiveCoachReasonRecoverVolume => '회복 볼륨 추천';
+  String get adaptiveCoachReasonRecoverVolume => '운동량 회복 추천';
 
   @override
-  String get adaptiveCoachReasonMaintainVolume => '안정 볼륨 추천';
+  String get adaptiveCoachReasonMaintainVolume => '현재 운동량 유지';
 
   @override
-  String get adaptiveCoachReasonProgressVolume => '안정적인 리듬 감지';
+  String get adaptiveCoachReasonProgressVolume => '안정적인 운동 리듬';
 
   @override
   String adaptiveCoachRecommendationLine(

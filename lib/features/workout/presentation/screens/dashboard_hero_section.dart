@@ -54,22 +54,6 @@ class _HeroCard extends ConsumerWidget {
           ),
           child: Stack(
             children: <Widget>[
-              Positioned(
-                top: -38,
-                right: -16,
-                child: _HeroGlow(
-                  size: 132,
-                  color: Colors.white.withValues(alpha: 0.12),
-                ),
-              ),
-              Positioned(
-                bottom: -52,
-                left: -28,
-                child: _HeroGlow(
-                  size: 150,
-                  color: Colors.white.withValues(alpha: 0.10),
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: Column(
@@ -83,15 +67,19 @@ class _HeroCard extends ConsumerWidget {
                     const SizedBox(height: 20),
                     Semantics(
                       header: true,
-                      child: Text(
-                        heroValue,
-                        key: const Key('dashboard.todayTotalValue'),
-                        style: Theme.of(context).textTheme.displayMedium
-                            ?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: -0.9,
-                            ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          heroValue,
+                          key: const Key('dashboard.todayTotalValue'),
+                          style: Theme.of(context).textTheme.displayMedium
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -0.9,
+                              ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -149,14 +137,24 @@ class _HeroHeader extends StatelessWidget {
     final titleWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-          ),
+        Row(
+          children: [
+            Flexible(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.info_outline, color: Colors.white, size: 24),
+              onPressed: () => showGtgInfoBottomSheet(context),
+            ),
+          ],
         ),
         const SizedBox(height: 6),
         Text(

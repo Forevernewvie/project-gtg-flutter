@@ -2,12 +2,12 @@
   "@@locale": "en",
   "appTitle": "PROJECT GTG",
   "navHome": "Home",
-  "navCalendar": "Calendar",
+  "navCalendar": "Rhythm",
   "navSettings": "Settings",
-  "dashboardTitle": "Today's Routine",
-  "dashboardSubtitle": "Not perfect, just frequent. One set at a time.",
-  "dashboardReadyTitle": "Ready for today",
-  "dashboardPrimarySetHint": "Start with {exercise}: one set of {count} reps.",
+  "dashboardTitle": "COMMAND CENTER",
+  "dashboardSubtitle": "GREASE THE GROOVE. SUBMAXIMAL REPS. MAXIMUM STRENGTH.",
+  "dashboardReadyTitle": "STAY READY",
+  "dashboardPrimarySetHint": "EXECUTE {exercise}: {count} REPS. DO IT NOW.",
   "@dashboardPrimarySetHint": {
     "placeholders": {
       "exercise": {
@@ -18,7 +18,7 @@
       }
     }
   },
-  "activeDaysPill": "Active {count} days",
+  "activeDaysPill": "ACTIVE {count} DAYS",
   "@activeDaysPill": {
     "placeholders": {
       "count": {
@@ -26,21 +26,21 @@
       }
     }
   },
-  "quickLogTitle": "Quick Log",
-  "quickLogHelper": "Adjust reps, then tap Record.",
+  "quickLogTitle": "LOG SET",
+  "quickLogHelper": "NO EXCUSES. ADD REPS AND HIT RECORD.",
   "decreaseValue": "Decrease",
   "increaseValue": "Increase",
-  "reset": "Reset",
-  "resetLogsTitle": "Reset all logs?",
-  "resetLogsMessage": "This removes every logged set from this device.",
-  "record": "Log",
-  "loadingLogs": "Loading logs...",
-  "recentLogsTitle": "Recent Logs",
-  "noLogsHint": "No logs yet. Log your first set above.",
-  "noLogsHintHome": "No logs yet. Log a set on Home.",
-  "calendarTitle": "Rhythm Calendar",
-  "calendarSubtitleHeatmap": "Darker cells mean more reps. Monthly heatmap.",
-  "today": "Today",
+  "reset": "RESET",
+  "resetLogsTitle": "WIPE ALL LOGS?",
+  "resetLogsMessage": "This will erase your entire history from this device.",
+  "record": "LOG IT",
+  "loadingLogs": "LOADING ARSENAL...",
+  "recentLogsTitle": "RECENT SETS",
+  "noLogsHint": "NO SETS TODAY. GET ON THE BAR.",
+  "noLogsHintHome": "ZERO REPS. EXECUTE A SET NOW.",
+  "calendarTitle": "BATTLE RHYTHM",
+  "calendarSubtitleHeatmap": "LIGHT IT UP. DARKER CELLS = MORE WORK.",
+  "today": "TODAY",
   "prevMonthTooltip": "Previous month",
   "nextMonthTooltip": "Next month",
   "monthTotalLabel": "Month total",

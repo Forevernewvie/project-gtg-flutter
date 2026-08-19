@@ -28,9 +28,9 @@ abstract final class ExerciseUiStyle {
   /// Returns the bundled GPT-generated exercise icon asset.
   static String assetPath(ExerciseType type) {
     return switch (type) {
-      ExerciseType.pushUp => 'assets/exercise_icons/push_up.png',
-      ExerciseType.pullUp => 'assets/exercise_icons/pull_up.png',
-      ExerciseType.dips => 'assets/exercise_icons/dips.png',
+      ExerciseType.pushUp => 'assets/exercise_icons/push_up.jpg',
+      ExerciseType.pullUp => 'assets/exercise_icons/pull_up.jpg',
+      ExerciseType.dips => 'assets/exercise_icons/dips.jpg',
     };
   }
 
@@ -125,6 +125,7 @@ class _ExerciseGlyphPainter extends CustomPainter {
         _drawDips(canvas, size, stroke, fill);
     }
   }
+
 
   void _drawPushUp(Canvas canvas, Size size, Paint stroke, Paint fill) {
     final head = Offset(size.width * 0.25, size.height * 0.28);

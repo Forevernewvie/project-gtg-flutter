@@ -448,25 +448,32 @@ class _MonthHeatmap extends StatelessWidget {
             final isToday = isSameDay(date, today);
             final colorScheme = Theme.of(context).colorScheme;
 
-            final bg = _heatColor(
-              total,
-              maxTotal,
-              accent,
-              colorScheme.surfaceContainerHigh,
-            );
-            final border = isSelected
-                ? Border.all(
-                    color: accent,
-                    width: _CalendarPolicy.selectedDayBorderWidth,
-                  )
-                : isToday
-                ? Border.all(
-                    color: accent.withValues(alpha: 0.50),
-                    width: _CalendarPolicy.todayBorderWidth,
-                  )
-                : Border.all(color: colorScheme.outlineVariant);
+            
+            final hasActivity = total > 0;
+            
+            // Painter's Touch: Elegant Slate Gray for activity
+            final Color cellBg;
+            final Color textColor;
+            final Border? border;
+            final List<BoxShadow>? boxShadow;
 
-            final textColor = total == 0 ? colorScheme.onSurface : Colors.white;
+            if (hasActivity) {
+              // High-end Cyberpunk metallic/slate look for active days
+              cellBg = const Color(0xFF475569); // Sleek Slate Gray
+              textColor = Colors.white;
+              border = Border.all(color: const Color(0xFF64748B), width: 1); // Subtle lighter edge
+              boxShadow = null;
+            } else {
+              // Empty days
+              cellBg = const Color(0xFF131B26); // Dark surface
+              textColor = Colors.white.withValues(alpha: 0.3);
+              border = Border.all(color: const Color(0x1AFFFFFF), width: 1);
+              boxShadow = null;
+            }
+
+            final activeBorder = isSelected
+                ? Border.all(color: Colors.white, width: 2)
+                : border;
 
             return SizedBox(
               width: cellSize,
@@ -477,23 +484,15 @@ class _MonthHeatmap extends StatelessWidget {
                 label: '${date.month}/${date.day}, ${l10n.repsWithUnit(total)}',
                 child: InkWell(
                   key: Key('calendar.day.${ymd(date)}'),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () => onSelect(date),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     decoration: BoxDecoration(
-                      color: bg,
-                      borderRadius: BorderRadius.circular(16),
-                      border: border,
-                      boxShadow: isSelected
-                          ? <BoxShadow>[
-                              BoxShadow(
-                                color: accent.withValues(alpha: 0.22),
-                                blurRadius: 16,
-                                offset: const Offset(0, 6),
-                              ),
-                            ]
-                          : null,
+                      color: cellBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: activeBorder,
+                      boxShadow: boxShadow,
                     ),
                     child: Center(
                       child: Column(

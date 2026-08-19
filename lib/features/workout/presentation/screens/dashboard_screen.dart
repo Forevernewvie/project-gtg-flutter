@@ -6,6 +6,7 @@ import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/coaching/gtg_coach_policy.dart';
+import 'package:project_gtg/features/coaching/models/gtg_coach_recommendation.dart';
 import 'package:project_gtg/features/coaching/state/gtg_coach_providers.dart';
 import 'package:project_gtg/features/reminders/reminder_optimization_policy.dart';
 import 'package:project_gtg/features/reminders/reminder_ui_policy.dart';
@@ -16,6 +17,8 @@ import 'package:project_gtg/features/workout/state/workout_controller.dart';
 import 'package:project_gtg/features/workout/state/workout_stats_providers.dart';
 import 'package:project_gtg/l10n/app_localizations.dart';
 import 'package:project_gtg/l10n/exercise_type_l10n.dart';
+import '../widgets/gtg_info_bottom_sheet.dart';
+import 'package:project_gtg/core/ui/gtg_neon_circular_progress.dart';
 
 part 'dashboard_hero_section.dart';
 part 'dashboard_coach_section.dart';

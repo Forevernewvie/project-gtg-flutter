@@ -5,7 +5,6 @@ import '../../core/models/exercise_log.dart';
 import '../../core/models/reminder_settings.dart';
 import '../../core/models/user_preferences.dart';
 import 'gtg_persistence.dart';
-import '../remote/cloud_sync_service.dart';
 import 'persistence_provider.dart';
 
 /// Contract for reading and writing workout logs without exposing storage details.
@@ -106,65 +105,6 @@ final class PersistenceUserPreferencesRepository
   }
 }
 
-/// Offline-first workout repository that mirrors data to PocketBase when configured.
-final class CloudSyncedWorkoutLogRepository implements WorkoutLogRepository {
-  const CloudSyncedWorkoutLogRepository({
-    required WorkoutLogRepository localRepository,
-    required CloudSyncService cloudSyncService,
-  }) : _localRepository = localRepository,
-       _cloudSyncService = cloudSyncService;
-
-  final WorkoutLogRepository _localRepository;
-  final CloudSyncService _cloudSyncService;
-
-  @override
-  Future<List<ExerciseLog>> loadLogs() async {
-    final localLogs = await _localRepository.loadLogs();
-    final result = await _cloudSyncService.mergeWorkoutLogs(localLogs);
-    if (result.didSync) {
-      await _localRepository.saveLogs(result.value);
-    }
-    return result.value;
-  }
-
-  @override
-  Future<void> saveLogs(List<ExerciseLog> logs) async {
-    await _localRepository.saveLogs(logs);
-    await _cloudSyncService.pushWorkoutLogs(logs);
-  }
-}
-
-/// Offline-first preferences repository that mirrors data to PocketBase when configured.
-final class CloudSyncedUserPreferencesRepository
-    implements UserPreferencesRepository {
-  const CloudSyncedUserPreferencesRepository({
-    required UserPreferencesRepository localRepository,
-    required CloudSyncService cloudSyncService,
-  }) : _localRepository = localRepository,
-       _cloudSyncService = cloudSyncService;
-
-  final UserPreferencesRepository _localRepository;
-  final CloudSyncService _cloudSyncService;
-
-  @override
-  Future<UserPreferences> loadUserPreferences() async {
-    final localPreferences = await _localRepository.loadUserPreferences();
-    final result = await _cloudSyncService.mergeUserPreferences(
-      localPreferences,
-    );
-    if (result.didSync) {
-      await _localRepository.saveUserPreferences(result.value);
-    }
-    return result.value;
-  }
-
-  @override
-  Future<void> saveUserPreferences(UserPreferences preferences) async {
-    await _localRepository.saveUserPreferences(preferences);
-    await _cloudSyncService.pushUserPreferences(preferences);
-  }
-}
-
 /// Persistence-backed adapter for theme preferences.
 final class PersistenceThemePreferenceRepository
     implements ThemePreferenceRepository {
@@ -188,12 +128,7 @@ final class PersistenceThemePreferenceRepository
 
 /// Provides workout-log repository abstraction to feature controllers.
 final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
-  return CloudSyncedWorkoutLogRepository(
-    localRepository: PersistenceWorkoutLogRepository(
-      ref.read(persistenceProvider),
-    ),
-    cloudSyncService: ref.read(cloudSyncServiceProvider),
-  );
+  return PersistenceWorkoutLogRepository(ref.read(persistenceProvider));
 });
 
 /// Provides reminder-settings repository abstraction to feature controllers.
@@ -207,12 +142,7 @@ final reminderSettingsRepositoryProvider = Provider<ReminderSettingsRepository>(
 final userPreferencesRepositoryProvider = Provider<UserPreferencesRepository>((
   ref,
 ) {
-  return CloudSyncedUserPreferencesRepository(
-    localRepository: PersistenceUserPreferencesRepository(
-      ref.read(persistenceProvider),
-    ),
-    cloudSyncService: ref.read(cloudSyncServiceProvider),
-  );
+  return PersistenceUserPreferencesRepository(ref.read(persistenceProvider));
 });
 
 /// Provides theme-preference repository abstraction to feature controllers.

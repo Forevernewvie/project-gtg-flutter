@@ -89,7 +89,7 @@ class WorkoutAnalyticsService {
     final monthSum = dayTotals.values.fold<int>(0, (sum, value) {
       return sum + (value > 0 ? value : 0);
     });
-    final activeDays = dayTotals.values.where((value) => value > 0).length;
+    final activeDays = dayTotals.keys.length;
 
     return MonthWorkoutSummary(
       dayTotals: UnmodifiableMapView<DateTime, int>(dayTotals),

@@ -82,7 +82,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('캘린더'));
+    await tester.tap(find.text('리듬'));
     await tester.pumpAndSettle();
 
     const dayKey = Key('calendar.day.2026-02-14');

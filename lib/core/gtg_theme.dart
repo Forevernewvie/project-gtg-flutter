@@ -74,30 +74,30 @@ abstract final class GtgTheme {
         .apply(bodyColor: onSurface, displayColor: onSurface)
         .copyWith(
           displayLarge: baseTextTheme.displayLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -1.4,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -1.0,
           ),
           displayMedium: baseTextTheme.displayMedium?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -1.1,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
           ),
           headlineSmall: baseTextTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.6,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
           ),
           titleLarge: baseTextTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.4,
-          ),
-          titleMedium: baseTextTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.bold,
             letterSpacing: -0.2,
           ),
-          bodyLarge: baseTextTheme.bodyLarge?.copyWith(height: 1.22),
-          bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.25),
-          bodySmall: baseTextTheme.bodySmall?.copyWith(height: 1.3),
+          titleMedium: baseTextTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.2,
+          ),
+          bodyLarge: baseTextTheme.bodyLarge?.copyWith(height: 1.22, fontWeight: FontWeight.w500),
+          bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.25, fontWeight: FontWeight.normal),
+          bodySmall: baseTextTheme.bodySmall?.copyWith(height: 1.3, fontWeight: FontWeight.normal),
           labelLarge: baseTextTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.bold,
             letterSpacing: 0.1,
           ),
         );

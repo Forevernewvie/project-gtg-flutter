@@ -8,27 +8,40 @@ class _CoachCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final summary = ref.watch(gtgCoachSummaryProvider);
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return GtgSectionCard(
-      key: const Key('dashboard.coachCard'),
-      icon: Icons.track_changes_rounded,
-      accent: colorScheme.secondary,
-      title: l10n.settingsCoachTitle,
-      subtitle: summary.hasBaseline
-          ? l10n.coachCardReadySubtitle
-          : l10n.coachCardSetupSubtitle,
-      trailing: TextButton(
-        onPressed: () => context.push('/settings/coach'),
-        child: Text(
+    return GtgGlassCard(
+      showGlow: true,
+      glowColor: const Color(0xFF00E5FF),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(
+                  'Your Smart Coach',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              if (!summary.hasBaseline)
+                TextButton(
+                  onPressed: () => context.push('/settings/coach'),
+                  child: Text(l10n.coachSetBaselineAction),
+                ),
+            ],
+          ),
+          const SizedBox(height: 24),
           summary.hasBaseline
-              ? l10n.coachAdjustAction
-              : l10n.coachSetBaselineAction,
-        ),
+              ? _CoachReadyState(summary: summary)
+              : _CoachEmptyState(message: l10n.coachSetupHint),
+        ],
       ),
-      child: summary.hasBaseline
-          ? _CoachReadyState(summary: summary)
-          : _CoachEmptyState(message: l10n.coachSetupHint),
     );
   }
 }
@@ -41,116 +54,164 @@ class _ReminderNudgeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return GtgSectionCard(
-      key: const Key('dashboard.reminderNudgeCard'),
-      icon: Icons.notifications_active_rounded,
-      accent: colorScheme.tertiary,
-      title: l10n.reminderOptimizationTitle,
-      subtitle: ReminderUiPolicy.buildOptimizationMessage(
-        l10n: l10n,
-        suggestion: suggestion,
+    return GtgGlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.reminderOptimizationTitle, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(ReminderUiPolicy.buildOptimizationMessage(l10n: l10n, suggestion: suggestion)),
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () => context.push('/settings/reminders'),
+            child: Text(l10n.reminderOptimizationApply),
+          ),
+        ],
       ),
-      trailing: TextButton(
-        onPressed: () => context.push('/settings/reminders'),
-        child: Text(l10n.reminderOptimizationApply),
-      ),
-      child: const SizedBox.shrink(),
     );
   }
 }
 
-class _CoachReadyState extends StatelessWidget {
+class _CoachReadyState extends ConsumerWidget {
   const _CoachReadyState({required this.summary});
 
   final GtgCoachSummary summary;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final accent = Theme.of(context).colorScheme.secondary;
-    final progressValue = l10n.coachTodayProgress(
-      summary.completedSetsToday,
-      summary.dailySetTarget,
-    );
-
+    final recommendation = ref.watch(adaptiveGtgCoachRecommendationProvider);
+    final isRecover = recommendation.intensity == GtgCoachIntensity.recover;
+    
+    final completedSets = summary.completedSetsToday;
+    final targetSets = summary.dailySetTarget;
+    final progress = targetSets > 0 ? (completedSets / targetSets).clamp(0.0, 1.0) : 0.0;
+    
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        GtgResponsivePair(
-          primary: _CoachValueTile(
-            label: l10n.coachRecommendedRepsLabel,
-            value: l10n.repsWithUnit(summary.recommendedReps),
-            accent: accent,
-            keyValue: 'recommended',
-          ),
-          secondary: _CoachValueTile(
-            label: l10n.coachTodayLabel,
-            value: progressValue,
-            accent: accent,
-            keyValue: 'today',
-          ),
-        ),
-        const SizedBox(height: GtgUi.controlSpacing),
-        GtgResponsivePair(
-          primary: _CoachValueTile(
-            label: l10n.coachCompletedSetsLabel,
-            value: l10n.coachSetsShort(summary.completedSetsToday),
-            accent: accent,
-            keyValue: 'completedSets',
-          ),
-          secondary: _CoachValueTile(
-            label: l10n.coachTargetSetsLabel,
-            value: l10n.coachSetsShort(summary.dailySetTarget),
-            accent: accent,
-            keyValue: 'targetSets',
-          ),
-        ),
-        const SizedBox(height: GtgUi.controlSpacing),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(999),
-          child: LinearProgressIndicator(
-            key: const Key('dashboard.coachProgress'),
-            value: summary.progress,
-            minHeight: 10,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          l10n.coachRemainingSets(summary.remainingSetsToday),
-          key: const Key('dashboard.coachRemaining'),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        if (summary.retestDue) ...<Widget>[
-          const SizedBox(height: GtgUi.controlSpacing),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.refresh_rounded, color: accent, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l10n.coachRetestDueMessage,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w700,
+      children: [
+        Center(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: progress),
+            duration: const Duration(milliseconds: 1500),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return GtgNeonCircularProgress(
+                progress: value,
+                size: 260,
+                strokeWidth: 16,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$completedSets / $targetSets',
+                      style: const TextStyle(
+                        color: Color(0xFF00E5FF),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        letterSpacing: 1.2,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      'Daily Goal',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${summary.recommendedReps} ${summary.primaryExercise.key}',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '$completedSets completed',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '${(value * 100).toInt()}%',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
+          progress >= 1.0 
+            ? "Goal reached! Great job! 🙌"
+            : "You're ${(progress * 100).toInt()}% there! Let's hit $targetSets today! 🙌",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.8),
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF0055FF).withValues(alpha: 0.4),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: FilledButton.icon(
+              onPressed: () {
+                // Focus on Quick Log
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF0066FF),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+              ),
+              icon: const Icon(Icons.local_fire_department_rounded),
+              label: Text(
+                'Start ${summary.primaryExercise.key}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: TextButton(
+            onPressed: () => context.push('/logs'),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+                side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+            ),
+            child: const Text(
+              'Activity Log',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
       ],
     );
   }

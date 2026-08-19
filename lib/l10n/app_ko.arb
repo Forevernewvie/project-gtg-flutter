@@ -2,12 +2,12 @@
   "@@locale": "ko",
   "appTitle": "PROJECT GTG",
   "navHome": "홈",
-  "navCalendar": "캘린더",
+  "navCalendar": "리듬",
   "navSettings": "설정",
-  "dashboardTitle": "오늘의 루틴",
-  "dashboardSubtitle": "완벽하게 말고, 자주. 한 세트씩만.",
-  "dashboardReadyTitle": "오늘 1세트 준비 완료",
-  "dashboardPrimarySetHint": "{exercise} {count}회, 딱 1세트부터 시작하세요.",
+  "dashboardTitle": "오늘의 운동",
+  "dashboardSubtitle": "작은 습관이 모여 완벽을 만들어요. 지치지 않게, 자주, 꾸준하게.",
+  "dashboardReadyTitle": "준비 완료",
+  "dashboardPrimarySetHint": "{exercise} {count}회, 지금 바로 시작해 볼까요?",
   "@dashboardPrimarySetHint": {
     "placeholders": {
       "exercise": {
@@ -18,7 +18,7 @@
       }
     }
   },
-  "activeDaysPill": "활동일 {count}일",
+  "activeDaysPill": "{count}일째 운동 중",
   "@activeDaysPill": {
     "placeholders": {
       "count": {
@@ -26,20 +26,20 @@
       }
     }
   },
-  "quickLogTitle": "빠른 입력",
-  "quickLogHelper": "횟수를 조정한 뒤 기록을 누르세요.",
-  "decreaseValue": "감소",
-  "increaseValue": "증가",
+  "quickLogTitle": "세트 기록",
+  "quickLogHelper": "오늘 하루도 멋지게 숫자를 채워보세요.",
+  "decreaseValue": "줄이기",
+  "increaseValue": "늘리기",
   "reset": "초기화",
-  "resetLogsTitle": "전체 기록을 초기화할까요?",
-  "resetLogsMessage": "이 기기에 저장된 모든 운동 기록이 삭제됩니다.",
+  "resetLogsTitle": "모든 기록을 지울까요?",
+  "resetLogsMessage": "기기에 저장된 모든 운동 기록이 영구적으로 지워져요. 계속할까요?",
   "record": "기록",
-  "loadingLogs": "기록을 불러오는 중입니다...",
+  "loadingLogs": "기록을 불러오고 있어요...",
   "recentLogsTitle": "최근 기록",
-  "noLogsHint": "기록이 아직 없습니다. 위에서 첫 세트를 기록해보세요.",
-  "noLogsHintHome": "기록이 아직 없습니다. 홈에서 한 세트만 기록해보세요.",
-  "calendarTitle": "리듬 캘린더",
-  "calendarSubtitleHeatmap": "색이 진할수록 횟수가 많습니다. (월간 히트맵)",
+  "noLogsHint": "오늘 아직 기록이 없어요. 가볍게 한 세트 어떨까요?",
+  "noLogsHintHome": "오늘 운동 기록이 없어요. 홈에서 한 세트를 기록해 보세요.",
+  "calendarTitle": "나의 리듬",
+  "calendarSubtitleHeatmap": "색이 진해질수록 리듬이 탄탄해지고 있어요.",
   "today": "오늘",
   "prevMonthTooltip": "이전 달",
   "nextMonthTooltip": "다음 달",
@@ -53,30 +53,30 @@
       }
     }
   },
-  "noLogsForDay": "이 날의 기록이 없습니다. 홈에서 한 세트만 기록해보세요.",
+  "noLogsForDay": "이날은 기록이 없어요. 홈에서 한 세트 기록해 보세요.",
   "settingsTitle": "설정",
   "settingsThemeTitle": "테마",
-  "settingsThemeSubtitle": "앱 화면 스타일을 선택하세요. 즉시 적용됩니다.",
+  "settingsThemeSubtitle": "앱 화면 테마를 선택할 수 있어요.",
   "settingsThemeSystem": "시스템",
   "settingsThemeLight": "라이트",
   "settingsThemeDark": "다크",
   "settingsCoachTitle": "GTG 코치",
-  "settingsCoachSubtitle": "최대 반복, GTG 추천 횟수, 오늘 계획을 관리합니다.",
-  "remindersTitle": "리마인더",
-  "remindersSubtitle": "반복 주기, 방해 금지 시간, 주말 제외를 설정합니다",
+  "settingsCoachSubtitle": "목표 횟수와 추천 계획을 관리할 수 있어요.",
+  "remindersTitle": "알림",
+  "remindersSubtitle": "알림 주기와 조용한 시간을 설정할 수 있어요.",
   "allLogsTitle": "전체 기록",
-  "allLogsSubtitle": "날짜별/종목별로 모아보기",
+  "allLogsSubtitle": "모든 기록을 날짜와 종목별로 확인해요.",
   "aboutTitle": "앱 정보",
   "privacyPolicyTitle": "개인정보 처리방침",
-  "privacyPolicySubtitle": "광고/데이터 처리 안내",
+  "privacyPolicySubtitle": "데이터 처리에 대한 안내를 확인해요.",
   "adPrivacyChoicesTitle": "광고 개인정보 선택",
-  "adPrivacyChoicesSubtitle": "광고 동의 옵션 다시 보기",
-  "adPrivacyChoicesUnavailable": "지금은 광고 개인정보 옵션을 열 수 없습니다.",
-  "invalidLink": "링크가 올바르지 않습니다.",
-  "cannotOpenBrowser": "브라우저를 열 수 없습니다.",
-  "openExternalFailed": "열 수 없습니다.",
+  "adPrivacyChoicesSubtitle": "광고 동의 설정을 다시 확인해요.",
+  "adPrivacyChoicesUnavailable": "지금은 광고 옵션을 열 수 없어요.",
+  "invalidLink": "올바른 링크가 아니에요.",
+  "cannotOpenBrowser": "브라우저를 열지 못했어요. 다시 시도해 주세요.",
+  "openExternalFailed": "링크를 열지 못했어요.",
   "appUpdateTitle": "업데이트 가능",
-  "appUpdateBody": "새 버전({version})이 나왔습니다. 최신 개선 사항을 위해 지금 업데이트해보세요.",
+  "appUpdateBody": "새로운 버전({version})이 있어요. 최신 기능과 함께 더 나은 앱을 경험해 보세요.",
   "@appUpdateBody": {
     "placeholders": {
       "version": {
@@ -87,10 +87,10 @@
   "appUpdateLater": "나중에",
   "appUpdateNow": "업데이트",
   "remindersHeadline": "조용하게, 꾸준히",
-  "remindersSubheadline": "반복 주기를 설정하면 오늘 남은 시간만큼만 예약합니다.",
-  "enableRemindersTitle": "리마인더 켜기",
+  "remindersSubheadline": "알림 주기를 설정하면 하루 일과에 맞춰 알림을 보내드려요.",
+  "enableRemindersTitle": "알림 켜기",
   "enableRemindersOffSubtitle": "원할 때만 켜고 끌 수 있어요.",
-  "enableRemindersNoSlotsSubtitle": "예약할 시간이 없어요. 조용한 시간/주말 쉬기 설정을 확인해주세요.",
+  "enableRemindersNoSlotsSubtitle": "알림을 보낼 시간이 없어요. 조용한 시간이나 주말 쉬기 설정을 확인해 주세요.",
   "enableRemindersNextScheduledSubtitle": "다음 알림 {time} · {count}개 예약됨",
   "@enableRemindersNextScheduledSubtitle": {
     "placeholders": {
@@ -113,10 +113,10 @@
     }
   },
   "maxPerDayLabel": "하루 최대",
-  "reminderOptimizationTitle": "기록 기반 제안",
+  "reminderOptimizationTitle": "기록 맞춤 제안",
   "reminderOptimizationApply": "적용",
-  "reminderOptimizationEnable": "GTG 리듬을 다시 만들 수 있게 리마인더를 켜보세요.",
-  "reminderOptimizationReduceFrequency": "최근 리듬이 가벼워요. {count}분 간격을 시도해보세요.",
+  "reminderOptimizationEnable": "운동 리듬을 찾을 수 있도록 알림을 켜볼까요?",
+  "reminderOptimizationReduceFrequency": "최근 리듬이 여유로워요. {count}분 간격으로 알림을 받아보세요.",
   "@reminderOptimizationReduceFrequency": {
     "placeholders": {
       "count": {
@@ -124,8 +124,8 @@
       }
     }
   },
-  "reminderOptimizationSkipWeekends": "주말 기록이 거의 없어요. 주말 쉬기를 시도해보세요.",
-  "reminderOptimizationPreferredTime": "{time} 전후 기록이 많아요. 그 시간대에 알림을 집중해보세요.",
+  "reminderOptimizationSkipWeekends": "주말에는 기록이 적네요. 주말 쉬기 옵션을 켜보는 건 어떨까요?",
+  "reminderOptimizationPreferredTime": "{time} 즈음에 기록이 많아요. 이 시간에 집중해서 알림을 받아보세요.",
   "@reminderOptimizationPreferredTime": {
     "placeholders": {
       "time": {
@@ -137,9 +137,9 @@
   "startLabel": "시작",
   "endLabel": "끝",
   "weekendsOffTitle": "주말 쉬기",
-  "weekendsOffSubtitle": "토/일에는 예약하지 않음",
-  "silentNotificationsInfo": "알림은 소리 없이 조용히 표시됩니다.",
-  "permissionDenied": "알림 권한이 필요합니다. 설정에서 허용해주세요.",
+  "weekendsOffSubtitle": "주말에는 알림을 보내지 않아요.",
+  "silentNotificationsInfo": "알림은 소리 없이 조용하게 울려요.",
+  "permissionDenied": "알림 권한이 필요해요. 기기 설정에서 허용해 주세요.",
   "openSettings": "설정",
   "pickTimeHelp": "{label} 시간 선택",
   "@pickTimeHelp": {
@@ -158,42 +158,42 @@
     }
   },
   "onboardingLater": "나중에",
-  "onboardingSubtitle": "완벽하게 말고, 자주. 1분만 설정하면 바로 시작됩니다.",
-  "onboardingQuestion": "주로 어떤 동작을 할까요?",
-  "onboardingHint": "기본 종목은 홈 화면에서 가장 먼저 보이게 됩니다.",
-  "onboardingBaselineTitle": "선택 입력: 최대 반복",
-  "onboardingBaselineSubtitle": "지금 넣어도 되고, 건너뛰어도 됩니다. 나중에 GTG 코치가 더 가볍게 추천할 때 사용합니다.",
-  "onboardingBaselineFieldLabel": "현재 깔끔한 최대 반복",
-  "onboardingBaselineFieldHint": "건너뛰어도 괜찮아요. 나중에 GTG 코치에서 추가할 수 있어요.",
+  "onboardingSubtitle": "완벽함보다 꾸준함이 중요해요. 1분만 설정하면 바로 시작할 수 있어요.",
+  "onboardingQuestion": "어떤 운동을 주로 하시나요?",
+  "onboardingHint": "선택한 운동이 홈 화면 가장 앞에 나타나요.",
+  "onboardingBaselineTitle": "선택: 최대 횟수 입력",
+  "onboardingBaselineSubtitle": "지금 입력하지 않아도 괜찮아요. 코치가 알맞은 횟수를 추천할 때 참고해요.",
+  "onboardingBaselineFieldLabel": "한 번에 할 수 있는 최대 횟수",
+  "onboardingBaselineFieldHint": "건너뛰어도 나중에 언제든 추가할 수 있어요.",
   "onboardingNext": "다음",
-  "onboardingPushUpSubtitle": "가장 빠른 루틴. 어디서든 시작",
-  "onboardingPullUpSubtitle": "상체 당기기. 폼이 핵심",
-  "onboardingDipsSubtitle": "푸쉬 라인 강화. 어깨 각도 주의",
-  "coachFocusTitle": "집중 동작",
-  "coachFocusSubtitle": "주 종목을 무리 없이 자주 반복할 수 있게 맞춥니다.",
-  "coachFocusMoveLabel": "주 종목",
-  "coachRecommendedRepsLabel": "추천 GTG 횟수",
-  "coachRecommendedHint": "최대 반복의 절반 정도로 유지해 매 세트를 여유 있게 가져갑니다.",
-  "coachLastTestedLabel": "마지막 최대 반복 측정",
-  "coachLastTestedNever": "아직 없음",
+  "onboardingPushUpSubtitle": "언제 어디서나 간편하게 시작해요.",
+  "onboardingPullUpSubtitle": "정확한 자세로 당기는 상체 운동이에요.",
+  "onboardingDipsSubtitle": "올바른 각도로 미는 힘을 길러요.",
+  "coachFocusTitle": "목표 운동",
+  "coachFocusSubtitle": "무리하지 않고 꾸준히 할 수 있게 목표를 맞춰드릴게요.",
+  "coachFocusMoveLabel": "주요 운동",
+  "coachRecommendedRepsLabel": "추천 횟수",
+  "coachRecommendedHint": "최대 횟수의 절반 정도로 설정하면 여유롭게 리듬을 유지할 수 있어요.",
+  "coachLastTestedLabel": "마지막 최대 횟수 측정일",
+  "coachLastTestedNever": "기록 없음",
   "coachBaselineTitle": "기준 설정",
-  "coachBaselineSubtitle": "현재 최대 반복과 하루 세트 목표를 설정하세요.",
-  "coachBaselineLabel": "현재 최대 반복",
-  "coachDailySetGoalLabel": "하루 세트 목표",
+  "coachBaselineSubtitle": "현재 최대 횟수와 하루 목표 세트를 설정해 주세요.",
+  "coachBaselineLabel": "현재 최대 횟수",
+  "coachDailySetGoalLabel": "하루 목표 세트",
   "coachPlanTitle": "오늘의 계획",
-  "coachPlanSubtitle": "오늘 기록한 주 종목 로그를 기준으로 진행도를 계산합니다.",
+  "coachPlanSubtitle": "오늘 기록한 운동을 바탕으로 진행 상황을 보여드릴게요.",
   "coachTodayLabel": "오늘",
-  "coachCompletedSetsLabel": "완료한 세트",
+  "coachCompletedSetsLabel": "완료 세트",
   "coachTargetSetsLabel": "목표 세트",
   "coachRemainingSetsLabel": "남은 세트",
-  "coachCardReadySubtitle": "오늘의 GTG 추천과 진행 상황",
-  "coachCardSetupSubtitle": "최대 반복을 넣으면 홈이 더 가볍게 추천해줍니다.",
-  "coachSetBaselineAction": "최대반복 추가",
+  "coachCardReadySubtitle": "오늘의 추천 목표와 진행도를 확인해요.",
+  "coachCardSetupSubtitle": "최대 횟수를 입력하면 더 적절한 목표를 추천해 드릴게요.",
+  "coachSetBaselineAction": "최대 횟수 입력",
   "coachAdjustAction": "조정",
-  "coachSetupHint": "주 종목의 현재 최대 반복을 저장하세요. 홈이 더 가벼운 GTG 세트를 추천하고 오늘 진행도를 보여줍니다.",
+  "coachSetupHint": "최대 횟수를 저장하면 무리하지 않는 선에서 알맞은 세트를 추천해 드릴게요.",
   "coachNotSet": "미설정",
-  "coachRetestDueMessage": "2주 이상 지났어요. 최대 반복을 다시 측정해 추천값을 새로 맞춰보세요.",
-  "coachQuickLogRecommended": "GTG {count}회",
+  "coachRetestDueMessage": "2주가 지났어요. 최대 횟수를 다시 측정하면 목표를 새롭게 맞출 수 있어요.",
+  "coachQuickLogRecommended": "추천 {count}회",
   "@coachQuickLogRecommended": {
     "placeholders": {
       "count": {
@@ -212,7 +212,7 @@
       }
     }
   },
-  "coachRemainingSets": "오늘 {count}세트 남음",
+  "coachRemainingSets": "오늘은 {count}세트 남았어요",
   "@coachRemainingSets": {
     "placeholders": {
       "count": {
@@ -228,10 +228,10 @@
       }
     }
   },
-  "gtgInsightsTitle": "로컬 인사이트",
-  "gtgInsightsSubtitle": "최근 기록에서만 계산한 개인 신호입니다.",
-  "gtgInsightBaselineMissing": "최대 반복 수를 추가하면 개인화 가이드를 열 수 있어요.",
-  "gtgInsightConsistency": "최근 14일 동안 {count}일 운동했어요.",
+  "gtgInsightsTitle": "나의 기록 분석",
+  "gtgInsightsSubtitle": "최근 기록을 분석해서 찾은 나만의 패턴이에요.",
+  "gtgInsightBaselineMissing": "최대 횟수를 입력하면 나에게 딱 맞는 가이드를 받아볼 수 있어요.",
+  "gtgInsightConsistency": "최근 14일 중 {count}일 동안 운동했어요.",
   "@gtgInsightConsistency": {
     "placeholders": {
       "count": {
@@ -247,8 +247,8 @@
       }
     }
   },
-  "gtgInsightRetestDue": "최대 반복 측정이 오래됐어요. 기준을 새로 잡아보세요.",
-  "splashTapToSkip": "탭하여 스킵",
+  "gtgInsightRetestDue": "최대 횟수를 측정한 지 오래됐어요. 새로운 기준을 세워볼까요?",
+  "splashTapToSkip": "화면을 눌러 건너뛰기",
   "exercisePushUp": "푸쉬업",
   "exercisePullUp": "풀업",
   "exerciseDips": "딥스",
@@ -268,12 +268,12 @@
       }
     }
   },
-  "notifTitle": "한 세트 타이밍",
-  "notifBody": "푸쉬업/풀업/딥스 중 하나만. 오늘 리듬을 이어가요.",
-  "missionTodayTitle": "오늘의 GTG 미션",
-  "missionTodaySubtitle": "긴 운동이 아니라 오늘 다시 오게 만드는 작은 계획입니다.",
+  "notifTitle": "운동할 시간",
+  "notifBody": "가볍게 한 세트 기록하고 오늘의 리듬을 이어가 보세요.",
+  "missionTodayTitle": "오늘의 미션",
+  "missionTodaySubtitle": "오늘 다시 운동하게 만드는 작고 꾸준한 계획이에요.",
   "missionRecoveryTitle": "복귀 미션",
-  "missionRecoverySubtitle": "{count}일 쉬었어요. 가벼운 1세트면 리듬을 다시 시작할 수 있습니다.",
+  "missionRecoverySubtitle": "{count}일 동안 쉬었어요. 가볍게 1세트만 기록하고 리듬을 다시 깨워볼까요?",
   "@missionRecoverySubtitle": {
     "placeholders": {
       "count": {
@@ -281,8 +281,8 @@
       }
     }
   },
-  "missionCompleteTitle": "오늘 미션 완료",
-  "missionCompleteSubtitle": "좋은 리듬입니다. 오늘 추가 세트는 선택입니다.",
+  "missionCompleteTitle": "오늘의 미션 완료!",
+  "missionCompleteSubtitle": "멋진 리듬이에요. 오늘의 추가 운동은 선택 사항입니다.",
   "missionLogAction": "{count}회 기록",
   "@missionLogAction": {
     "placeholders": {
@@ -291,7 +291,7 @@
       }
     }
   },
-  "missionProgressLabel": "미션 진행도",
+  "missionProgressLabel": "진행 상황",
   "missionProgressValue": "{done}/{target}세트",
   "@missionProgressValue": {
     "placeholders": {
@@ -305,7 +305,7 @@
   },
   "missionNextSetLabel": "다음 세트",
   "missionDoneValue": "완료",
-  "missionRhythmLabel": "7일 리듬",
+  "missionRhythmLabel": "주간 리듬",
   "missionRhythmValue": "{count}일 활동",
   "@missionRhythmValue": {
     "placeholders": {
@@ -314,7 +314,7 @@
       }
     }
   },
-  "calendarRhythmMessage": "최근 7일 중 {count7}일 기록했습니다. 14일 기준 {count14}일 활동 중이에요.",
+  "calendarRhythmMessage": "최근 7일 동안 {count7}일 운동했어요. (14일 기준 {count14}일)",
   "@calendarRhythmMessage": {
     "placeholders": {
       "count7": {
@@ -325,7 +325,7 @@
       }
     }
   },
-  "calendarRecoveryMessage": "공백은 실패가 아닙니다. {count}일 쉬었으니 오늘은 쉬운 1세트로 재시작하세요.",
+  "calendarRecoveryMessage": "쉬어가는 것도 중요해요. {count}일 쉬었으니 오늘은 가볍게 1세트만 시작해 보세요.",
   "@calendarRecoveryMessage": {
     "placeholders": {
       "count": {
@@ -333,18 +333,18 @@
       }
     }
   },
-  "adaptiveCoachTitle": "적응형 코치",
-  "adaptiveCoachSubtitle": "서버 추천을 우선 사용하고, 없으면 로컬 규칙으로 안내합니다.",
+  "adaptiveCoachTitle": "맞춤 코치",
+  "adaptiveCoachSubtitle": "가장 알맞은 운동 계획을 찾아서 추천해 드려요.",
   "adaptiveCoachRemoteSource": "PocketBase",
-  "adaptiveCoachLocalSource": "로컬 규칙",
+  "adaptiveCoachLocalSource": "기기 설정",
   "adaptiveCoachIntensityRecover": "회복",
   "adaptiveCoachIntensityMaintain": "유지",
   "adaptiveCoachIntensityProgress": "증가",
-  "adaptiveCoachReasonRetestDue": "최대 반복 재측정 필요",
-  "adaptiveCoachReasonRestartAfterGap": "최근 공백 감지",
-  "adaptiveCoachReasonRecoverVolume": "회복 볼륨 추천",
-  "adaptiveCoachReasonMaintainVolume": "안정 볼륨 추천",
-  "adaptiveCoachReasonProgressVolume": "안정적인 리듬 감지",
+  "adaptiveCoachReasonRetestDue": "최대 횟수 측정 필요",
+  "adaptiveCoachReasonRestartAfterGap": "최근 휴식 감지",
+  "adaptiveCoachReasonRecoverVolume": "운동량 회복 추천",
+  "adaptiveCoachReasonMaintainVolume": "현재 운동량 유지",
+  "adaptiveCoachReasonProgressVolume": "안정적인 운동 리듬",
   "adaptiveCoachRecommendationLine": "{intensity} · {reason} · 출처: {source}",
   "@adaptiveCoachRecommendationLine": {
     "placeholders": {

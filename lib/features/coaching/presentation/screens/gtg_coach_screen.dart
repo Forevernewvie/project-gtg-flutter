@@ -7,7 +7,7 @@ import '../../../../core/ui/gtg_ui.dart';
 import '../../../../features/onboarding/state/user_preferences_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../l10n/exercise_type_l10n.dart';
-import '../../../../data/remote/pocketbase_models.dart';
+import '../../models/gtg_coach_recommendation.dart';
 import '../../gtg_coach_policy.dart';
 import '../../gtg_insight_engine.dart';
 import '../../state/gtg_coach_providers.dart';
@@ -187,16 +187,8 @@ class GtgCoachScreen extends ConsumerWidget {
               ],
             ),
           ),
-          adaptiveRecommendation.when(
-            data: (recommendation) => Column(
-              children: <Widget>[
-                const SizedBox(height: GtgUi.primarySectionSpacing),
-                _AdaptiveCoachCard(recommendation: recommendation),
-              ],
-            ),
-            loading: () => const SizedBox.shrink(),
-            error: (_, _) => const SizedBox.shrink(),
-          ),
+          const SizedBox(height: GtgUi.primarySectionSpacing),
+          _AdaptiveCoachCard(recommendation: adaptiveRecommendation),
           if (insights.isNotEmpty) ...<Widget>[
             const SizedBox(height: GtgUi.primarySectionSpacing),
             _CoachInsightsCard(insights: insights),

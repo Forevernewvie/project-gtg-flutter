@@ -9,12 +9,12 @@ extension ExerciseTypeX on ExerciseType {
     };
   }
 
-  static ExerciseType? fromKey(String value) {
+  static ExerciseType fromKey(String value) {
     return switch (value) {
       'pushUp' => ExerciseType.pushUp,
       'pullUp' => ExerciseType.pullUp,
       'dips' => ExerciseType.dips,
-      _ => null,
+      _ => ExerciseType.pushUp, // Fallback for removed types like smartRest
     };
   }
 }

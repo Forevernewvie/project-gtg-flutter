@@ -15,36 +15,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navHome => 'Home';
 
   @override
-  String get navCalendar => 'Calendar';
+  String get navCalendar => 'Rhythm';
 
   @override
   String get navSettings => 'Settings';
 
   @override
-  String get dashboardTitle => 'Today\'s Routine';
+  String get dashboardTitle => 'COMMAND CENTER';
 
   @override
   String get dashboardSubtitle =>
-      'Not perfect, just frequent. One set at a time.';
+      'GREASE THE GROOVE. SUBMAXIMAL REPS. MAXIMUM STRENGTH.';
 
   @override
-  String get dashboardReadyTitle => 'Ready for today';
+  String get dashboardReadyTitle => 'STAY READY';
 
   @override
   String dashboardPrimarySetHint(String exercise, int count) {
-    return 'Start with $exercise: one set of $count reps.';
+    return 'EXECUTE $exercise: $count REPS. DO IT NOW.';
   }
 
   @override
   String activeDaysPill(int count) {
-    return 'Active $count days';
+    return 'ACTIVE $count DAYS';
   }
 
   @override
-  String get quickLogTitle => 'Quick Log';
+  String get quickLogTitle => 'LOG SET';
 
   @override
-  String get quickLogHelper => 'Adjust reps, then tap Record.';
+  String get quickLogHelper => 'NO EXCUSES. ADD REPS AND HIT RECORD.';
 
   @override
   String get decreaseValue => 'Decrease';
@@ -53,39 +53,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get increaseValue => 'Increase';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'RESET';
 
   @override
-  String get resetLogsTitle => 'Reset all logs?';
+  String get resetLogsTitle => 'WIPE ALL LOGS?';
 
   @override
   String get resetLogsMessage =>
-      'This removes every logged set from this device.';
+      'This will erase your entire history from this device.';
 
   @override
-  String get record => 'Log';
+  String get record => 'LOG IT';
 
   @override
-  String get loadingLogs => 'Loading logs...';
+  String get loadingLogs => 'LOADING ARSENAL...';
 
   @override
-  String get recentLogsTitle => 'Recent Logs';
+  String get recentLogsTitle => 'RECENT SETS';
 
   @override
-  String get noLogsHint => 'No logs yet. Log your first set above.';
+  String get noLogsHint => 'NO SETS TODAY. GET ON THE BAR.';
 
   @override
-  String get noLogsHintHome => 'No logs yet. Log a set on Home.';
+  String get noLogsHintHome => 'ZERO REPS. EXECUTE A SET NOW.';
 
   @override
-  String get calendarTitle => 'Rhythm Calendar';
+  String get calendarTitle => 'BATTLE RHYTHM';
 
   @override
   String get calendarSubtitleHeatmap =>
-      'Darker cells mean more reps. Monthly heatmap.';
+      'LIGHT IT UP. DARKER CELLS = MORE WORK.';
 
   @override
-  String get today => 'Today';
+  String get today => 'TODAY';
 
   @override
   String get prevMonthTooltip => 'Previous month';

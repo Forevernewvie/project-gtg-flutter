@@ -24,10 +24,7 @@ class WorkoutLogRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          accent.withValues(alpha: 0.08),
-          colorScheme.surface,
-        ),
+        color: Colors.transparent, // Fix: Too bright background removed
         borderRadius: BorderRadius.circular(GtgUi.cardRadius - 2),
         border: Border.all(color: accent.withValues(alpha: 0.18)),
       ),
@@ -86,9 +83,9 @@ class WorkoutLogRow extends StatelessWidget {
             );
             final repsPill = DecoratedBox(
               decoration: BoxDecoration(
-                color: colorScheme.surface.withValues(alpha: 0.86),
+                color: Colors.black12, // Minimal dark pill instead of bright grey
                 borderRadius: BorderRadius.circular(GtgUi.controlRadius),
-                border: Border.all(color: colorScheme.outlineVariant),
+                border: Border.all(color: accent.withValues(alpha: 0.2)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -98,6 +95,7 @@ class WorkoutLogRow extends StatelessWidget {
                 child: Text(
                   l10n.repsWithUnit(log.reps),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: accent,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
