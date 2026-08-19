@@ -35,8 +35,12 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+**/build/
 /coverage/
+real_screenshots/
+screenshots/
+store_screenshots/
+GTG_WearOS_Screenshots/
 
 # Local AI assistant metadata
 /.agent/
