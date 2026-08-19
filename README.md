@@ -14,30 +14,26 @@ flutter run -d emulator-5554 --debug
 
 If `emulator-5554` is not available, run `flutter devices` and replace the device id.
 
-## What This App Includes (Current State)
+## What This App Includes (v1.2.0 State)
 
-- Onboarding overlay for first launch (primary exercise selection)
-- Home dashboard
-  - Quick logging for Push-up / Pull-up / Dip
-  - Daily totals and active-day summary
-  - Recent logs preview
-- Calendar
-  - Monthly heatmap
+- **Zero-Friction Logging**:
+  - Android Home Screen 1-Tap Widget (`android/app/.../GtgWidgetProvider.kt`)
+  - **Wear OS Sub-app** (`wear_app/`): Giant [+1] logging, haptic pulse, 7-day dot heatmap, Ambient Mode (AOD burn-in protection), and offline Data Layer sync.
+- **Home Dashboard & Cyberpunk/Glassmorphism UI**:
+  - Quick logging for Push-up / Pull-up / Dip with high dopamine neon animations
+  - Adaptive GTG Coach card with real-time recovery and retention suggestions
+  - Daily totals, active-day rhythm summary, and recent logs preview
+- **Calendar & Consistency Tracking**:
+  - Monthly activity heatmap & streak visualization
   - Selected-day timeline/details
-- Settings
-  - Theme mode selector: System / Light / Dark
-  - Reminder settings page
-  - All logs page
-  - Privacy policy external link
-- Reminders
-  - Enable/disable
-  - Interval
-  - Max reminders/day
-  - Quiet hours
-  - Skip weekends
-- Localization
-  - English (`en`)
-  - Korean (`ko`)
+- **Settings & Preferences**:
+  - Theme mode selector: System / Light / Dark (High-contrast Cyberpunk / Neon Glass)
+  - Customizable interval reminders with quiet hours and weekend skip
+  - All logs inspection & CSV export
+- **Serverless In-App Update Manifest**:
+  - Zero-cost, 24/7 hosted update detection via GitHub Pages (`docs/version.json`)
+- **Localization**:
+  - Full Korean (`ko`) and Global English (`en`) fallback support
 
 ## Navigation Structure
 
@@ -51,13 +47,15 @@ Router lives in `/lib/app/router.dart` and uses `go_router` with `StatefulShellR
 
 ## Tech Stack
 
-- Flutter + Dart
-- State management: `flutter_riverpod`
-- Navigation: `go_router`
-- Persistence: `isar_community` (with JSON compatibility path)
-- Notifications: `flutter_local_notifications`
-- Ads: `google_mobile_ads`
-- Localization: ARB + generated `AppLocalizations`
+- **Framework**: Flutter (Dart 3.x)
+- **Wear OS**: Flutter Wear OS Sub-app (`wear_app/`), `watch_connectivity`, `wearable_rotary`, `wear`
+- **State Management**: `flutter_riverpod`
+- **Navigation**: `go_router`
+- **Persistence**: `isar_community` (High-performance local NoSQL)
+- **Notifications & Widgets**: `flutter_local_notifications`, Android AppWidget Provider
+- **Monetization**: `google_mobile_ads`
+- **Localization**: Flutter ARB (`app_en.arb`, `app_ko.arb`)
+- **CI/CD & Update Hosting**: GitHub Actions + GitHub Pages (`pages.yml`, `docs/version.json`)
 
 ## Project Layout
 
