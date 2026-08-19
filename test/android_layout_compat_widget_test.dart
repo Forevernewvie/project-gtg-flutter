@@ -319,18 +319,20 @@ Future<void> _captureAndAssertScreenshot(
   final boundary = tester.renderObject<RenderRepaintBoundary>(
     find.byKey(boundaryKey),
   );
-  await tester.pumpAndSettle(const Duration(milliseconds: 100)); // Ensure frame is settled
+  await tester.pumpAndSettle(
+    const Duration(milliseconds: 100),
+  ); // Ensure frame is settled
   final image = await boundary.toImage(pixelRatio: _screenshotPixelRatio);
   final data = await image.toByteData(format: ui.ImageByteFormat.png);
   expect(data, isNotNull);
-  
+
   final dir = Directory('screenshots');
   if (!dir.existsSync()) {
     dir.createSync();
   }
   final file = File('screenshots/$caseTag.png');
   file.writeAsBytesSync(data!.buffer.asUint8List());
-  
+
   image.dispose();
   expect(data.lengthInBytes, greaterThan(0));
 }
@@ -714,8 +716,12 @@ Future<void> _runScreenshotSmokeForLocale(
         );
       }, stage: '$caseTag-home');
 
-      print('Capturing home for $caseTag');
-      await _captureAndAssertScreenshot(tester, screenshotBoundaryKey, '$caseTag-home');
+      debugPrint('Capturing home for $caseTag');
+      await _captureAndAssertScreenshot(
+        tester,
+        screenshotBoundaryKey,
+        '$caseTag-home',
+      );
 
       await _expectNoOverflowErrors(
         tester,
@@ -723,8 +729,12 @@ Future<void> _runScreenshotSmokeForLocale(
         stage: '$caseTag-calendar',
       );
       expect(find.text(labels.calendarTitle), findsAtLeastNWidgets(1));
-      print('Capturing calendar for $caseTag');
-      await _captureAndAssertScreenshot(tester, screenshotBoundaryKey, '$caseTag-calendar');
+      debugPrint('Capturing calendar for $caseTag');
+      await _captureAndAssertScreenshot(
+        tester,
+        screenshotBoundaryKey,
+        '$caseTag-calendar',
+      );
 
       await _expectNoOverflowErrors(
         tester,
@@ -732,36 +742,46 @@ Future<void> _runScreenshotSmokeForLocale(
         stage: '$caseTag-settings',
       );
       expect(find.text(labels.remindersTitle), findsAtLeastNWidgets(1));
-      print('Capturing settings for $caseTag');
-      await _captureAndAssertScreenshot(tester, screenshotBoundaryKey, '$caseTag-settings');
+      debugPrint('Capturing settings for $caseTag');
+      await _captureAndAssertScreenshot(
+        tester,
+        screenshotBoundaryKey,
+        '$caseTag-settings',
+      );
     }
   }
 }
 
 void main() {
-  testWidgets(skip: true, 'core screens matrix EN (persisted theme compatibility)', (
+  testWidgets(
+    skip: true,
+    'core screens matrix EN (persisted theme compatibility)',
+    (tester) async {
+      addTearDown(() => _resetTestSurface(tester));
+      await _runCoreMatrixForLocale(
+        tester,
+        locale: const Locale('en'),
+        labels: _enLabels,
+      );
+    },
+  );
+
+  testWidgets(
+    skip: true,
+    'core screens matrix KO (persisted theme compatibility)',
+    (tester) async {
+      addTearDown(() => _resetTestSurface(tester));
+      await _runCoreMatrixForLocale(
+        tester,
+        locale: const Locale('ko'),
+        labels: _koLabels,
+      );
+    },
+  );
+
+  testWidgets(skip: true, 'onboarding matrix EN (light/dark preview)', (
     tester,
   ) async {
-    addTearDown(() => _resetTestSurface(tester));
-    await _runCoreMatrixForLocale(
-      tester,
-      locale: const Locale('en'),
-      labels: _enLabels,
-    );
-  });
-
-  testWidgets(skip: true, 'core screens matrix KO (persisted theme compatibility)', (
-    tester,
-  ) async {
-    addTearDown(() => _resetTestSurface(tester));
-    await _runCoreMatrixForLocale(
-      tester,
-      locale: const Locale('ko'),
-      labels: _koLabels,
-    );
-  });
-
-  testWidgets(skip: true, 'onboarding matrix EN (light/dark preview)', (tester) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runOnboardingMatrixForLocale(
       tester,
@@ -770,7 +790,9 @@ void main() {
     );
   });
 
-  testWidgets(skip: true, 'onboarding matrix KO (light/dark preview)', (tester) async {
+  testWidgets(skip: true, 'onboarding matrix KO (light/dark preview)', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runOnboardingMatrixForLocale(
       tester,
@@ -779,7 +801,9 @@ void main() {
     );
   });
 
-  testWidgets(skip: true, 'app stays dark across platform brightness EN', (tester) async {
+  testWidgets(skip: true, 'app stays dark across platform brightness EN', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runForcedDarkThemeMatrixForLocale(
       tester,
@@ -787,7 +811,9 @@ void main() {
     );
   });
 
-  testWidgets(skip: true, 'app stays dark across platform brightness KO', (tester) async {
+  testWidgets(skip: true, 'app stays dark across platform brightness KO', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runForcedDarkThemeMatrixForLocale(
       tester,
@@ -795,7 +821,9 @@ void main() {
     );
   });
 
-  testWidgets(skip: true, 'screenshot smoke EN (compact+large, x1.0/x1.6)', (tester) async {
+  testWidgets(skip: true, 'screenshot smoke EN (compact+large, x1.0/x1.6)', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runScreenshotSmokeForLocale(
       tester,
@@ -804,7 +832,9 @@ void main() {
     );
   });
 
-  testWidgets(skip: true, 'screenshot smoke KO (compact+large, x1.0/x1.6)', (tester) async {
+  testWidgets(skip: true, 'screenshot smoke KO (compact+large, x1.0/x1.6)', (
+    tester,
+  ) async {
     addTearDown(() => _resetTestSurface(tester));
     await _runScreenshotSmokeForLocale(
       tester,

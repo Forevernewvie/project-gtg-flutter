@@ -25,9 +25,6 @@ class ExerciseLogEntity {
   /// Converts this persistence entity into the domain model.
   ExerciseLog toModel() {
     final type = ExerciseTypeX.fromKey(typeKey);
-    if (type == null) {
-      throw const FormatException('Unknown exercise type key in Isar entity');
-    }
 
     return ExerciseLog(id: logId, type: type, reps: reps, timestamp: timestamp);
   }

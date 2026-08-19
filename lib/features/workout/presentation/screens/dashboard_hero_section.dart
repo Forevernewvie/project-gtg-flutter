@@ -151,7 +151,11 @@ class _HeroHeader extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.info_outline, color: Colors.white, size: 24),
+              icon: const Icon(
+                Icons.info_outline,
+                color: Colors.white,
+                size: 24,
+              ),
               onPressed: () => showGtgInfoBottomSheet(context),
             ),
           ],
@@ -361,21 +365,3 @@ class _HeroActionSummary extends StatelessWidget {
   }
 }
 
-/// Paints a soft decorative glow behind the hero without affecting hit testing.
-class _HeroGlow extends StatelessWidget {
-  const _HeroGlow({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  /// Builds a fixed-size circular glow layer.
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-        child: SizedBox.square(dimension: size),
-      ),
-    );
-  }
-}

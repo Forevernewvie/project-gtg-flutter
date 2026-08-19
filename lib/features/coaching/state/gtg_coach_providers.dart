@@ -54,13 +54,14 @@ final adaptiveGtgCoachPolicyProvider = Provider<AdaptiveGtgCoachPolicy>((ref) {
 });
 
 /// Returns a local server recommendation using local rules.
-final adaptiveGtgCoachRecommendationProvider =
-    Provider<GtgCoachRecommendation>((ref) {
-      return ref
-          .watch(adaptiveGtgCoachPolicyProvider)
-          .recommend(
-            preferences: ref.watch(userPreferencesValueProvider),
-            logs: ref.watch(workoutLogsProvider),
-            now: ref.watch(clockProvider).now(),
-          );
-    });
+final adaptiveGtgCoachRecommendationProvider = Provider<GtgCoachRecommendation>(
+  (ref) {
+    return ref
+        .watch(adaptiveGtgCoachPolicyProvider)
+        .recommend(
+          preferences: ref.watch(userPreferencesValueProvider),
+          logs: ref.watch(workoutLogsProvider),
+          now: ref.watch(clockProvider).now(),
+        );
+  },
+);

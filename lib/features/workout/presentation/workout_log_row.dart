@@ -83,7 +83,8 @@ class WorkoutLogRow extends StatelessWidget {
             );
             final repsPill = DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.black12, // Minimal dark pill instead of bright grey
+                color:
+                    Colors.black12, // Minimal dark pill instead of bright grey
                 borderRadius: BorderRadius.circular(GtgUi.controlRadius),
                 border: Border.all(color: accent.withValues(alpha: 0.2)),
               ),

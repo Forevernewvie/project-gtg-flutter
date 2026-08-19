@@ -48,7 +48,9 @@ class GtgGlassCard extends StatelessWidget {
               color: isDark ? const Color(0x0AFFFFFF) : const Color(0x66FFFFFF),
               borderRadius: radius,
               border: Border.all(
-                color: isDark ? const Color(0x1AFFFFFF) : const Color(0x33000000),
+                color: isDark
+                    ? const Color(0x1AFFFFFF)
+                    : const Color(0x33000000),
                 width: 0.8,
               ),
             ),

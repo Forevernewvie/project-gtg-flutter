@@ -60,22 +60,26 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
 
     try {
       await _repository.saveLogs(updated);
-      
+
       // Keep native widget in sync with the new log
       final now = ref.read(clockProvider).now();
       final todayTotal = updated
-          .where((l) =>
-              l.type == type &&
-              l.timestamp.year == now.year &&
-              l.timestamp.month == now.month &&
-              l.timestamp.day == now.day)
+          .where(
+            (l) =>
+                l.type == type &&
+                l.timestamp.year == now.year &&
+                l.timestamp.month == now.month &&
+                l.timestamp.day == now.day,
+          )
           .fold<int>(0, (sum, l) => sum + l.reps);
 
-      await WidgetSyncService.syncData(WidgetDataModel(
-        todayTotal: todayTotal,
-        targetTotal: 0,
-        primaryExercise: type,
-      ));
+      await WidgetSyncService.syncData(
+        WidgetDataModel(
+          todayTotal: todayTotal,
+          targetTotal: 0,
+          primaryExercise: type,
+        ),
+      );
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist workout logs.',

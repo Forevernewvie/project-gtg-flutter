@@ -134,7 +134,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('선택 입력: 최대 반복'), findsOneWidget);
+    expect(find.text('한 번에 할 수 있는 최대 횟수'), findsOneWidget);
     expect(find.byKey(const Key('onboarding.maxReps.value')), findsOneWidget);
   });
 }

@@ -3,7 +3,7 @@ import '../../../core/theme/watch_theme.dart';
 
 class RhythmHeatmapScreen extends StatelessWidget {
   final bool isAmbient;
-  const RhythmHeatmapScreen({Key? key, required this.isAmbient}) : super(key: key);
+  const RhythmHeatmapScreen({super.key, required this.isAmbient});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class RhythmHeatmapScreen extends StatelessWidget {
                               : null,
                           boxShadow: (!isAmbient && isActive) ? [
                             BoxShadow(
-                              color: WatchTheme.neonMint.withOpacity(0.5),
+                              color: WatchTheme.neonMint.withValues(alpha: 0.5),
                               blurRadius: 6,
                               spreadRadius: 1,
                             )

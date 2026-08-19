@@ -98,7 +98,7 @@ void main() {
     expect(permission.calls, 1);
     expect(notifications.scheduleCalls, 0);
     expect(notifications.cancelCalls, 1);
-    expect(find.text('알림 권한이 필요합니다. 설정에서 허용해주세요.'), findsOneWidget);
+    expect(find.text('알림 권한이 필요해요. 기기 설정에서 허용해 주세요.'), findsOneWidget);
   });
 
   testWidgets('revoked permission disables reminders on load', (tester) async {
@@ -206,7 +206,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('기록 기반 제안'), findsOneWidget);
+    expect(find.text('기록 맞춤 제안'), findsOneWidget);
     expect(find.textContaining('60분'), findsOneWidget);
     expect(persistence.reminderSettings.intervalMinutes, 30);
 

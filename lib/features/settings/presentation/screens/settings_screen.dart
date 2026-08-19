@@ -294,11 +294,7 @@ class _SettingsActionTile extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Icon(
-                  trailingIcon,
-                  color: accent,
-                  size: 18,
-                ),
+                child: Icon(trailingIcon, color: accent, size: 18),
               ),
             ),
           ),

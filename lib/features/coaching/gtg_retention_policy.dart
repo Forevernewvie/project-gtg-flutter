@@ -63,7 +63,7 @@ class GtgRetentionPolicy {
     required DateTime now,
   }) {
     final primaryLogs = logs
-        .where((log) => log.type == summary.primaryExercise )
+        .where((log) => log.type == summary.primaryExercise)
         .toList(growable: false);
     final rhythm = buildRhythm(logs: primaryLogs, now: now);
     final completedSets = _completedSetsToday(primaryLogs, now);

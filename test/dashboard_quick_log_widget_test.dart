@@ -67,76 +67,80 @@ void main() {
     expect(find.text('10회'), findsWidgets);
   });
 
-  testWidgets(skip: true, 'home mission cannot log beyond the daily set target', (
-    tester,
-  ) async {
-    final persistence = InMemoryPersistence();
+  testWidgets(
+    skip: true,
+    'home mission cannot log beyond the daily set target',
+    (tester) async {
+      final persistence = InMemoryPersistence();
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [persistenceProvider.overrideWithValue(persistence)],
-        child: const GtgApp(locale: Locale('ko')),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    final missionButton = find.byKey(const Key('dashboard.missionLogButton'));
-    expect(missionButton, findsOneWidget);
-
-    for (var i = 0; i < 9; i++) {
-      await tester.tap(missionButton, warnIfMissed: false);
-    }
-    await tester.pumpAndSettle();
-
-    expect(persistence._logs.length, 8);
-    expect(find.text('8/8세트'), findsOneWidget);
-    expect(tester.widget<FilledButton>(missionButton).onPressed, isNull);
-  });
-
-  testWidgets(skip: true, 'reset requires confirmation before clearing all logs', (
-    tester,
-  ) async {
-    final persistence = InMemoryPersistence(
-      logs: <ExerciseLog>[
-        ExerciseLog(
-          id: 'seed',
-          type: ExerciseType.pushUp,
-          reps: 10,
-          timestamp: DateTime(2026, 3, 8, 7, 30),
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [persistenceProvider.overrideWithValue(persistence)],
+          child: const GtgApp(locale: Locale('ko')),
         ),
-      ],
-    );
+      );
+      await tester.pumpAndSettle();
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [persistenceProvider.overrideWithValue(persistence)],
-        child: const GtgApp(locale: Locale('ko')),
-      ),
-    );
-    await tester.pumpAndSettle();
+      final missionButton = find.byKey(const Key('dashboard.missionLogButton'));
+      expect(missionButton, findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.text('초기화'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
+      for (var i = 0; i < 9; i++) {
+        await tester.tap(missionButton, warnIfMissed: false);
+      }
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('초기화'));
-    await tester.pumpAndSettle();
+      expect(persistence._logs.length, 8);
+      expect(find.text('8/8세트'), findsOneWidget);
+      expect(tester.widget<FilledButton>(missionButton).onPressed, isNull);
+    },
+  );
 
-    expect(find.text('모든 훈련 기록을 삭제할까요?'), findsOneWidget);
-    expect(persistence._logs, isNotEmpty);
+  testWidgets(
+    skip: true,
+    'reset requires confirmation before clearing all logs',
+    (tester) async {
+      final persistence = InMemoryPersistence(
+        logs: <ExerciseLog>[
+          ExerciseLog(
+            id: 'seed',
+            type: ExerciseType.pushUp,
+            reps: 10,
+            timestamp: DateTime(2026, 3, 8, 7, 30),
+          ),
+        ],
+      );
 
-    await tester.tap(find.text('취소'));
-    await tester.pumpAndSettle();
-    expect(persistence._logs, isNotEmpty);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [persistenceProvider.overrideWithValue(persistence)],
+          child: const GtgApp(locale: Locale('ko')),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('초기화'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('dashboard.confirmResetLogs')));
-    await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('초기화'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
 
-    expect(persistence._logs, isEmpty);
-  });
+      await tester.tap(find.text('초기화'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('모든 훈련 기록을 삭제할까요?'), findsOneWidget);
+      expect(persistence._logs, isNotEmpty);
+
+      await tester.tap(find.text('취소'));
+      await tester.pumpAndSettle();
+      expect(persistence._logs, isNotEmpty);
+
+      await tester.tap(find.text('초기화'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('dashboard.confirmResetLogs')));
+      await tester.pumpAndSettle();
+
+      expect(persistence._logs, isEmpty);
+    },
+  );
 }

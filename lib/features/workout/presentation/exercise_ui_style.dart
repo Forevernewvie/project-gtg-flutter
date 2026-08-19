@@ -126,7 +126,6 @@ class _ExerciseGlyphPainter extends CustomPainter {
     }
   }
 
-
   void _drawPushUp(Canvas canvas, Size size, Paint stroke, Paint fill) {
     final head = Offset(size.width * 0.25, size.height * 0.28);
     canvas.drawCircle(head, size.width * 0.10, fill);

@@ -93,9 +93,18 @@ abstract final class GtgTheme {
             fontWeight: FontWeight.bold,
             letterSpacing: -0.2,
           ),
-          bodyLarge: baseTextTheme.bodyLarge?.copyWith(height: 1.22, fontWeight: FontWeight.w500),
-          bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.25, fontWeight: FontWeight.normal),
-          bodySmall: baseTextTheme.bodySmall?.copyWith(height: 1.3, fontWeight: FontWeight.normal),
+          bodyLarge: baseTextTheme.bodyLarge?.copyWith(
+            height: 1.22,
+            fontWeight: FontWeight.w500,
+          ),
+          bodyMedium: baseTextTheme.bodyMedium?.copyWith(
+            height: 1.25,
+            fontWeight: FontWeight.normal,
+          ),
+          bodySmall: baseTextTheme.bodySmall?.copyWith(
+            height: 1.3,
+            fontWeight: FontWeight.normal,
+          ),
           labelLarge: baseTextTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.bold,
             letterSpacing: 0.1,

@@ -1,6 +1,6 @@
 import '../../../core/models/exercise_type.dart';
 
-/// Represents the payload of data synchronized to the Native OS (iOS/Android) 
+/// Represents the payload of data synchronized to the Native OS (iOS/Android)
 /// for rendering the home and lock screen widgets.
 class WidgetDataModel {
   const WidgetDataModel({

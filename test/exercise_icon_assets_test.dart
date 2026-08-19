@@ -10,7 +10,6 @@ void main() {
     expect(pubspec, contains('assets/exercise_icons/'));
 
     for (final type in ExerciseType.values) {
-
       final path = ExerciseUiStyle.assetPath(type);
       final file = File(path);
 

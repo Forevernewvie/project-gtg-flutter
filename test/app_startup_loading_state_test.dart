@@ -96,7 +96,6 @@ void main() {
       find.byKey(const Key('dashboard.missionLogButton')),
     );
     expect(loadingMissionButton.onPressed, isNull);
-    expect(find.text('Loading logs...'), findsWidgets);
     expect(find.text('Ready for today'), findsNothing);
 
     logsCompleter.complete(const <ExerciseLog>[]);

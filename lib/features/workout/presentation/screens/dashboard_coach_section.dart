@@ -24,9 +24,9 @@ class _CoachCard extends ConsumerWidget {
                   'Your Smart Coach',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(color: Colors.white),
                 ),
               ),
               if (!summary.hasBaseline)
@@ -58,9 +58,17 @@ class _ReminderNudgeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.reminderOptimizationTitle, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            l10n.reminderOptimizationTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
-          Text(ReminderUiPolicy.buildOptimizationMessage(l10n: l10n, suggestion: suggestion)),
+          Text(
+            ReminderUiPolicy.buildOptimizationMessage(
+              l10n: l10n,
+              suggestion: suggestion,
+            ),
+          ),
           const SizedBox(height: 16),
           TextButton(
             onPressed: () => context.push('/settings/reminders'),
@@ -79,14 +87,14 @@ class _CoachReadyState extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final recommendation = ref.watch(adaptiveGtgCoachRecommendationProvider);
-    final isRecover = recommendation.intensity == GtgCoachIntensity.recover;
-    
+
+
     final completedSets = summary.completedSetsToday;
     final targetSets = summary.dailySetTarget;
-    final progress = targetSets > 0 ? (completedSets / targetSets).clamp(0.0, 1.0) : 0.0;
-    
+    final progress = targetSets > 0
+        ? (completedSets / targetSets).clamp(0.0, 1.0)
+        : 0.0;
+
     return Column(
       children: [
         Center(
@@ -151,9 +159,9 @@ class _CoachReadyState extends ConsumerWidget {
         ),
         const SizedBox(height: 32),
         Text(
-          progress >= 1.0 
-            ? "Goal reached! Great job! 🙌"
-            : "You're ${(progress * 100).toInt()}% there! Let's hit $targetSets today! 🙌",
+          progress >= 1.0
+              ? "Goal reached! Great job! 🙌"
+              : "You're ${(progress * 100).toInt()}% there! Let's hit $targetSets today! 🙌",
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.8),
@@ -189,7 +197,10 @@ class _CoachReadyState extends ConsumerWidget {
               icon: const Icon(Icons.local_fire_department_rounded),
               label: Text(
                 'Start ${summary.primaryExercise.key}',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -208,7 +219,11 @@ class _CoachReadyState extends ConsumerWidget {
             ),
             child: const Text(
               'Activity Log',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),
@@ -217,52 +232,7 @@ class _CoachReadyState extends ConsumerWidget {
   }
 }
 
-class _CoachValueTile extends StatelessWidget {
-  const _CoachValueTile({
-    required this.label,
-    required this.value,
-    required this.accent,
-    required this.keyValue,
-  });
 
-  final String label;
-  final String value;
-  final Color accent;
-  final String keyValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              key: Key('dashboard.coach.$keyValue'),
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _CoachEmptyState extends StatelessWidget {
   const _CoachEmptyState({required this.message});

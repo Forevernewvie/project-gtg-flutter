@@ -24,9 +24,7 @@ class UserPreferencesEntity {
 
   /// Converts this persistence entity into the domain model.
   UserPreferences toModel() {
-    final primaryExercise =
-        ExerciseTypeX.fromKey(primaryExerciseKey) ??
-        UserPreferences.defaults.primaryExercise;
+    final primaryExercise = ExerciseTypeX.fromKey(primaryExerciseKey);
 
     return UserPreferences(
       hasCompletedOnboarding: hasCompletedOnboarding,

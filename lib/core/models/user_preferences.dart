@@ -47,8 +47,7 @@ class UserPreferences {
 
     final primaryValue = json['primaryExercise'];
     final primaryKey = primaryValue is String ? primaryValue : '';
-    final primaryExercise =
-        ExerciseTypeX.fromKey(primaryKey) ?? defaults.primaryExercise;
+    final primaryExercise = ExerciseTypeX.fromKey(primaryKey);
     final primaryExerciseMaxReps = _readInt(
       json['primaryExerciseMaxReps'],
       fallback: defaults.primaryExerciseMaxReps,

@@ -51,10 +51,18 @@ Future<void> backgroundCallback(Uri? uri) async {
       final todayLogs = await isar.exerciseLogEntitys
           .filter()
           .typeKeyEqualTo(type.key)
-          .timestampBetween(startOfDay, endOfDay, includeLower: true, includeUpper: false)
+          .timestampBetween(
+            startOfDay,
+            endOfDay,
+            includeLower: true,
+            includeUpper: false,
+          )
           .findAll();
 
-      final todayTotal = todayLogs.fold<int>(0, (int sum, ExerciseLogEntity log) => sum + log.reps);
+      final todayTotal = todayLogs.fold<int>(
+        0,
+        (int sum, ExerciseLogEntity log) => sum + log.reps,
+      );
 
       // We might not have the full coaching target logic in background, so we use a fallback or fetch from prefs.
       // For now, we update the todayTotal which is the most critical feedback for the user.

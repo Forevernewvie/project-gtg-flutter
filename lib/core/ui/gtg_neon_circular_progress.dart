@@ -23,10 +23,7 @@ class GtgNeonCircularProgress extends StatelessWidget {
       width: size,
       height: size,
       child: CustomPaint(
-        painter: _NeonRingPainter(
-          progress: progress,
-          strokeWidth: strokeWidth,
-        ),
+        painter: _NeonRingPainter(progress: progress, strokeWidth: strokeWidth),
         child: Center(child: child),
       ),
     );
@@ -34,10 +31,7 @@ class GtgNeonCircularProgress extends StatelessWidget {
 }
 
 class _NeonRingPainter extends CustomPainter {
-  _NeonRingPainter({
-    required this.progress,
-    required this.strokeWidth,
-  });
+  _NeonRingPainter({required this.progress, required this.strokeWidth});
 
   final double progress;
   final double strokeWidth;
@@ -46,7 +40,7 @@ class _NeonRingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - strokeWidth) / 2;
-    
+
     // Draw background track
     final trackPaint = Paint()
       ..color = const Color(0xFF28364A).withValues(alpha: 0.5)
@@ -60,17 +54,13 @@ class _NeonRingPainter extends CustomPainter {
 
     final sweepAngle = 2 * pi * progress.clamp(0.0, 1.0);
     final startAngle = -pi / 2;
-    
+
     final rect = Rect.fromCircle(center: center, radius: radius);
 
     const gradient = SweepGradient(
       startAngle: -pi / 2,
       endAngle: 3 * pi / 2,
-      colors: [
-        GtgColors.neonBlue,
-        GtgColors.neonPurple,
-        GtgColors.neonBlue,
-      ],
+      colors: [GtgColors.neonBlue, GtgColors.neonPurple, GtgColors.neonBlue],
       stops: [0.0, 0.5, 1.0],
     );
 
@@ -95,6 +85,6 @@ class _NeonRingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _NeonRingPainter oldDelegate) {
     return oldDelegate.progress != progress ||
-           oldDelegate.strokeWidth != strokeWidth;
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

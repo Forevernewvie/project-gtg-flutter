@@ -6,7 +6,6 @@ import 'package:project_gtg/core/models/exercise_log.dart';
 import 'package:project_gtg/core/models/exercise_type.dart';
 import 'package:project_gtg/core/ui/gtg_ui.dart';
 import 'package:project_gtg/features/coaching/gtg_coach_policy.dart';
-import 'package:project_gtg/features/coaching/models/gtg_coach_recommendation.dart';
 import 'package:project_gtg/features/coaching/state/gtg_coach_providers.dart';
 import 'package:project_gtg/features/reminders/reminder_optimization_policy.dart';
 import 'package:project_gtg/features/reminders/reminder_ui_policy.dart';

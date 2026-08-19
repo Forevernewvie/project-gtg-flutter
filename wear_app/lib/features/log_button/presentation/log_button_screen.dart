@@ -20,7 +20,7 @@ final logErrorProvider = NotifierProvider<LogErrorState, String?>(() => LogError
 
 class LogButtonScreen extends ConsumerWidget {
   final bool isAmbient;
-  const LogButtonScreen({Key? key, required this.isAmbient}) : super(key: key);
+  const LogButtonScreen({super.key, required this.isAmbient});
 
   Future<void> _handleLog(WidgetRef ref) async {
     if (isAmbient) return;
@@ -72,7 +72,7 @@ class LogButtonScreen extends ConsumerWidget {
                   border: isAmbient ? Border.all(color: Colors.white54, width: 2) : null,
                   boxShadow: (isAmbient || isLoading) ? [] : [
                     BoxShadow(
-                      color: WatchTheme.neonMint.withOpacity(0.2),
+                      color: WatchTheme.neonMint.withValues(alpha: 0.2),
                       blurRadius: 20,
                       spreadRadius: 5,
                     )

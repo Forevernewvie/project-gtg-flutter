@@ -31,21 +31,28 @@ class _ScreenshotPersistence extends GtgPersistence {
     final now = DateTime.now();
     return [
       ExerciseLog(id: '1', type: ExerciseType.pushUp, reps: 15, timestamp: now),
-      ExerciseLog(id: '2', type: ExerciseType.pullUp, reps: 5, timestamp: now.subtract(const Duration(hours: 2))),
+      ExerciseLog(
+        id: '2',
+        type: ExerciseType.pullUp,
+        reps: 5,
+        timestamp: now.subtract(const Duration(hours: 2)),
+      ),
     ];
   }
 
   @override
   Future<UserPreferences> loadUserPreferences() async => UserPreferences(
-        hasCompletedOnboarding: true,
-        primaryExercise: ExerciseType.pushUp,
-      );
+    hasCompletedOnboarding: true,
+    primaryExercise: ExerciseType.pushUp,
+  );
 
   @override
-  Future<AppThemePreference> loadAppThemePreference() async => AppThemePreference.dark;
+  Future<AppThemePreference> loadAppThemePreference() async =>
+      AppThemePreference.dark;
 
   @override
-  Future<ReminderSettings> loadReminderSettings() async => ReminderSettings.defaults;
+  Future<ReminderSettings> loadReminderSettings() async =>
+      ReminderSettings.defaults;
 }
 
 void main() {
@@ -69,12 +76,16 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     Future<void> capture(String name) async {
-      final boundary = boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final boundary =
+          boundaryKey.currentContext!.findRenderObject()
+              as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: 2.0);
       final data = await image.toByteData(format: ui.ImageByteFormat.png);
       final dir = Directory('real_screenshots');
       if (!dir.existsSync()) dir.createSync();
-      File('real_screenshots/$name.png').writeAsBytesSync(data!.buffer.asUint8List());
+      File(
+        'real_screenshots/$name.png',
+      ).writeAsBytesSync(data!.buffer.asUint8List());
     }
 
     await capture('1_home');

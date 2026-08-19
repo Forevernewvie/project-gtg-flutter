@@ -11,7 +11,7 @@ void main() {
 }
 
 class GTGWearApp extends StatelessWidget {
-  const GTGWearApp({Key? key}) : super(key: key);
+  const GTGWearApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class GTGWearApp extends StatelessWidget {
 }
 
 class WatchRootScreen extends StatefulWidget {
-  const WatchRootScreen({Key? key}) : super(key: key);
+  const WatchRootScreen({super.key});
 
   @override
   State<WatchRootScreen> createState() => _WatchRootScreenState();
@@ -46,12 +46,14 @@ class _WatchRootScreenState extends State<WatchRootScreen> {
     return AmbientMode(
       builder: (context, mode, child) {
         final isAmbient = mode == WearMode.ambient;
-        
+
         // 2. Round Screen 클리핑 방지 여백 설정
         return WatchShape(
           builder: (context, shape, child) {
             return Scaffold(
-              backgroundColor: isAmbient ? Colors.black : WatchTheme.darkBackground,
+              backgroundColor: isAmbient
+                  ? Colors.black
+                  : WatchTheme.darkBackground,
               body: PageView(
                 controller: _pageController,
                 scrollDirection: Axis.vertical,

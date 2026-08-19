@@ -24,17 +24,17 @@ abstract final class GtgColors {
   static const _lightSurfaceMuted = Color(0xFFF0F3F7);
   static const _darkSurfaceMuted = Color(0xFF0D141E);
   static const _lightBorder = Color(0xFFDCDFE5);
-  static const _darkBorder = Color(0xFF28364A); 
-  
+  static const _darkBorder = Color(0xFF28364A);
+
   static const _lightWarningSurface = Color(0xFFFFF4E5);
   static const _darkWarningSurface = Color(0xFF332014);
   static const _lightSuccess = Color(0xFF00A36C);
   static const _darkSuccess = neonGreen;
   static const _lightError = Color(0xFFFF3B30);
   static const _darkError = Color(0xFFFF453A);
-  
+
   static const _onAccentLight = Color(0xFFFFFFFF);
-  static const _onAccentDark = Color(0xFF090E17); 
+  static const _onAccentDark = Color(0xFF090E17);
 
   static Color accentFor(Brightness brightness) =>
       brightness == Brightness.dark ? _darkAccent : _lightAccent;
@@ -58,7 +58,9 @@ abstract final class GtgColors {
   static Color borderFor(Brightness brightness) =>
       brightness == Brightness.dark ? _darkBorder : _lightBorder;
   static Color warningSurfaceFor(Brightness brightness) =>
-      brightness == Brightness.dark ? _darkWarningSurface : _lightWarningSurface;
+      brightness == Brightness.dark
+      ? _darkWarningSurface
+      : _lightWarningSurface;
   static Color successFor(Brightness brightness) =>
       brightness == Brightness.dark ? _darkSuccess : _lightSuccess;
   static Color errorFor(Brightness brightness) =>

@@ -19,8 +19,6 @@ import 'package:project_gtg/l10n/exercise_type_l10n.dart';
 abstract final class _CalendarPolicy {
   static const double heatmapGap = 8;
   static const double compactHeatmapCellSize = 30;
-  static const double selectedDayBorderWidth = 2;
-  static const double todayBorderWidth = 1.2;
 }
 
 /// Shows the monthly heatmap and selected-day workout details.
@@ -445,12 +443,8 @@ class _MonthHeatmap extends StatelessWidget {
             final key = startOfDay(date);
             final total = dayTotals[key] ?? 0;
             final isSelected = isSameDay(date, selectedDay);
-            final isToday = isSameDay(date, today);
-            final colorScheme = Theme.of(context).colorScheme;
-
-            
             final hasActivity = total > 0;
-            
+
             // Painter's Touch: Elegant Slate Gray for activity
             final Color cellBg;
             final Color textColor;
@@ -461,7 +455,10 @@ class _MonthHeatmap extends StatelessWidget {
               // High-end Cyberpunk metallic/slate look for active days
               cellBg = const Color(0xFF475569); // Sleek Slate Gray
               textColor = Colors.white;
-              border = Border.all(color: const Color(0xFF64748B), width: 1); // Subtle lighter edge
+              border = Border.all(
+                color: const Color(0xFF64748B),
+                width: 1,
+              ); // Subtle lighter edge
               boxShadow = null;
             } else {
               // Empty days
@@ -547,22 +544,7 @@ class _MonthHeatmap extends StatelessWidget {
     );
   }
 
-  /// Maps one day total to the heatmap fill color intensity.
-  Color _heatColor(int total, int max, Color accent, Color baseColor) {
-    if (total <= 0 || max <= 0) {
-      return baseColor;
-    }
 
-    final ratio = total / max;
-    final amount = switch (ratio) {
-      <= 0.25 => 0.28,
-      <= 0.50 => 0.46,
-      <= 0.75 => 0.66,
-      _ => 0.86,
-    };
-
-    return Color.lerp(baseColor, accent, amount) ?? accent;
-  }
 }
 
 /// Shows one compact stat chip inside the month or day summary area.

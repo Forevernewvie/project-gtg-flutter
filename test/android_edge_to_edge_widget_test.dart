@@ -97,6 +97,6 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('설정'), findsWidgets);
-    expect(find.text('리마인더'), findsWidgets);
+    expect(find.text('알림'), findsWidgets);
   });
 }
