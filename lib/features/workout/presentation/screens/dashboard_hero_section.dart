@@ -364,4 +364,3 @@ class _HeroActionSummary extends StatelessWidget {
     );
   }
 }
-

@@ -40,30 +40,42 @@ class RhythmHeatmapScreen extends StatelessWidget {
                         height: 14,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isAmbient 
-                              ? Colors.transparent 
-                              : (isActive ? WatchTheme.neonMint : WatchTheme.slateGray),
-                          border: isAmbient 
-                              ? Border.all(color: isActive ? Colors.white : Colors.white24) 
+                          color: isAmbient
+                              ? Colors.transparent
+                              : (isActive
+                                    ? WatchTheme.neonMint
+                                    : WatchTheme.slateGray),
+                          border: isAmbient
+                              ? Border.all(
+                                  color: isActive
+                                      ? Colors.white
+                                      : Colors.white24,
+                                )
                               : null,
-                          boxShadow: (!isAmbient && isActive) ? [
-                            BoxShadow(
-                              color: WatchTheme.neonMint.withValues(alpha: 0.5),
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                            )
-                          ] : [],
+                          boxShadow: (!isAmbient && isActive)
+                              ? [
+                                  BoxShadow(
+                                    color: WatchTheme.neonMint.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    blurRadius: 6,
+                                    spreadRadius: 1,
+                                  ),
+                                ]
+                              : [],
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         days[index],
                         style: TextStyle(
-                          color: isAmbient 
+                          color: isAmbient
                               ? (isActive ? Colors.white : Colors.white24)
                               : (isActive ? WatchTheme.neonMint : Colors.grey),
                           fontSize: 10,
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isActive
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                     ],

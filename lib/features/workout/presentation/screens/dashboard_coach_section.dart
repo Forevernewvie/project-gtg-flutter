@@ -87,8 +87,6 @@ class _CoachReadyState extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-
     final completedSets = summary.completedSetsToday;
     final targetSets = summary.dailySetTarget;
     final progress = targetSets > 0
@@ -231,8 +229,6 @@ class _CoachReadyState extends ConsumerWidget {
     );
   }
 }
-
-
 
 class _CoachEmptyState extends StatelessWidget {
   const _CoachEmptyState({required this.message});

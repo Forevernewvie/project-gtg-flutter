@@ -9,14 +9,20 @@ class LogButtonState extends Notifier<bool> {
   bool build() => false;
   void setState(bool value) => state = value;
 }
-final logButtonStateProvider = NotifierProvider<LogButtonState, bool>(() => LogButtonState());
+
+final logButtonStateProvider = NotifierProvider<LogButtonState, bool>(
+  () => LogButtonState(),
+);
 
 class LogErrorState extends Notifier<String?> {
   @override
   String? build() => null;
   void setState(String? value) => state = value;
 }
-final logErrorProvider = NotifierProvider<LogErrorState, String?>(() => LogErrorState());
+
+final logErrorProvider = NotifierProvider<LogErrorState, String?>(
+  () => LogErrorState(),
+);
 
 class LogButtonScreen extends ConsumerWidget {
   final bool isAmbient;
@@ -31,7 +37,7 @@ class LogButtonScreen extends ConsumerWidget {
     HapticFeedback.lightImpact();
     ref.read(logButtonStateProvider.notifier).setState(true);
     ref.read(logErrorProvider.notifier).setState(null);
-    
+
     try {
       await ref.read(watchSyncClientProvider).sendLogSet();
     } catch (e) {
@@ -69,14 +75,18 @@ class LogButtonScreen extends ConsumerWidget {
                   shape: BoxShape.circle,
                   // 앰비언트 모드 번인 방지: 속을 비우고 테두리만
                   color: isAmbient ? Colors.transparent : WatchTheme.slateGray,
-                  border: isAmbient ? Border.all(color: Colors.white54, width: 2) : null,
-                  boxShadow: (isAmbient || isLoading) ? [] : [
-                    BoxShadow(
-                      color: WatchTheme.neonMint.withValues(alpha: 0.2),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    )
-                  ],
+                  border: isAmbient
+                      ? Border.all(color: Colors.white54, width: 2)
+                      : null,
+                  boxShadow: (isAmbient || isLoading)
+                      ? []
+                      : [
+                          BoxShadow(
+                            color: WatchTheme.neonMint.withValues(alpha: 0.2),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
                 ),
                 child: Center(
                   child: Text(

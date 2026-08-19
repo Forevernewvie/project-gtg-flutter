@@ -543,8 +543,6 @@ class _MonthHeatmap extends StatelessWidget {
       },
     );
   }
-
-
 }
 
 /// Shows one compact stat chip inside the month or day summary area.
