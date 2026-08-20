@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/clock.dart';
+import '../../../core/env.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/logging/logger_provider.dart';
 import '../../../core/models/exercise_log.dart';
@@ -73,13 +74,15 @@ class WorkoutController extends AsyncNotifier<WorkoutState> {
           )
           .fold<int>(0, (sum, l) => sum + l.reps);
 
-      await WidgetSyncService.syncData(
-        WidgetDataModel(
-          todayTotal: todayTotal,
-          targetTotal: 0,
-          primaryExercise: type,
-        ),
-      );
+      if (!Env.useFakes) {
+        await WidgetSyncService.syncData(
+          WidgetDataModel(
+            todayTotal: todayTotal,
+            targetTotal: 0,
+            primaryExercise: type,
+          ),
+        );
+      }
     } catch (error, stackTrace) {
       _logger.error(
         'Failed to persist workout logs.',

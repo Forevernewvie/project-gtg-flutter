@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/watch_sync/services/watch_sync_service.dart';
+import '../core/env.dart';
 import '../core/gtg_theme.dart';
 import '../l10n/app_localizations.dart';
 import 'root_overlays.dart';
@@ -32,8 +33,10 @@ class _GtgAppState extends ConsumerState<GtgApp> {
   @override
   void initState() {
     super.initState();
-    // Start listening for Watch OS actions
-    ref.read(watchSyncServiceProvider).initialize();
+    // Start listening for Watch OS actions outside test runtime
+    if (!Env.isTestRuntime) {
+      ref.read(watchSyncServiceProvider).initialize();
+    }
   }
 
   @override

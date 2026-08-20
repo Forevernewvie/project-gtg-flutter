@@ -56,46 +56,50 @@ class _ScreenshotPersistence extends GtgPersistence {
 }
 
 void main() {
-  testWidgets('take screenshots', (tester) async {
-    tester.view.devicePixelRatio = 2.0;
-    tester.view.physicalSize = const Size(1080, 2400);
+  testWidgets(
+    'take screenshots',
+    skip: !const bool.fromEnvironment('SMOKE_SCREENSHOTS'),
+    (tester) async {
+      tester.view.devicePixelRatio = 2.0;
+      tester.view.physicalSize = const Size(1080, 2400);
 
-    final persistence = _ScreenshotPersistence();
-    final boundaryKey = GlobalKey();
+      final persistence = _ScreenshotPersistence();
+      final boundaryKey = GlobalKey();
 
-    await tester.pumpWidget(
-      RepaintBoundary(
-        key: boundaryKey,
-        child: ProviderScope(
-          overrides: [persistenceProvider.overrideWithValue(persistence)],
-          child: const GtgApp(locale: Locale('en')),
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: boundaryKey,
+          child: ProviderScope(
+            overrides: [persistenceProvider.overrideWithValue(persistence)],
+            child: const GtgApp(locale: Locale('en')),
+          ),
         ),
-      ),
-    );
+      );
 
-    await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
 
-    Future<void> capture(String name) async {
-      final boundary =
-          boundaryKey.currentContext!.findRenderObject()
-              as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 2.0);
-      final data = await image.toByteData(format: ui.ImageByteFormat.png);
-      final dir = Directory('real_screenshots');
-      if (!dir.existsSync()) dir.createSync();
-      File(
-        'real_screenshots/$name.png',
-      ).writeAsBytesSync(data!.buffer.asUint8List());
-    }
+      Future<void> capture(String name) async {
+        final boundary =
+            boundaryKey.currentContext!.findRenderObject()
+                as RenderRepaintBoundary;
+        final image = await boundary.toImage(pixelRatio: 2.0);
+        final data = await image.toByteData(format: ui.ImageByteFormat.png);
+        final dir = Directory('real_screenshots');
+        if (!dir.existsSync()) dir.createSync();
+        File(
+          'real_screenshots/$name.png',
+        ).writeAsBytesSync(data!.buffer.asUint8List());
+      }
 
-    await capture('1_home');
+      await capture('1_home');
 
-    await tester.tap(find.byIcon(Icons.calendar_month_rounded));
-    await tester.pump(const Duration(seconds: 1));
-    await capture('2_calendar');
+      await tester.tap(find.byIcon(Icons.calendar_month_rounded));
+      await tester.pump(const Duration(seconds: 1));
+      await capture('2_calendar');
 
-    await tester.tap(find.byIcon(Icons.tune_rounded));
-    await tester.pump(const Duration(seconds: 1));
-    await capture('3_settings');
-  });
+      await tester.tap(find.byIcon(Icons.tune_rounded));
+      await tester.pump(const Duration(seconds: 1));
+      await capture('3_settings');
+    },
+  );
 }

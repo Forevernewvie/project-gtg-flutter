@@ -13,8 +13,8 @@ void main() {
       );
 
       final message = await provider.load();
-      expect(message.title, '한 세트 타이밍');
-      expect(message.body, contains('푸쉬업/풀업/딥스'));
+      expect(message.title, '운동할 시간');
+      expect(message.body, contains('한 세트'));
     });
 
     test(
