@@ -28,7 +28,9 @@ jobs:
           cache: true
 
       - name: Pub get
-        run: flutter pub get
+        run: |
+          flutter pub get
+          (cd wear_app && flutter pub get)
 
       - name: Validate hosted update manifest
         run: python3 tool/validate_hosted_update_manifest.py
@@ -37,7 +39,9 @@ jobs:
         run: dart format --set-exit-if-changed .
 
       - name: Analyze
-        run: flutter analyze
+        run: |
+          flutter analyze
+          (cd wear_app && flutter analyze)
 
       - name: Test
         run: flutter test --dart-define=UI_TESTING=true
