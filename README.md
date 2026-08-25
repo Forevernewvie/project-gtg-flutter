@@ -1,5 +1,7 @@
 # PROJECT GTG (Flutter)
 
+[![Google Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
+
 A local-first GTG (Grease The Groove) workout app focused on frequent, low-fatigue training.
 The app currently targets Push-up, Pull-up, and Dip logging with calendar visibility, reminders, and theme/localization support.
 
