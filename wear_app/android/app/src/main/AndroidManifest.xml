@@ -1,11 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-feature android:name="android.hardware.type.watch" />
+    <!-- Required for Ambient Mode (AOD) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    
     <application
         android:label="GTG Watch"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Required Wearable Library -->
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="true" />
+
         <!-- 앱이 단독으로 동작하는지 여부 (폰 앱 종속적이므로 false) -->
         <meta-data
             android:name="com.google.android.wearable.standalone"
