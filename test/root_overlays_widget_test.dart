@@ -147,12 +147,16 @@ void main() {
           appUpdateCheckerProvider.overrideWithValue(
             _FakeAppUpdateChecker(
               const AppUpdateInfo(
+                updateRequired: true,
+                updateType: 'FORCE',
                 latestVersionCode: 4,
                 latestVersionName: '1.0.0',
-                forceUpdate: false,
+                title: 'Update available',
                 message: 'A new update is available.',
                 storeUrl:
                     'https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg',
+                maintenanceActive: false,
+                maintenanceMessage: '',
               ),
             ),
           ),
