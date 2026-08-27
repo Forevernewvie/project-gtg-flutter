@@ -45,7 +45,8 @@ class AppUpdateChecker {
 
       // Node.js 로컬 서버 호출
       final platform = Platform.isIOS ? 'ios' : 'android';
-      final baseUrl = 'http://172.30.1.43:3000/api/v1/check-update';
+      final baseUrl =
+          'https://distinguished-revolutionary-pull-continuously.trycloudflare.com/api/v1/check-update';
       final uri = Uri.parse(
         '$baseUrl?platform=$platform&versionCode=${buildInfo.versionCode}',
       );
