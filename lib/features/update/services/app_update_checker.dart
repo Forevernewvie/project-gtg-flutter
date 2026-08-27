@@ -4,8 +4,6 @@ import 'dart:io' show HttpClient, HttpException, Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/app_link_policy.dart';
-import '../../../core/app_links.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/logging/logger_provider.dart';
 import '../../../core/platform/app_build_info.dart';
@@ -19,11 +17,9 @@ class AppUpdateChecker {
     required AppBuildInfoReader buildInfoReader,
     required AppLogger logger,
     JsonLoader? loadJson,
-    bool skipInDebug = kDebugMode,
   }) : _buildInfoReader = buildInfoReader,
        _logger = logger,
-       _loadJson = loadJson ?? _defaultLoadJson,
-       _skipInDebug = skipInDebug;
+       _loadJson = loadJson ?? _defaultLoadJson;
 
   static const String skippedWebLog =
       'Skipping update check: web does not support build metadata.';
@@ -37,68 +33,42 @@ class AppUpdateChecker {
   final AppBuildInfoReader _buildInfoReader;
   final AppLogger _logger;
   final JsonLoader _loadJson;
-  final bool _skipInDebug;
 
   Future<AppUpdateInfo?> checkForUpdate() async {
     if (kIsWeb) {
       _logger.info(skippedWebLog);
       return null;
     }
-    if (_skipInDebug) {
-      _logger.info(skippedDebugLog);
-      return null;
-    }
-
-    final manifestUri = AppLinkPolicy.parseExternalHttpsUri(
-      AppLinks.versionManifestUrl,
-    );
-    if (manifestUri == null) {
-      _logger.warning(invalidManifestUrlLog);
-      return null;
-    }
 
     try {
       final buildInfo = await _buildInfoReader.read();
-      final rawManifest = await _loadJson(manifestUri);
-      final manifest = HostedUpdateManifest.fromJson(rawManifest);
-      if (manifest == null) return null;
+      
+      // Node.js 로컬 서버 호출
+      final platform = Platform.isIOS ? 'ios' : 'android';
+      final baseUrl = 'http://172.30.1.43:3000/api/v1/check-update';
+      final uri = Uri.parse('$baseUrl?platform=$platform&versionCode=${buildInfo.versionCode}');
 
-      final entry = Platform.isIOS ? manifest.ios : manifest.android;
-      if (entry == null || entry.latestVersionCode <= buildInfo.versionCode) {
-        return null;
-      }
-
-      final storeUri = AppLinkPolicy.parseExternalHttpsUri(entry.storeUrl);
-      if (storeUri == null) {
-        _logger.warning(invalidStoreUrlLog);
-        return null;
-      }
-
-      return AppUpdateInfo(
-        latestVersionCode: entry.latestVersionCode,
-        latestVersionName: entry.latestVersionName,
-        forceUpdate: entry.forceUpdate,
-        message: entry.message,
-        storeUrl: storeUri.toString(),
-      );
+      final rawManifest = await _loadJson(uri);
+      final updateInfo = AppUpdateInfo.fromJson(rawManifest);
+      
+      if (updateInfo == null) return null;
+      
+      return updateInfo;
     } catch (error, stackTrace) {
       _logger.warning(failedFetchLog, error: error, stackTrace: stackTrace);
-      return null;
+      return null; 
     }
   }
 
   static Future<Object?> _defaultLoadJson(Uri uri) async {
     final client = HttpClient();
-    client.connectionTimeout = const Duration(seconds: 5);
+    client.connectionTimeout = const Duration(seconds: 3); // 3초 타임아웃
 
     try {
       final request = await client.getUrl(uri);
       final response = await request.close();
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw HttpException(
-          'Unexpected status code ${response.statusCode}',
-          uri: uri,
-        );
+        throw HttpException('Unexpected status code ${response.statusCode}', uri: uri);
       }
 
       final body = await response.transform(utf8.decoder).join();

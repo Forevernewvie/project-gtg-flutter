@@ -53,6 +53,7 @@ dependencies:
   home_widget: ^0.9.3
   uuid: ^4.6.0
   watch_connectivity: ^0.2.8
+  shared_preferences: ^2.5.0
 
 dev_dependencies:
   flutter_test:

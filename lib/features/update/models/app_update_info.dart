@@ -1,29 +1,40 @@
-/// One platform entry from the hosted update manifest.
-final class HostedPlatformUpdate {
-  const HostedPlatformUpdate({
+final class AppUpdateInfo {
+  const AppUpdateInfo({
+    required this.updateRequired,
+    required this.updateType,
     required this.latestVersionCode,
     required this.latestVersionName,
-    required this.forceUpdate,
+    required this.title,
     required this.message,
     required this.storeUrl,
+    required this.maintenanceActive,
+    required this.maintenanceMessage,
   });
 
+  final bool updateRequired;
+  final String updateType; // 'FORCE', 'OPTIONAL', 'NONE'
   final int latestVersionCode;
   final String latestVersionName;
-  final bool forceUpdate;
+  final String title;
   final String message;
   final String storeUrl;
+  final bool maintenanceActive;
+  final String maintenanceMessage;
 
-  static HostedPlatformUpdate? fromJson(Object? raw) {
+  static AppUpdateInfo? fromJson(Object? raw) {
     if (raw is! Map) return null;
     final map = raw.map((key, value) => MapEntry('$key', value));
 
-    return HostedPlatformUpdate(
-      latestVersionCode: _readInt(map['latestVersionCode']),
-      latestVersionName: '${map['latestVersionName'] ?? ''}',
-      forceUpdate: _readBool(map['forceUpdate']),
+    return AppUpdateInfo(
+      updateRequired: _readBool(map['updateRequired']),
+      updateType: '${map['updateType'] ?? 'NONE'}',
+      latestVersionCode: _readInt((map['latestVersion'] as Map?)?['code']),
+      latestVersionName: '${(map['latestVersion'] as Map?)?['name'] ?? ''}',
+      title: '${map['title'] ?? ''}',
       message: '${map['message'] ?? ''}',
       storeUrl: '${map['storeUrl'] ?? ''}',
+      maintenanceActive: _readBool((map['maintenance'] as Map?)?['isActive']),
+      maintenanceMessage: '${(map['maintenance'] as Map?)?['message'] ?? ''}',
     );
   }
 
@@ -37,39 +48,4 @@ final class HostedPlatformUpdate {
     if (value is bool) return value;
     return '$value'.toLowerCase() == 'true';
   }
-}
-
-/// Parsed root manifest read from hosted JSON.
-final class HostedUpdateManifest {
-  const HostedUpdateManifest({this.android, this.ios});
-
-  final HostedPlatformUpdate? android;
-  final HostedPlatformUpdate? ios;
-
-  static HostedUpdateManifest? fromJson(Object? raw) {
-    if (raw is! Map) return null;
-    final map = raw.map((key, value) => MapEntry('$key', value));
-
-    return HostedUpdateManifest(
-      android: HostedPlatformUpdate.fromJson(map['android']),
-      ios: HostedPlatformUpdate.fromJson(map['ios']),
-    );
-  }
-}
-
-/// Resolved update prompt shown to the user when a newer version exists.
-final class AppUpdateInfo {
-  const AppUpdateInfo({
-    required this.latestVersionCode,
-    required this.latestVersionName,
-    required this.forceUpdate,
-    required this.message,
-    required this.storeUrl,
-  });
-
-  final int latestVersionCode;
-  final String latestVersionName;
-  final bool forceUpdate;
-  final String message;
-  final String storeUrl;
 }

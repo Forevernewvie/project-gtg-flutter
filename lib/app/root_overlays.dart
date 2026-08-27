@@ -12,6 +12,7 @@ import '../features/reminders/state/reminder_controller.dart';
 import '../features/update/models/app_update_info.dart';
 import '../features/update/services/app_update_checker.dart';
 import 'root_overlays_policy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RootOverlays extends ConsumerStatefulWidget {
   const RootOverlays({
@@ -120,6 +121,16 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
       final update = await ref.read(appUpdateCheckerProvider).checkForUpdate();
       if (!mounted || update == null || _updatePromptShown) return;
 
+      // 선택(OPTIONAL) 업데이트의 경우 스누즈(Snooze) 체크
+      if (update.updateType == 'OPTIONAL' && !update.maintenanceActive) {
+        final prefs = await SharedPreferences.getInstance();
+        final snoozeUntil = prefs.getInt('update_snooze_until') ?? 0;
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if (now < snoozeUntil) {
+          return; // 하루 지나기 전이면 팝업 생략
+        }
+      }
+
       _updatePromptShown = true;
       await _showUpdatePrompt(update);
     });
@@ -131,35 +142,69 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
     final dialogContext = context;
     final l10n = AppLocalizations.of(dialogContext)!;
 
+    // 1. 점검 모드 체크
+    if (update.maintenanceActive) {
+       await showDialog<void>(
+        context: dialogContext,
+        barrierDismissible: false,
+        builder: (overlayContext) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: const Text('시스템 점검 안내'),
+            content: Text(update.maintenanceMessage.isEmpty ? '서버 점검 중입니다.' : update.maintenanceMessage),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (!update.updateRequired) return;
+
+    final isForce = update.updateType == 'FORCE';
+
+    // 2. 강제 및 선택 업데이트 팝업
     await showDialog<void>(
       context: dialogContext,
-      barrierDismissible: !update.forceUpdate,
+      barrierDismissible: !isForce,
       builder: (overlayContext) {
-        return AlertDialog(
-          title: Text(l10n.appUpdateTitle),
-          content: Text(
-            update.message.isEmpty
-                ? l10n.appUpdateBody(update.latestVersionName)
-                : update.message,
-          ),
-          actions: <Widget>[
-            if (!update.forceUpdate)
-              TextButton(
-                onPressed: () => Navigator.of(overlayContext).pop(),
-                child: Text(l10n.appUpdateLater),
-              ),
-            FilledButton(
-              onPressed: () async {
-                final uri = Uri.tryParse(update.storeUrl);
-                if (uri != null) {
-                  await ref.read(externalLinkLauncherProvider).launch(uri);
-                }
-                if (!overlayContext.mounted || update.forceUpdate) return;
-                Navigator.of(overlayContext).pop();
-              },
-              child: Text(l10n.appUpdateNow),
+        return PopScope(
+          canPop: !isForce,
+          child: AlertDialog(
+            title: Text(update.title.isEmpty ? l10n.appUpdateTitle : update.title),
+            content: Text(
+              update.message.isEmpty
+                  ? l10n.appUpdateBody(update.latestVersionName)
+                  : update.message,
             ),
-          ],
+            actions: <Widget>[
+              if (!isForce) ...[
+                TextButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    final snoozeTime = DateTime.now().add(const Duration(hours: 24)).millisecondsSinceEpoch;
+                    await prefs.setInt('update_snooze_until', snoozeTime);
+                    if (overlayContext.mounted) Navigator.of(overlayContext).pop();
+                  },
+                  child: const Text('오늘 하루 보지 않기'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(overlayContext).pop(),
+                  child: Text(l10n.appUpdateLater),
+                ),
+              ],
+              FilledButton(
+                onPressed: () async {
+                  final uri = Uri.tryParse(update.storeUrl);
+                  if (uri != null) {
+                    await ref.read(externalLinkLauncherProvider).launch(uri);
+                  }
+                  if (!overlayContext.mounted || isForce) return;
+                  Navigator.of(overlayContext).pop();
+                },
+                child: Text(l10n.appUpdateNow),
+              ),
+            ],
+          ),
         );
       },
     );
