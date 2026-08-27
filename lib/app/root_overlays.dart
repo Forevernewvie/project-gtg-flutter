@@ -144,14 +144,18 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
 
     // 1. 점검 모드 체크
     if (update.maintenanceActive) {
-       await showDialog<void>(
+      await showDialog<void>(
         context: dialogContext,
         barrierDismissible: false,
         builder: (overlayContext) => PopScope(
           canPop: false,
           child: AlertDialog(
             title: const Text('시스템 점검 안내'),
-            content: Text(update.maintenanceMessage.isEmpty ? '서버 점검 중입니다.' : update.maintenanceMessage),
+            content: Text(
+              update.maintenanceMessage.isEmpty
+                  ? '서버 점검 중입니다.'
+                  : update.maintenanceMessage,
+            ),
           ),
         ),
       );
@@ -170,7 +174,9 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
         return PopScope(
           canPop: !isForce,
           child: AlertDialog(
-            title: Text(update.title.isEmpty ? l10n.appUpdateTitle : update.title),
+            title: Text(
+              update.title.isEmpty ? l10n.appUpdateTitle : update.title,
+            ),
             content: Text(
               update.message.isEmpty
                   ? l10n.appUpdateBody(update.latestVersionName)
@@ -181,9 +187,12 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
                 TextButton(
                   onPressed: () async {
                     final prefs = await SharedPreferences.getInstance();
-                    final snoozeTime = DateTime.now().add(const Duration(hours: 24)).millisecondsSinceEpoch;
+                    final snoozeTime = DateTime.now()
+                        .add(const Duration(hours: 24))
+                        .millisecondsSinceEpoch;
                     await prefs.setInt('update_snooze_until', snoozeTime);
-                    if (overlayContext.mounted) Navigator.of(overlayContext).pop();
+                    if (overlayContext.mounted)
+                      Navigator.of(overlayContext).pop();
                   },
                   child: const Text('오늘 하루 보지 않기'),
                 ),

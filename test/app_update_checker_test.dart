@@ -48,17 +48,12 @@ void main() {
       loadJson: (_) async => <String, Object?>{
         'updateRequired': true,
         'updateType': 'FORCE',
-        'latestVersion': {
-          'code': 4,
-          'name': '1.0.1',
-        },
+        'latestVersion': {'code': 4, 'name': '1.0.1'},
         'title': 'New Update',
         'message': 'Please update',
-        'storeUrl': 'https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg',
-        'maintenance': {
-          'isActive': false,
-          'message': '',
-        }
+        'storeUrl':
+            'https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg',
+        'maintenance': {'isActive': false, 'message': ''},
       },
     );
 

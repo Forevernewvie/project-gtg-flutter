@@ -42,21 +42,23 @@ class AppUpdateChecker {
 
     try {
       final buildInfo = await _buildInfoReader.read();
-      
+
       // Node.js 로컬 서버 호출
       final platform = Platform.isIOS ? 'ios' : 'android';
       final baseUrl = 'http://172.30.1.43:3000/api/v1/check-update';
-      final uri = Uri.parse('$baseUrl?platform=$platform&versionCode=${buildInfo.versionCode}');
+      final uri = Uri.parse(
+        '$baseUrl?platform=$platform&versionCode=${buildInfo.versionCode}',
+      );
 
       final rawManifest = await _loadJson(uri);
       final updateInfo = AppUpdateInfo.fromJson(rawManifest);
-      
+
       if (updateInfo == null) return null;
-      
+
       return updateInfo;
     } catch (error, stackTrace) {
       _logger.warning(failedFetchLog, error: error, stackTrace: stackTrace);
-      return null; 
+      return null;
     }
   }
 
@@ -68,7 +70,10 @@ class AppUpdateChecker {
       final request = await client.getUrl(uri);
       final response = await request.close();
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw HttpException('Unexpected status code ${response.statusCode}', uri: uri);
+        throw HttpException(
+          'Unexpected status code ${response.statusCode}',
+          uri: uri,
+        );
       }
 
       final body = await response.transform(utf8.decoder).join();
