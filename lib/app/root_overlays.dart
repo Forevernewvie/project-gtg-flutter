@@ -191,8 +191,9 @@ class _RootOverlaysState extends ConsumerState<RootOverlays>
                         .add(const Duration(hours: 24))
                         .millisecondsSinceEpoch;
                     await prefs.setInt('update_snooze_until', snoozeTime);
-                    if (overlayContext.mounted)
+                    if (overlayContext.mounted) {
                       Navigator.of(overlayContext).pop();
+                    }
                   },
                   child: const Text('오늘 하루 보지 않기'),
                 ),
