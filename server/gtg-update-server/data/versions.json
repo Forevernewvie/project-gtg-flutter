@@ -1,0 +1,26 @@
+{
+  "android": {
+    "versionCode": 15,
+    "versionName": "1.3.0",
+    "updateType": "FORCE",
+    "title": "중요한 보안 업데이트",
+    "message": "지금 당장 업데이트를 진행해야 합니다.",
+    "storeUrl": "market://details?id=com.your.package.name",
+    "maintenance": {
+      "isActive": false,
+      "message": "서버 점검 중입니다."
+    }
+  },
+  "ios": {
+    "versionCode": 15,
+    "versionName": "1.3.0",
+    "updateType": "FORCE",
+    "title": "iOS 보안 업데이트",
+    "message": "최신 버전으로 업데이트가 필요합니다.",
+    "storeUrl": "https://apps.apple.com/app/id123456789",
+    "maintenance": {
+      "isActive": false,
+      "message": "서버 점검 중입니다."
+    }
+  }
+}
