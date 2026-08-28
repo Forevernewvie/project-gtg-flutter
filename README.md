@@ -1,65 +1,46 @@
-# PROJECT GTG (Flutter)
+# PROJECT GTG (Flutter + Backend)
 
 [![Google Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
+[![Server CI/CD](https://github.com/Forevernewvie/project-gtg-flutter/actions/workflows/server-ci.yml/badge.svg)](https://github.com/Forevernewvie/project-gtg-flutter/actions/workflows/server-ci.yml)
 
 A local-first GTG (Grease The Groove) workout app focused on frequent, low-fatigue training.
 The app currently targets Push-up, Pull-up, and Dip logging with calendar visibility, reminders, and theme/localization support.
 
-## TL;DR (Run in 3 Steps)
+Now upgraded with a **Node.js Express Backend Server** for real-time forced updates and maintenance management!
 
+## 🚀 TL;DR (Run in 3 Steps)
+
+### App (Flutter)
 ```bash
-git clone https://github.com/Forevernewvie/project-gtg-flutter.git
-cd project-gtg-flutter
 flutter pub get
 flutter run -d emulator-5554 --debug
 ```
 
-If `emulator-5554` is not available, run `flutter devices` and replace the device id.
+### Server (Node.js)
+```bash
+cd server/gtg-update-server
+npm install
+npm run dev
+```
 
-## What This App Includes (v1.2.0 State)
+## 🌟 What This Project Includes (v1.3.0 State)
 
-- **Zero-Friction Logging**:
-  - Android Home Screen 1-Tap Widget (`android/app/.../GtgWidgetProvider.kt`)
-  - **Wear OS Sub-app** (`wear_app/`): Giant [+1] logging, haptic pulse, 7-day dot heatmap, Ambient Mode (AOD burn-in protection), and offline Data Layer sync.
-- **Home Dashboard & Cyberpunk/Glassmorphism UI**:
-  - Quick logging for Push-up / Pull-up / Dip with high dopamine neon animations
-  - Adaptive GTG Coach card with real-time recovery and retention suggestions
-  - Daily totals, active-day rhythm summary, and recent logs preview
-- **Calendar & Consistency Tracking**:
-  - Monthly activity heatmap & streak visualization
-  - Selected-day timeline/details
-- **Settings & Preferences**:
-  - Theme mode selector: System / Light / Dark (High-contrast Cyberpunk / Neon Glass)
-  - Customizable interval reminders with quiet hours and weekend skip
-  - All logs inspection & CSV export
-- **Serverless In-App Update Manifest**:
-  - Zero-cost, 24/7 hosted update detection via GitHub Pages (`docs/version.json`)
-- **Localization**:
-  - Full Korean (`ko`) and Global English (`en`) fallback support
+### 1. Flutter Mobile App (`lib/`)
+- **Zero-Friction Logging**: Android Home Screen 1-Tap Widget & Wear OS Sub-app.
+- **Home Dashboard & UI**: Quick logging with high dopamine neon animations & adaptive GTG Coach card.
+- **Calendar & Consistency Tracking**: Monthly activity heatmap & streak visualization.
+- **Settings & Preferences**: Theme mode selector (Cyberpunk/Neon Glass), customizable interval reminders.
+- **Localization**: Full Korean (`ko`) and Global English (`en`) fallback support.
 
-## Navigation Structure
+### 2. Node.js Update Backend (`server/gtg-update-server/`)
+- **Real-time Force Update API**: Endpoint `/api/v1/check-update` to control critical force updates and maintenance mode.
+- **Enterprise-grade Setup**: 
+  - Express + TypeScript architecture.
+  - Deployed 24/7 on a local Linux server using **PM2**.
+  - Securely exposed to the internet via **Cloudflare Zero Trust Tunnel** (Anycast HTTPS).
+- **CI/CD Integration**: Fully integrated with GitHub Actions (`server-ci.yml`) for automated build and Type Checking.
 
-- `/home`
-- `/calendar`
-- `/settings`
-  - `/settings/reminders`
-  - `/settings/logs`
-
-Router lives in `/lib/app/router.dart` and uses `go_router` with `StatefulShellRoute`.
-
-## Tech Stack
-
-- **Framework**: Flutter (Dart 3.x)
-- **Wear OS**: Flutter Wear OS Sub-app (`wear_app/`), `watch_connectivity`, `wearable_rotary`, `wear`
-- **State Management**: `flutter_riverpod`
-- **Navigation**: `go_router`
-- **Persistence**: `isar_community` (High-performance local NoSQL)
-- **Notifications & Widgets**: `flutter_local_notifications`, Android AppWidget Provider
-- **Monetization**: `google_mobile_ads`
-- **Localization**: Flutter ARB (`app_en.arb`, `app_ko.arb`)
-- **CI/CD & Update Hosting**: GitHub Actions + GitHub Pages (`pages.yml`, `docs/version.json`)
-
-## Project Layout
+## 📂 Project Layout
 
 ```text
 lib/
@@ -69,137 +50,64 @@ lib/
   features/     # onboarding, workout, calendar, reminders, settings
   l10n/         # ARB + generated localization files
 
+server/
+  gtg-update-server/  # Express + TS Backend Server 🚀
+    src/
+    data/       # versions.json (Control file)
+
+wear_app/        # Wear OS Flutter Sub-app
 test/            # unit/widget/layout tests
 integration_test/# flow-level integration tests
-tool/            # gate/release/security helper scripts
+.github/workflows/ # GitHub Actions CI/CD pipelines
 ```
 
-## Theme System (GTG Light/Dark)
+## 🛠️ Tech Stack
 
-- Theme definitions: `/lib/core/gtg_theme.dart`
-- Color tokens: `/lib/core/gtg_colors.dart`
-- Gradients: `/lib/core/gtg_gradients.dart`
-- App wiring: `/lib/app/gtg_app.dart`
-- Settings selector: `/lib/features/settings/settings_screen.dart`
-- Persistence controller: `/lib/features/settings/state/theme_preference_controller.dart`
+### Frontend (App)
+- **Framework**: Flutter (Dart 3.x)
+- **State Management**: `flutter_riverpod`
+- **Navigation**: `go_router`
+- **Persistence**: `isar_community` (High-performance local NoSQL)
+- **Localization**: Flutter ARB
 
-Theme choice is persisted and restored on next app launch.
+### Backend (Server)
+- **Runtime**: Node.js 20+
+- **Framework**: Express & TypeScript
+- **Daemon/Process Manager**: PM2
+- **Networking**: Cloudflare Tunnel (cloudflared)
+- **CI/CD**: GitHub Actions
 
-## Localization
-
-Source ARB files:
-- `/lib/l10n/app_en.arb`
-- `/lib/l10n/app_ko.arb`
-
-After editing ARB files:
-
-```bash
-flutter gen-l10n
-```
-
-## Local Quality Gates (Same Intent as CI)
-
-```bash
-dart format --set-exit-if-changed .
-flutter analyze
-flutter test
-flutter test integration_test -d emulator-5554
-```
-
-One-shot gate script:
-
-```bash
-./tool/gate.sh
-```
-
-## Build & Install
-
-### Debug APK
-
-```bash
-flutter build apk --debug
-flutter install -d emulator-5554 --debug \
-  --use-application-binary build/app/outputs/flutter-apk/app-debug.apk
-```
-
-### Android Release AAB
-
-Recommended script:
-
-```bash
-./tool/release_android.sh
-```
-
-Release prerequisites are validated by the script, including:
-- `android/key.properties`
-- keystore file path
-- ad-related env vars (when ads are enabled)
-
-Direct build command (if your release env is already set):
-
-```bash
-flutter build appbundle --release
-```
-
-## Security & Secrets Basics
+## 🔒 Security & Secrets Basics
 
 - Do not commit `.env*`, keystore files, or signing secrets.
 - Keep `android/key.properties` local-only (gitignored).
 - Use `/tool/security/` scripts and CI secret scanning before release.
 
-## Recommended Git Workflow
+## 🔄 Recommended Git Flow Workflow
 
 ```bash
 git switch main
 git pull --ff-only
-git switch -c codex/<task-name>
+git switch -c feature/<task-name>
 
-# make changes
+# make changes (App or Server)
 
+# If App:
 dart format --set-exit-if-changed .
 flutter analyze
 flutter test
 
-# optional integration test
-flutter test integration_test -d emulator-5554
+# If Server:
+cd server/gtg-update-server
+npm run build
 
-git add <files>
-git commit -m "type(scope): summary"
-git push -u origin codex/<task-name>
+git add .
+git commit -m "feat: summary"
+git push -u origin feature/<task-name>
 ```
 
-Then open a PR to `main`.
+Then open a PR to `main`. CI/CD will automatically verify the changes!
 
-## Troubleshooting
-
-### Build cache / dependency issues
-
-```bash
-flutter clean
-flutter pub get
-```
-
-### iOS CocoaPods issues
-
-```bash
-cd ios
-pod install
-cd ..
-```
-
-### Device not detected
-
-```bash
-flutter devices
-```
-
-### Reinstall app on emulator
-
-```bash
-flutter install -d emulator-5554 --debug --uninstall-only
-flutter install -d emulator-5554 --debug
-```
-
-## License
+## 📜 License
 
 Internal/private project (`publish_to: none`).
