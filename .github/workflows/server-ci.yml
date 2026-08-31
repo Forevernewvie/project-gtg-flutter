@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: '20.x'
         cache: 'npm'
-        cache-dependency-path: ./server/gtg-update-server/package-lock.json || ./server/gtg-update-server/package.json
+        cache-dependency-path: server/gtg-update-server/package-lock.json
         
     - name: Install dependencies
       run: npm install
