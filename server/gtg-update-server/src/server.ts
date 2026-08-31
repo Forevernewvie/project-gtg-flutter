@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
@@ -9,7 +9,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 const ADMIN_SECRET = process.env.ADMIN_SECRET || 'super-secret-key';
-const DATA_FILE = path.join(__dirname, '../data/versions.json');
+const DATA_FILE = path.join(import.meta.dirname, '../data/versions.json');
 
 app.get('/api/v1/check-update', (req: Request, res: Response) => {
   try {
