@@ -4,7 +4,8 @@
 
 <br/>
 
-[![Google Play Store](https://img.shields.io/badge/Google_Play-앱_출시_완료-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
+[![Google Play Store](https://img.shields.io/badge/Google_Play-Phone_앱_출시_완료-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
+[![Wear OS](https://img.shields.io/badge/Wear_OS-개발_완료_·_심사_진행_중-blue?style=for-the-badge&logo=wearos&logoColor=white)](#-핵심-기능-및-화면-구성-app-architecture)
 [![Test Suite](https://img.shields.io/badge/Tests-30+_Passed-success?style=for-the-badge&logo=flutter)](test/)
 [![SDK](https://img.shields.io/badge/Flutter_3.x-Dart_3.x-02569B?style=for-the-badge&logo=flutter)](pubspec.yaml)
 [![ADR](https://img.shields.io/badge/ADR-0001_Documented-orange?style=for-the-badge)](docs/adr/0001-tech-choices.md)
@@ -19,11 +20,11 @@
 
 <br/>
 
-- **제품 1인 릴리스**: 기획부터 UI 디자인, Flutter 앱 개발, Google Play Store 상용 배포 및 유지보수 전 과정을 단독 수행 (`com.forevernewvie.projectgtg`).
+- **제품 1인 릴리스**: 기획부터 UI 디자인, Flutter 스마트폰 앱 개발, Google Play Store 상용 배포 및 유지보수 전 과정을 단독 수행 (`com.forevernewvie.projectgtg`).
 
 - **아키텍처 점진적 진화 (ADR 0001)**: 초경량 JSON 저장소(MVP)에서 고성능 Isar NoSQL로의 점진적 스토리지 전환 및 기존 유저 데이터 무손실 마이그레이션 달성.
 
-- **멀티 채널 인터페이스**: 스마트폰 앱 진입 단계를 줄이기 위한 **Android 1-Tap 홈 화면 위젯** 및 **Wear OS 독립 서브앱** 구축.
+- **멀티 채널 인터페이스**: 스마트폰 앱 진입 단계를 줄이기 위한 **Android 1-Tap 홈 화면 위젯**(출시 반영) 및 **Wear OS 독립 서브앱**(개발 완료 후 Play Store 심사 진행 중) 구축.
 
 - **하이브리드 클라우드 설계 (Supabase)**: 로컬 우선(Offline-First) 무결성 보장 + Supabase BaaS 기반 다중 디바이스 백업/동기화 아키텍처 설계.
 
@@ -43,15 +44,15 @@
 
 <br/>
 
-| 화면 / 채널 | 라우트 경로 | 주요 기능 및 엔지니어링 포인트 |
-| :--- | :--- | :--- |
-| **대시보드 (Home)** | `/home` | • 3대 운동(푸쉬업, 풀업, 딥스) 1세트 빠른 기록<br/>• 오늘/주간/월간 종목별 누적 통계 실시간 집계 |
-| **캘린더 (Calendar)** | `/calendar` | • 월간 활동 히트맵 잔디 시각화 컴포넌트<br/>• 선택 날짜별 상세 운동 타임라인 조회 |
-| **적응형 코치 (Coach)** | `/settings/coach` | • 사용자 누적 기록 기반 권장 횟수/세트수 산출 (`gtg_insight_engine`) |
-| **스마트 리마인더** | `/settings/reminders` | • 수면 시간(조용한 시간대), 주말 제외, 하루 최대 알림 상한 계산 (`ReminderOptimizationPolicy`) |
-| **전체 기록 (All Logs)** | `/settings/logs` | • 날짜별 그룹화된 전체 히스토리 가상 스크롤 렌더링 |
-| **홈 화면 위젯** | `Android Widget` | • `home_widget` 연동을 통해 앱 실행 없이 홈 화면에서 즉시 1-Tap 횟수 누적 |
-| **Wear OS 시계 앱** | `wear_app/` | • 스마트폰 없이 손목에서 바로 기록하는 독립형 서브앱 및 양방향 채널 동기화 |
+| 화면 / 채널 | 라우트 경로 / 위치 | 상태 | 주요 기능 및 엔지니어링 포인트 |
+| :--- | :--- | :---: | :--- |
+| **대시보드 (Home)** | `/home` | `출시` | • 3대 운동(푸쉬업, 풀업, 딥스) 1세트 빠른 기록<br/>• 오늘/주간/월간 종목별 누적 통계 실시간 집계 |
+| **캘린더 (Calendar)** | `/calendar` | `출시` | • 월간 활동 히트맵 잔디 시각화 컴포넌트<br/>• 선택 날짜별 상세 운동 타임라인 조회 |
+| **적응형 코치 (Coach)** | `/settings/coach` | `출시` | • 사용자 누적 기록 기반 권장 횟수/세트수 산출 (`gtg_insight_engine`) |
+| **스마트 리마인더** | `/settings/reminders` | `출시` | • 수면 시간(조용한 시간대), 주말 제외, 하루 최대 알림 상한 계산 (`ReminderOptimizationPolicy`) |
+| **전체 기록 (All Logs)** | `/settings/logs` | `출시` | • 날짜별 그룹화된 전체 히스토리 가상 스크롤 렌더링 |
+| **홈 화면 위젯** | `Android Widget` | `출시` | • `home_widget` 연동을 통해 앱 실행 없이 홈 화면에서 즉시 1-Tap 횟수 누적 |
+| **Wear OS 시계 앱** | `wear_app/` | `심사 중` | • 스마트폰 없이 손목에서 바로 기록하는 독립형 서브앱 및 양방향 채널 동기화<br/>• 원형 디스플레이 최적화 UI 및 저전력 백그라운드 설계 (Play Console 워치 트랙 심사 중) |
 
 <br/>
 
@@ -101,7 +102,7 @@ flowchart LR
 
 - **해결책**:
   - `home_widget`을 도입해 폰 잠금화면/홈 화면에서 한 번의 탭으로 횟수를 누적하는 1-Tap 위젯 개발.
-  - 철봉이나 러닝 중 스마트폰 휴대가 불편한 상황을 위해 독립형 Wear OS 앱(`wear_app`) 개발 및 폰-워치 간 실시간 데이터 동기화 채널 구축.
+  - 철봉이나 러닝 중 스마트폰 휴대가 불편한 상황을 위해 독립형 Wear OS 앱(`wear_app`) 개발 및 폰-워치 간 실시간 데이터 동기화 채널 구축 완료 (현재 Google Play Console 워치 단독 폼팩터 트랙 심사 진행 중).
 
 <br/>
 
@@ -205,7 +206,7 @@ lib/
 │   └── settings/         # 다크 테마, 기본 운동 선택, 환경 설정
 └── l10n/                 # Flutter 공식 ARB 기반 다국어 리소스 (한국어/영어)
 
-wear_app/                 # 독립형 Wear OS Flutter 서브 프로젝트
+wear_app/                 # 독립형 Wear OS Flutter 서브 프로젝트 (스토어 심사 중)
 ├── lib/core/             # Wear OS 전용 원형 화면 테마 및 플랫폼 어댑터
 └── lib/features/         # 워치 전용 1-Tap 기록 버튼 및 리듬 히트맵 화면
 
