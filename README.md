@@ -8,14 +8,6 @@
 
 ---
 
-## 📱 실제 구동 화면
-
-| 메인 퀵 로깅 | 월간 활동 히트맵 | 지능형 리마인더 설정 | 전체 기록 타임라인 |
-| :---: | :---: | :---: | :---: |
-| <img src="docs/screenshots/android_home.png" alt="메인 퀵 로깅" width="200" /> | <img src="docs/screenshots/android_calendar.png" alt="월간 활동 히트맵" width="200" /> | <img src="docs/screenshots/android_reminders.png" alt="지능형 리마인더 설정" width="200" /> | <img src="docs/screenshots/android_all_logs.png" alt="전체 기록 타임라인" width="200" /> |
-
----
-
 ## 👨‍💻 엔지니어링 요약 (Key Achievements)
 
 - **제품 1인 릴리스**: 기획부터 UI 디자인, Flutter 앱 개발, Google Play Store 상용 배포 및 유지보수 전 과정을 단독 수행 (`com.forevernewvie.projectgtg`).
@@ -23,6 +15,22 @@
 - **멀티 채널 인터페이스**: 스마트폰 앱 진입 단계를 줄이기 위한 **Android 1-Tap 홈 화면 위젯** 및 **Wear OS 독립 서브앱** 구축.
 - **하이브리드 동기화 설계**: 로컬 우선(Offline-First) 보장 + PocketBase 기반 선택적 클라우드 백업/동기화 아키텍처 구축.
 - **방어적 품질 보증**: 30개 이상의 단위·위젯·영속성 테스트를 구축하여 엣지 케이스 및 안드로이드 해상도 파편화 사전 차단.
+
+---
+
+## 📱 핵심 기능 및 화면 구성 (App Architecture)
+
+앱은 라우터(`lib/app/router.dart`)를 중심으로 5개의 핵심 도메인 화면과 2개의 외부 입력 채널로 구성되어 있습니다.
+
+| 화면 / 채널 | 라우트 경로 | 주요 기능 및 엔지니어링 포인트 |
+| :--- | :--- | :--- |
+| **대시보드 (Home)** | `/home` | • 3대 운동(푸쉬업, 풀업, 딥스) 1세트 빠른 기록<br/>• 오늘/주간/월간 종목별 누적 통계 실시간 집계 |
+| **캘린더 (Calendar)** | `/calendar` | • 월간 활동 히트맵 잔디 시각화 컴포넌트<br/>• 선택 날짜별 상세 운동 타임라인 조회 |
+| **적응형 코치 (Coach)** | `/settings/coach` | • 사용자 누적 기록 기반 권장 횟수/세트수 산출 (`gtg_insight_engine`) |
+| **스마트 리마인더** | `/settings/reminders` | • 수면 시간(조용한 시간대), 주말 제외, 하루 최대 알림 상한 계산 (`ReminderOptimizationPolicy`) |
+| **전체 기록 (All Logs)** | `/settings/logs` | • 날짜별 그룹화된 전체 히스토리 가상 스크롤 렌더링 |
+| **홈 화면 위젯** | `Android Widget` | • `home_widget` 연동을 통해 앱 실행 없이 홈 화면에서 즉시 1-Tap 횟수 누적 |
+| **Wear OS 시계 앱** | `wear_app/` | • 스마트폰 없이 손목에서 바로 기록하는 독립형 서브앱 및 양방향 채널 동기화 |
 
 ---
 
@@ -92,7 +100,7 @@ flutter test
 | :--- | :--- | :--- |
 | **영속성 & 데이터 복구** | `test/isar_migration_persistence_test.dart`<br/>`test/app_startup_failure_fallback_test.dart` | • JSON ➡️ Isar 1회 무손실 데이터 이관<br/>• DB 크래시 시 JSON Fallback 자동 전환 |
 | **코칭 & 알림 도메인** | `test/adaptive_gtg_coach_test.dart`<br/>`test/reminder_optimization_policy_test.dart` | • 유저 운동 빈도 기반 적응형 코칭 산출<br/>• 수면 시간대 배제 및 알림 상한 간격 계산 |
-| **UI 및 인터랙션** | `test/dashboard_quick_log_widget_test.dart`<br/>`test/calendar_heatmap_widget_test.dart` | • 1탭 기록 시 상태 반응성 및 오늘 합계 갱신<br/>• 월간 히트맵 날짜별 렌더링 검증 |
+| **위젯 및 인터랙션** | `test/dashboard_quick_log_widget_test.dart`<br/>`test/calendar_heatmap_widget_test.dart` | • 1탭 기록 시 상태 반응성 및 오늘 합계 갱신<br/>• 월간 히트맵 날짜별 렌더링 검증 |
 | **기기 호환성** | `test/android_layout_compat_widget_test.dart`<br/>`test/android_edge_to_edge_widget_test.dart` | • 기기별 DPI/화면비 레이아웃 오버플로우 방지<br/>• 시스템 제스처 네비게이션 겹침 방지 |
 
 ---
@@ -107,10 +115,10 @@ lib/
 │   ├── isar/          # Isar 컬렉션 스키마 및 마이그레이션 로직
 │   └── persistence/   # 이중 영속성 계층 (Isar + JSON Fallback)
 ├── features/
-│   ├── workout/       # 메인 운동 기록 및 집계
-│   ├── coaching/      # 적응형 코칭 인사이트 엔진
-│   ├── calendar/      # 월간 히트맵 및 일자별 상세 내역
-│   ├── reminders/     # 알림 정책 및 스케줄러
+│   ├── workout/       # 메인 운동 기록 및 집계 (Dashboard)
+│   ├── coaching/      # 적응형 코칭 인사이트 엔진 (GtgCoach)
+│   ├── calendar/      # 월간 히트맵 및 일자별 상세 내역 (Calendar)
+│   ├── reminders/     # 알림 정책 및 스케줄러 (Reminders)
 │   ├── widget_sync/   # Android 홈 화면 위젯 연동
 │   ├── watch_sync/    # Wear OS 시계 동기화 채널
 │   └── settings/      # 테마 및 환경 설정
