@@ -1,113 +1,141 @@
-# PROJECT GTG (Flutter + Backend)
+# PROJECT GTG (Grease The Groove)
+> **개인 개발 모바일 트래커 | 기획, 개발, Play Store 출시, 아키텍처 개선 전 과정 1인 완주**
 
-[![Google Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
-[![Server CI/CD](https://github.com/Forevernewvie/project-gtg-flutter/actions/workflows/server-ci.yml/badge.svg)](https://github.com/Forevernewvie/project-gtg-flutter/actions/workflows/server-ci.yml)
+[![Google Play Store](https://img.shields.io/badge/Google_Play-앱_출시_완료-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg&hl=kr)
+[![Test Suite](https://img.shields.io/badge/Tests-30+_Passed-success?style=for-the-badge&logo=flutter)](test/)
+[![SDK](https://img.shields.io/badge/Flutter_3.x-Dart_3.x-02569B?style=for-the-badge&logo=flutter)](pubspec.yaml)
+[![ADR](https://img.shields.io/badge/ADR-0001_Documented-orange?style=for-the-badge)](docs/adr/0001-tech-choices.md)
 
-A local-first GTG (Grease The Groove) workout app focused on frequent, low-fatigue training.
-The app currently targets Push-up, Pull-up, and Dip logging with calendar visibility, reminders, and theme/localization support.
+---
 
-Now upgraded with a **Node.js Express Backend Server** for real-time forced updates and maintenance management!
+## 📱 실제 구동 화면
 
-## 🚀 TL;DR (Run in 3 Steps)
+| 메인 퀵 로깅 | 월간 활동 히트맵 | 지능형 리마인더 설정 | 전체 기록 타임라인 |
+| :---: | :---: | :---: | :---: |
+| <img src="docs/screenshots/android_home.png" alt="메인 퀵 로깅" width="200" /> | <img src="docs/screenshots/android_calendar.png" alt="월간 활동 히트맵" width="200" /> | <img src="docs/screenshots/android_reminders.png" alt="지능형 리마인더 설정" width="200" /> | <img src="docs/screenshots/android_all_logs.png" alt="전체 기록 타임라인" width="200" /> |
 
-### App (Flutter)
-```bash
-flutter pub get
-flutter run -d emulator-5554 --debug
+---
+
+## 👨‍💻 엔지니어링 요약 (Key Achievements)
+
+- **제품 1인 릴리스**: 기획부터 UI 디자인, Flutter 앱 개발, Google Play Store 상용 배포 및 유지보수 전 과정을 단독 수행 (`com.forevernewvie.projectgtg`).
+- **아키텍처 진화 (ADR 0001)**: 초경량 JSON 저장소(MVP)에서 고성능 Isar NoSQL로의 점진적 스토리지 전환 및 기존 유저 데이터 무손실 마이그레이션 달성.
+- **멀티 채널 인터페이스**: 스마트폰 앱 진입 단계를 줄이기 위한 **Android 1-Tap 홈 화면 위젯** 및 **Wear OS 독립 서브앱** 구축.
+- **하이브리드 동기화 설계**: 로컬 우선(Offline-First) 보장 + PocketBase 기반 선택적 클라우드 백업/동기화 아키텍처 구축.
+- **방어적 품질 보증**: 30개 이상의 단위·위젯·영속성 테스트를 구축하여 엣지 케이스 및 안드로이드 해상도 파편화 사전 차단.
+
+---
+
+## 📈 아키텍처 진화 과정 (How Architecture Evolved)
+
+이 프로젝트는 초기부터 거대한 프레임워크를 도입하지 않고, **요구사항의 변화에 따라 구조를 점진적으로 발전**시켰습니다.
+
+```mermaid
+flowchart LR
+    Step1["Phase 1: 빠른 MVP 출시<br/>(Flutter + JSON Store)"] 
+    -->|데이터 증가 & 집계 부하| Step2["Phase 2: 고성능 로컬 NoSQL<br/>(Isar + 무손실 마이그레이션)"]
+    -->|기록 접근성 향상| Step3["Phase 3: 입력 채널 확장<br/>(Android Widget + Wear OS)"]
+    -->|다중 기기 동기화 요구| Step4["Phase 4: 하이브리드 클라우드<br/>(PocketBase Cloud Sync)"]
 ```
 
-### Server (Node.js)
+### 1. Phase 1: 빠른 검증을 위한 로컬 MVP ([ADR 0001](docs/adr/0001-tech-choices.md))
+- **의사결정**: 1인 개발 환경에서 버그 표면적을 최소화하고 스토어 출시 속도를 높이기 위해 복잡한 DB 대신 `path_provider` 기반 JSON 파일 저장소로 릴리스.
+- **효과**: 릴리스 초기 오버엔지니어링 없이 제품 가설을 빠르게 검증.
+
+### 2. Phase 2: 데이터 누적에 따른 Isar NoSQL 도입 및 마이그레이션
+- **문제점**: 수개월간 누적된 운동 로그로 인해 월간 히트맵 렌더링 시 전체 JSON 역직렬화 병목 발생.
+- **해결책**:
+  - 빠른 인덱스 검색과 Dart 객체 직렬화를 지원하는 `Isar Community NoSQL`로 스토리지 전면 교체.
+  - **무손실 마이그레이션 설계**: 마이그레이션 마커를 두어 기존 사용자의 JSON 데이터를 Isar로 1회 안전하게 이관하고, 만약 Isar 엔진 초기화 오류 시 자동으로 JSON 모드로 복구되는 Fallback 계층 구축 (`app_startup_failure_fallback_test.dart`).
+
+### 3. Phase 3: 접근성 확장을 위한 위젯 & 스마트워치 서브앱
+- **문제점**: 하루 5~10회씩 자주 기록해야 하는 GTG 운동 특성상, 매번 스마트폰을 켜고 앱을 찾는 행위 자체가 기록 누락의 원인이 됨.
+- **해결책**:
+  - `home_widget`을 도입해 폰 잠금화면/홈 화면에서 한 번의 탭으로 횟수를 누적하는 1-Tap 위젯 개발.
+  - 철봉이나 러닝 중 스마트폰 휴대가 불편한 상황을 위해 독립형 Wear OS 앱(`wear_app`) 개발 및 폰-워치 간 실시간 데이터 동기화 채널 구축.
+
+### 4. Phase 4: 선택적 클라우드 동기화 (PocketBase Cloud Sync)
+- **설계**: 기기 교체나 분실 시 데이터 백업을 원하는 사용자를 위해, 오프라인 로컬 우선 원칙을 훼손하지 않는 선에서 `PocketBase` 연동 스키마 설계 ([상세 명세서](docs/pocketbase_cloud_sync_schema.md)).
+
+---
+
+## 🛠️ 핵심 트러블슈팅 및 기술적 고민 (Deep Dive)
+
+### 1. DB 손상 및 스키마 변경 시 데이터 유실 방어
+- **문제**: 로컬 DB는 디스크 용량 부족이나 스키마 충돌 시 네이티브 바이너리 단에서 크래시가 발생할 수 있음.
+- **해결**:
+  - `GtgPersistence` 추상 인터페이스를 두고, `Isar` 실행 실패 시 즉시 `JsonFileStore`로 전환하여 앱이 강제 종료되지 않고 실행을 유지하도록 방어 로직 구현.
+  - 파일 파싱에 실패할 경우 손상된 파일을 즉시 `.corrupted-[timestamp]`로 격리(Quarantine)하여 무한 부팅 에러를 차단하고 기본 상태로 안전하게 복구.
+
+### 2. 안드로이드 최신 제스처 바(Edge-to-Edge) 및 해상도 파편화 대응
+- **문제**: 안드로이드 14+ 기기에서 하단 제스처 바가 앱의 핵심 기록 버튼을 가리거나, 화면비에 따라 레이아웃 오버플로우 발생.
+- **해결**:
+  - 다양한 가상 화면 크기 및 safe area를 시뮬레이션하는 `android_layout_compat_widget_test.dart`와 `android_edge_to_edge_widget_test.dart` 위젯 테스트 스위트를 작성해 배포 전 렌더링 회귀를 자동 방어.
+
+### 3. 알림 피로도 방지를 위한 도메인 정책 분리
+- **문제**: 기계적인 정시 알림은 사용자의 집중을 방해하여 알림 차단을 유발함.
+- **해결**:
+  - 단순 타이머가 아닌 수면 시간대(Quiet hours), 주말 제외, 하루 최대 알림 상한(`maxPerDay`)을 종합 계산하는 `ReminderOptimizationPolicy` 도메인 엔진을 순수 Dart 클래스로 분리 설계하고 단위 테스트로 완벽 검증.
+
+---
+
+## 🧪 테스트 및 품질 보증
+
+견고한 앱 안정성을 입증하기 위해 총 **30개 이상의 자동화 테스트**를 작성해 운영 중입니다.
+
 ```bash
-cd server/gtg-update-server
-npm install
-npm run dev
+# 전체 테스트 실행
+flutter test
 ```
 
-## 🌟 What This Project Includes (v1.3.0 State)
+| 테스트 영역 | 파일 위치 | 핵심 검증 내용 |
+| :--- | :--- | :--- |
+| **영속성 & 데이터 복구** | `test/isar_migration_persistence_test.dart`<br/>`test/app_startup_failure_fallback_test.dart` | • JSON ➡️ Isar 1회 무손실 데이터 이관<br/>• DB 크래시 시 JSON Fallback 자동 전환 |
+| **코칭 & 알림 도메인** | `test/adaptive_gtg_coach_test.dart`<br/>`test/reminder_optimization_policy_test.dart` | • 유저 운동 빈도 기반 적응형 코칭 산출<br/>• 수면 시간대 배제 및 알림 상한 간격 계산 |
+| **UI 및 인터랙션** | `test/dashboard_quick_log_widget_test.dart`<br/>`test/calendar_heatmap_widget_test.dart` | • 1탭 기록 시 상태 반응성 및 오늘 합계 갱신<br/>• 월간 히트맵 날짜별 렌더링 검증 |
+| **기기 호환성** | `test/android_layout_compat_widget_test.dart`<br/>`test/android_edge_to_edge_widget_test.dart` | • 기기별 DPI/화면비 레이아웃 오버플로우 방지<br/>• 시스템 제스처 네비게이션 겹침 방지 |
 
-### 1. Flutter Mobile App (`lib/`)
-- **Zero-Friction Logging**: Android Home Screen 1-Tap Widget & Wear OS Sub-app.
-- **Home Dashboard & UI**: Quick logging with high dopamine neon animations & adaptive GTG Coach card.
-- **Calendar & Consistency Tracking**: Monthly activity heatmap & streak visualization.
-- **Settings & Preferences**: Theme mode selector (Cyberpunk/Neon Glass), customizable interval reminders.
-- **Localization**: Full Korean (`ko`) and Global English (`en`) fallback support.
+---
 
-### 2. Node.js Update Backend (`server/gtg-update-server/`)
-- **Real-time Force Update API**: Endpoint `/api/v1/check-update` to control critical force updates and maintenance mode.
-- **Enterprise-grade Setup**: 
-  - Express + TypeScript architecture.
-  - Deployed 24/7 on a local Linux server using **PM2**.
-  - Securely exposed to the internet via **Cloudflare Zero Trust Tunnel** (Anycast HTTPS).
-- **CI/CD Integration**: Fully integrated with GitHub Actions (`server-ci.yml`) for automated build and Type Checking.
-
-## 📂 Project Layout
+## 📂 프로젝트 구조
 
 ```text
 lib/
-  app/          # app root, router, shell, overlays
-  core/         # theme, models, env, shared utils
-  data/         # persistence layer (Isar + JSON)
-  features/     # onboarding, workout, calendar, reminders, settings
-  l10n/         # ARB + generated localization files
+├── app/               # 앱 진입점, 라우팅(GoRouter), 전역 설정
+├── core/              # 공통 모델, 환경 변수, 유틸리티
+├── data/
+│   ├── isar/          # Isar 컬렉션 스키마 및 마이그레이션 로직
+│   └── persistence/   # 이중 영속성 계층 (Isar + JSON Fallback)
+├── features/
+│   ├── workout/       # 메인 운동 기록 및 집계
+│   ├── coaching/      # 적응형 코칭 인사이트 엔진
+│   ├── calendar/      # 월간 히트맵 및 일자별 상세 내역
+│   ├── reminders/     # 알림 정책 및 스케줄러
+│   ├── widget_sync/   # Android 홈 화면 위젯 연동
+│   ├── watch_sync/    # Wear OS 시계 동기화 채널
+│   └── settings/      # 테마 및 환경 설정
+└── l10n/              # ARB 기반 공식 다국어 지원 (ko/en)
 
-server/
-  gtg-update-server/  # Express + TS Backend Server 🚀
-    src/
-    data/       # versions.json (Control file)
-
-wear_app/        # Wear OS Flutter Sub-app
-test/            # unit/widget/layout tests
-integration_test/# flow-level integration tests
-.github/workflows/ # GitHub Actions CI/CD pipelines
+wear_app/              # 독립형 Wear OS Flutter 서브 프로젝트
+docs/                  # ADR 의사결정서, PocketBase 스키마, 기획 문서
+test/                  # 30여 개 테스트 스위트
 ```
 
-## 🛠️ Tech Stack
+---
 
-### Frontend (App)
-- **Framework**: Flutter (Dart 3.x)
-- **State Management**: `flutter_riverpod`
-- **Navigation**: `go_router`
-- **Persistence**: `isar_community` (High-performance local NoSQL)
-- **Localization**: Flutter ARB
-
-### Backend (Server)
-- **Runtime**: Node.js 20+
-- **Framework**: Express & TypeScript
-- **Daemon/Process Manager**: PM2
-- **Networking**: Cloudflare Tunnel (cloudflared)
-- **CI/CD**: GitHub Actions
-
-## 🔒 Security & Secrets Basics
-
-- Do not commit `.env*`, keystore files, or signing secrets.
-- Keep `android/key.properties` local-only (gitignored).
-- Use `/tool/security/` scripts and CI secret scanning before release.
-
-## 🔄 Recommended Git Flow Workflow
+## 🚀 빠른 시작 (Local Setup)
 
 ```bash
-git switch main
-git pull --ff-only
-git switch -c feature/<task-name>
+# 의존성 설치
+flutter pub get
 
-# make changes (App or Server)
+# Isar DB 및 다국어 코드 생성
+dart run build_runner build --delete-conflicting-outputs
 
-# If App:
-dart format --set-exit-if-changed .
+# 정적 분석 및 테스트 실행
 flutter analyze
 flutter test
 
-# If Server:
-cd server/gtg-update-server
-npm run build
-
-git add .
-git commit -m "feat: summary"
-git push -u origin feature/<task-name>
+# 앱 실행
+flutter run
 ```
-
-Then open a PR to `main`. CI/CD will automatically verify the changes!
-
-## 📜 License
-
-Internal/private project (`publish_to: none`).
