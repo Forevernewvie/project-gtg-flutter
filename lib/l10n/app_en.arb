@@ -138,7 +138,7 @@
   "endLabel": "End",
   "weekendsOffTitle": "Weekends off",
   "weekendsOffSubtitle": "No schedules on Sat/Sun",
-  "silentNotificationsInfo": "Notifications are silent.",
+  "silentNotificationsInfo": "Notifications reliably alert you with vibrations and banners.",
   "permissionDenied": "Notification permission is required. Enable it in Settings.",
   "openSettings": "Settings",
   "pickTimeHelp": "Select {label} time",

@@ -255,7 +255,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weekendsOffSubtitle => '주말에는 알림을 보내지 않아요.';
 
   @override
-  String get silentNotificationsInfo => '알림은 소리 없이 조용하게 울려요.';
+  String get silentNotificationsInfo => '루틴에 맞춰 진동과 알림으로 확실하게 알려드려요.';
 
   @override
   String get permissionDenied => '알림 권한이 필요해요. 기기 설정에서 허용해 주세요.';

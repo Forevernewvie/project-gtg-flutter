@@ -89,4 +89,90 @@ void main() {
 
     expect(times.first, DateTime(2026, 2, 17, 23, 0));
   });
+
+  group('planSchedule multi-day scheduling', () {
+    test(
+      'plans across multiple days to ensure notifications continue without daily app opens',
+      () {
+        const planner = ReminderPlanner();
+        const settings = ReminderSettings(
+          enabled: true,
+          intervalMinutes: 60,
+          quietStartMinutes: 22 * 60,
+          quietEndMinutes: 8 * 60,
+          skipWeekends: false,
+          maxPerDay: 4,
+        );
+
+        // Wednesday 2026-02-18 at 18:00
+        final now = DateTime(2026, 2, 18, 18, 0);
+        final times = planner.planSchedule(
+          now: now,
+          settings: settings,
+          maxDays: 3,
+          maxTotalCount: 64,
+        );
+
+        // Day 1 (Wednesday): 19:00, 20:00, 21:00 (3 items, 22:00 is quiet)
+        // Day 2 (Thursday): 08:00, 09:00, 10:00, 11:00 (4 items)
+        // Day 3 (Friday): 08:00, 09:00, 10:00, 11:00 (4 items)
+        expect(times.length, 11);
+        expect(times.first, DateTime(2026, 2, 18, 19, 0));
+        expect(times[3], DateTime(2026, 2, 19, 8, 0));
+        expect(times[7], DateTime(2026, 2, 20, 8, 0));
+      },
+    );
+
+    test('respects maxTotalCount cap (64 items) across many days', () {
+      const planner = ReminderPlanner();
+      const settings = ReminderSettings(
+        enabled: true,
+        intervalMinutes: 15,
+        quietStartMinutes: 0,
+        quietEndMinutes: 0,
+        skipWeekends: false,
+        maxPerDay: 64,
+      );
+
+      final now = DateTime(2026, 2, 16, 8, 0);
+      final times = planner.planSchedule(
+        now: now,
+        settings: settings,
+        maxDays: 7,
+        maxTotalCount: 64,
+      );
+
+      expect(times.length, 64);
+    });
+
+    test('skips weekends across multi-day span', () {
+      const planner = ReminderPlanner();
+      const settings = ReminderSettings(
+        enabled: true,
+        intervalMinutes: 60,
+        quietStartMinutes: 20 * 60,
+        quietEndMinutes: 8 * 60,
+        skipWeekends: true,
+        maxPerDay: 2,
+      );
+
+      // Friday 2026-02-20 at 17:00
+      final now = DateTime(2026, 2, 20, 17, 0);
+      final times = planner.planSchedule(
+        now: now,
+        settings: settings,
+        maxDays: 4, // Fri, Sat, Sun, Mon
+        maxTotalCount: 64,
+      );
+
+      // Friday has 2 slots: 18:00, 19:00
+      // Sat & Sun: skipped!
+      // Monday has 2 slots: 08:00, 09:00
+      expect(times.length, 4);
+      expect(times[0].weekday, DateTime.friday);
+      expect(times[1].weekday, DateTime.friday);
+      expect(times[2].weekday, DateTime.monday);
+      expect(times[3].weekday, DateTime.monday);
+    });
+  });
 }

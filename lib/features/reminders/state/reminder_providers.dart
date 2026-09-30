@@ -14,7 +14,7 @@ final plannedReminderTimesProvider = Provider<List<DateTime>>((ref) {
 
   final planner = ref.watch(reminderPlannerProvider);
   final now = ref.watch(clockProvider).now();
-  return planner.planForToday(now: now, settings: settings);
+  return planner.planSchedule(now: now, settings: settings);
 });
 
 final reminderOptimizationPolicyProvider = Provider<ReminderOptimizationPolicy>(

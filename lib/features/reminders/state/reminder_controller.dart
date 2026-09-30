@@ -104,7 +104,7 @@ class ReminderController extends AsyncNotifier<ReminderSettings> {
     try {
       final planner = ref.read(reminderPlannerProvider);
       final now = ref.read(clockProvider).now();
-      final times = planner.planForToday(now: now, settings: settings);
+      final times = planner.planSchedule(now: now, settings: settings);
 
       final message = await ref.read(reminderMessageProvider).load();
 

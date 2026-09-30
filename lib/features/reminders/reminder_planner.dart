@@ -3,6 +3,49 @@ import '../../core/models/reminder_settings.dart';
 class ReminderPlanner {
   const ReminderPlanner();
 
+  /// Plans notification times across multiple days (up to [maxDays] or [maxTotalCount]).
+  ///
+  /// Guarantees that reminders continue firing daily even if the user
+  /// does not open the app every day, capped to safe OS limits (64 items).
+  List<DateTime> planSchedule({
+    required DateTime now,
+    required ReminderSettings settings,
+    int maxDays = 7,
+    int maxTotalCount = 64,
+  }) {
+    if (!settings.enabled) return const <DateTime>[];
+
+    final interval = settings.intervalMinutes.clamp(1, 24 * 60);
+    final maxPerDay = settings.maxPerDay.clamp(1, 64);
+    final totalLimit = maxTotalCount.clamp(1, 64);
+
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    final nowMinutes = now.hour * 60 + now.minute;
+
+    final allPlanned = <DateTime>[];
+
+    for (var dayOffset = 0; dayOffset < maxDays; dayOffset++) {
+      if (allPlanned.length >= totalLimit) break;
+
+      final dayStart = startOfToday.add(Duration(days: dayOffset));
+      final startMinutes = dayOffset == 0 ? nowMinutes : -1;
+      final remainingSlots = totalLimit - allPlanned.length;
+      final dayMax = remainingSlots < maxPerDay ? remainingSlots : maxPerDay;
+
+      final dayPlanned = _planForDay(
+        dayStart: dayStart,
+        startMinutesExclusive: startMinutes,
+        intervalMinutes: interval,
+        maxCount: dayMax,
+        settings: settings,
+      );
+
+      allPlanned.addAll(dayPlanned);
+    }
+
+    return List<DateTime>.unmodifiable(allPlanned);
+  }
+
   /// Plans notification times starting from "now".
   ///
   /// Rules:

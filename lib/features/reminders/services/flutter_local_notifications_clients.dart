@@ -18,9 +18,9 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
     await _initializer.run(() async {
       const android = AndroidInitializationSettings('@mipmap/ic_launcher');
       const ios = DarwinInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
       );
       await _plugin.initialize(
         settings: const InitializationSettings(android: android, iOS: ios),
@@ -57,7 +57,7 @@ class IosReminderPermissionClient implements ReminderPermissionClient {
     return await ios?.requestPermissions(
           alert: true,
           badge: true,
-          sound: false,
+          sound: true,
         ) ??
         false;
   }
@@ -131,12 +131,27 @@ class FlutterReminderNotificationClient implements ReminderNotificationClient {
 
       const android = AndroidInitializationSettings('@mipmap/ic_launcher');
       const ios = DarwinInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
       );
       await _plugin.initialize(
         settings: const InitializationSettings(android: android, iOS: ios),
+      );
+
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'gtg_reminders',
+          'GTG Reminders',
+          description: 'PROJECT GTG routine reminders',
+          importance: Importance.high,
+          enableVibration: true,
+          playSound: true,
+        ),
       );
     });
   }
@@ -177,12 +192,16 @@ class FlutterReminderNotificationClient implements ReminderNotificationClient {
             'gtg_reminders',
             'GTG Reminders',
             channelDescription: 'PROJECT GTG routine reminders',
-            importance: Importance.defaultImportance,
-            priority: Priority.defaultPriority,
-            playSound: false,
-            enableVibration: false,
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: true,
           ),
-          iOS: DarwinNotificationDetails(presentSound: false),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
         // Avoid exact alarms permission (Android 12+) by using inexact scheduling.
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

@@ -557,7 +557,7 @@ abstract class AppLocalizations {
   /// No description provided for @silentNotificationsInfo.
   ///
   /// In en, this message translates to:
-  /// **'Notifications are silent.'**
+  /// **'Notifications reliably alert you with vibrations and banners.'**
   String get silentNotificationsInfo;
 
   /// No description provided for @permissionDenied.

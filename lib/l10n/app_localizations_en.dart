@@ -263,7 +263,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weekendsOffSubtitle => 'No schedules on Sat/Sun';
 
   @override
-  String get silentNotificationsInfo => 'Notifications are silent.';
+  String get silentNotificationsInfo =>
+      'Notifications reliably alert you with vibrations and banners.';
 
   @override
   String get permissionDenied =>
