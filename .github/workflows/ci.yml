@@ -44,7 +44,9 @@ jobs:
           (cd wear_app && flutter analyze)
 
       - name: Test
-        run: flutter test --dart-define=UI_TESTING=true
+        run: |
+          flutter test --dart-define=UI_TESTING=true
+          (cd wear_app && flutter test)
 
       - name: Android build (debug apk)
         run: flutter build apk --debug
