@@ -1,16 +1,16 @@
 {
   "android": {
-    "latestVersionCode": 15,
-    "latestVersionName": "1.2.1",
+    "latestVersionCode": 19,
+    "latestVersionName": "1.2.2",
     "forceUpdate": false,
-    "message": "새로운 위젯 기능이 추가된 GTG 1.2.1 버전이 출시되었습니다!",
+    "message": "안정성과 기능이 개선된 GTG 1.2.2 버전이 출시되었습니다!",
     "storeUrl": "https://play.google.com/store/apps/details?id=com.forevernewvie.projectgtg"
   },
   "ios": {
-    "latestVersionCode": 15,
-    "latestVersionName": "1.2.1",
+    "latestVersionCode": 19,
+    "latestVersionName": "1.2.2",
     "forceUpdate": false,
-    "message": "새로운 위젯 기능이 추가된 GTG 1.2.1 버전이 출시되었습니다!",
+    "message": "안정성과 기능이 개선된 GTG 1.2.2 버전이 출시되었습니다!",
     "storeUrl": "https://apps.apple.com"
   }
 }
