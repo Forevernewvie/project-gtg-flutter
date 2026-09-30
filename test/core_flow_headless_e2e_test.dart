@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
 
 import 'package:project_gtg/app/gtg_app.dart';
 import 'package:project_gtg/core/models/app_theme_preference.dart';
@@ -20,7 +19,7 @@ import 'package:project_gtg/l10n/app_localizations.dart';
 const _tempDirPath = '/tmp';
 const _scrollStep = 200.0;
 
-/// Directory provider test double that avoids platform channel IO in integration tests.
+/// Directory provider test double that avoids platform channel IO in tests.
 class _DummyDirectoryProvider implements DirectoryProvider {
   @override
   Future<Directory> getApplicationSupportDirectory() async {
@@ -125,7 +124,6 @@ const _ko = _Labels(
   onboardingLater: '나중에',
 );
 
-/// Fails immediately when a framework exception is pending.
 void _assertNoException(WidgetTester tester, String stage) {
   final exception = tester.takeException();
   expect(
@@ -135,7 +133,6 @@ void _assertNoException(WidgetTester tester, String stage) {
   );
 }
 
-/// Taps a list tile after scrolling it into view on compact screens.
 Future<void> _tapListTileWithScroll(WidgetTester tester, String label) async {
   final tile = find.widgetWithText(ListTile, label);
   if (tile.evaluate().isEmpty) {
@@ -151,7 +148,6 @@ Future<void> _tapListTileWithScroll(WidgetTester tester, String label) async {
   await tester.pumpAndSettle();
 }
 
-/// Taps a text control after bringing it into view inside scrollable onboarding layouts.
 Future<void> _tapTextControlWithScroll(
   WidgetTester tester,
   String label,
@@ -165,7 +161,6 @@ Future<void> _tapTextControlWithScroll(
   await tester.pumpAndSettle();
 }
 
-/// Scrolls lazily built content into view before asserting on it.
 Future<void> _expectFinderVisible(WidgetTester tester, Finder finder) async {
   await tester.scrollUntilVisible(
     finder,
@@ -177,104 +172,102 @@ Future<void> _expectFinderVisible(WidgetTester tester, Finder finder) async {
   expect(finder, findsOneWidget);
 }
 
-/// Runs onboarding and core navigation assertions across locale/theme combinations.
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
   const locales = <Locale>[Locale('en'), Locale('ko')];
   const themes = <AppThemePreference>[
     AppThemePreference.light,
     AppThemePreference.dark,
   ];
 
-  testWidgets('onboarding + core navigation flow remains stable', (
-    tester,
-  ) async {
-    var caseIndex = 0;
-    for (final locale in locales) {
-      final labels = locale.languageCode == 'ko' ? _ko : _en;
+  testWidgets(
+    'onboarding + core navigation E2E flow across locales and themes',
+    (tester) async {
+      var caseIndex = 0;
+      for (final locale in locales) {
+        final labels = locale.languageCode == 'ko' ? _ko : _en;
 
-      for (final theme in themes) {
-        caseIndex += 1;
+        for (final theme in themes) {
+          caseIndex += 1;
 
-        var completeCalls = 0;
-        var skipCalls = 0;
+          var completeCalls = 0;
+          var skipCalls = 0;
 
-        await tester.pumpWidget(
-          MaterialApp(
-            locale: locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: theme == AppThemePreference.dark
-                ? ThemeMode.dark
-                : ThemeMode.light,
-            home: OnboardingScreen(
-              initialExercise: ExerciseType.pushUp,
-              onComplete:
-                  ({
-                    required primaryExercise,
-                    required primaryExerciseMaxReps,
-                  }) async {
-                    completeCalls += 1;
-                  },
-              onSkip: () async {
-                skipCalls += 1;
-              },
+          await tester.pumpWidget(
+            MaterialApp(
+              locale: locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              themeMode: theme == AppThemePreference.dark
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+              home: OnboardingScreen(
+                initialExercise: ExerciseType.pushUp,
+                onComplete:
+                    ({
+                      required primaryExercise,
+                      required primaryExerciseMaxReps,
+                    }) async {
+                      completeCalls += 1;
+                    },
+                onSkip: () async {
+                  skipCalls += 1;
+                },
+              ),
             ),
-          ),
-        );
-        await tester.pumpAndSettle();
-        _assertNoException(tester, 'onboarding-initial-$caseIndex');
+          );
+          await tester.pumpAndSettle();
+          _assertNoException(tester, 'onboarding-initial-$caseIndex');
 
-        expect(find.text(labels.onboardingNext), findsOneWidget);
-        expect(find.text(labels.onboardingLater), findsOneWidget);
+          expect(find.text(labels.onboardingNext), findsOneWidget);
+          expect(find.text(labels.onboardingLater), findsOneWidget);
 
-        await _tapTextControlWithScroll(tester, labels.onboardingNext);
-        _assertNoException(tester, 'onboarding-complete-$caseIndex');
-        expect(completeCalls, 1);
-        expect(skipCalls, 0);
+          await _tapTextControlWithScroll(tester, labels.onboardingNext);
+          _assertNoException(tester, 'onboarding-complete-$caseIndex');
+          expect(completeCalls, 1);
+          expect(skipCalls, 0);
 
-        final persistence = _MemoryPersistence(themePreference: theme);
+          final persistence = _MemoryPersistence(themePreference: theme);
 
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [persistenceProvider.overrideWithValue(persistence)],
-            child: GtgApp(locale: locale),
-          ),
-        );
-        await tester.pumpAndSettle();
-        _assertNoException(tester, 'initial-$caseIndex');
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [persistenceProvider.overrideWithValue(persistence)],
+              child: GtgApp(locale: locale),
+            ),
+          );
+          await tester.pumpAndSettle();
+          _assertNoException(tester, 'initial-$caseIndex');
 
-        expect(find.text(labels.home), findsOneWidget);
-        expect(find.text(labels.calendar), findsOneWidget);
-        expect(find.text(labels.settings), findsOneWidget);
-        await _expectFinderVisible(
-          tester,
-          find.byKey(const Key('quicklog.pushUp.record')),
-        );
+          expect(find.text(labels.home), findsOneWidget);
+          expect(find.text(labels.calendar), findsOneWidget);
+          expect(find.text(labels.settings), findsOneWidget);
+          await _expectFinderVisible(
+            tester,
+            find.byKey(const Key('quicklog.pushUp.record')),
+          );
 
-        await tester.tap(find.text(labels.calendar));
-        await tester.pumpAndSettle();
-        _assertNoException(tester, 'calendar-$caseIndex');
-        expect(find.text(labels.calendarTitle), findsOneWidget);
+          await tester.tap(find.text(labels.calendar));
+          await tester.pumpAndSettle();
+          _assertNoException(tester, 'calendar-$caseIndex');
+          expect(find.text(labels.calendarTitle), findsOneWidget);
 
-        await tester.tap(find.text(labels.settings));
-        await tester.pumpAndSettle();
-        _assertNoException(tester, 'settings-$caseIndex');
+          await tester.tap(find.text(labels.settings));
+          await tester.pumpAndSettle();
+          _assertNoException(tester, 'settings-$caseIndex');
 
-        await _tapListTileWithScroll(tester, labels.reminders);
-        _assertNoException(tester, 'reminders-$caseIndex');
-        expect(find.text(labels.reminderHeadline), findsOneWidget);
+          await _tapListTileWithScroll(tester, labels.reminders);
+          _assertNoException(tester, 'reminders-$caseIndex');
+          expect(find.text(labels.reminderHeadline), findsOneWidget);
 
-        await tester.binding.handlePopRoute();
-        await tester.pumpAndSettle();
+          await tester.binding.handlePopRoute();
+          await tester.pumpAndSettle();
 
-        await _tapListTileWithScroll(tester, labels.allLogs);
-        _assertNoException(tester, 'all-logs-$caseIndex');
-        expect(find.text(labels.allLogs), findsWidgets);
+          await _tapListTileWithScroll(tester, labels.allLogs);
+          _assertNoException(tester, 'all-logs-$caseIndex');
+          expect(find.text(labels.allLogs), findsWidgets);
+        }
       }
-    }
-  });
+    },
+  );
 }

@@ -12,7 +12,11 @@ fi
 BLOCKED_PATH_REGEX='(^|/)\.env($|\..+)|(^|/)android/key\.properties$|(^|/).*\.(pem|p12|jks|keystore)$|(^|/)id_rsa($|\.pub$)'
 TOKEN_REGEX='(ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{60,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|-----BEGIN (RSA )?PRIVATE KEY-----|sk_live_[0-9A-Za-z]{20,}|xox[baprs]-[0-9A-Za-z-]{10,})'
 
-BLOCKED_PATH_HITS="$(printf '%s\n' "$STAGED_FILES" | rg -n --pcre2 "$BLOCKED_PATH_REGEX" || true)"
+if command -v rg >/dev/null 2>&1; then
+  BLOCKED_PATH_HITS="$(printf '%s\n' "$STAGED_FILES" | rg -n --pcre2 "$BLOCKED_PATH_REGEX" || true)"
+else
+  BLOCKED_PATH_HITS="$(printf '%s\n' "$STAGED_FILES" | grep -E -n "$BLOCKED_PATH_REGEX" || true)"
+fi
 if [[ -n "$BLOCKED_PATH_HITS" ]]; then
   echo "[secret-scan] Commit blocked: sensitive file path detected."
   echo "$BLOCKED_PATH_HITS"
@@ -20,7 +24,11 @@ if [[ -n "$BLOCKED_PATH_HITS" ]]; then
   exit 1
 fi
 
-DIFF_HITS="$(git diff --cached --text -U0 | rg -n --pcre2 "$TOKEN_REGEX" || true)"
+if command -v rg >/dev/null 2>&1; then
+  DIFF_HITS="$(git diff --cached --text -U0 | rg -n --pcre2 "$TOKEN_REGEX" || true)"
+else
+  DIFF_HITS="$(git diff --cached --text -U0 | grep -E -n "$TOKEN_REGEX" || true)"
+fi
 if [[ -n "$DIFF_HITS" ]]; then
   echo "[secret-scan] Commit blocked: possible secret detected in staged diff."
   echo "$DIFF_HITS"

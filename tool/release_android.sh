@@ -31,7 +31,7 @@ fi
 
 # Extract storeFile path without printing secrets.
 STORE_FILE_PATH="$(
-  rg '^storeFile=' "$KEY_PROPS" | head -n 1 | sed 's/^storeFile=//'
+  grep -E '^storeFile=' "$KEY_PROPS" | head -n 1 | sed 's/^storeFile=//'
 )"
 if [[ -z "${STORE_FILE_PATH:-}" ]]; then
   echo "[release] android/key.properties is missing storeFile."
