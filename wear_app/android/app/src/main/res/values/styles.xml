@@ -4,8 +4,8 @@
     <style name="LaunchTheme" parent="Theme.SplashScreen">
         <!-- Background color of the splash screen -->
         <item name="windowSplashScreenBackground">@android:color/black</item>
-        <!-- Icon to display on the splash screen -->
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Exactly 48x48dp app icon per Wear OS guidelines (WO-V15) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_icon</item>
         <!-- Theme to switch to after the splash screen is done -->
         <item name="postSplashScreenTheme">@style/NormalTheme</item>
     </style>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
+<!-- Wear OS Quality Guidelines WO-V15: Exactly 48x48dp App Icon centered on Black Background -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/black" />
     <item
         android:width="48dp"
         android:height="48dp"
