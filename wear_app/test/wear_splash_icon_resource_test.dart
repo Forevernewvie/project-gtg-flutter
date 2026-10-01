@@ -277,12 +277,19 @@ void main() {
           ];
 
           for (final file in dimenFiles) {
-            expect(file.existsSync(), isTrue, reason: '${file.path} must exist');
+            expect(
+              file.existsSync(),
+              isTrue,
+              reason: '${file.path} must exist',
+            );
             final content = file.readAsStringSync();
             expect(
-              content.contains('<dimen name="splashscreen_icon_size_no_background">48dp</dimen>'),
+              content.contains(
+                '<dimen name="splashscreen_icon_size_no_background">48dp</dimen>',
+              ),
               isTrue,
-              reason: '${file.path} must specify 48dp for splashscreen_icon_size_no_background',
+              reason:
+                  '${file.path} must specify 48dp for splashscreen_icon_size_no_background',
             );
           }
         },
@@ -290,4 +297,3 @@ void main() {
     },
   );
 }
-
