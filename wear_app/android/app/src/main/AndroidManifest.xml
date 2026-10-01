@@ -13,7 +13,7 @@
         <!-- Required Wearable Library -->
         <uses-library
             android:name="com.google.android.wearable"
-            android:required="true" />
+            android:required="false" />
 
         <!-- 앱이 단독으로 동작하는지 여부 (폰 앱 종속적이므로 false) -->
         <meta-data

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Wear OS Quality Guidelines WO-V15: Exactly 48x48dp App Icon centered on Black Background -->
+    <dimen name="splashscreen_icon_size_no_background">48dp</dimen>
+    <dimen name="splashscreen_icon_size_with_background">48dp</dimen>
+    <dimen name="splashscreen_icon_size">48dp</dimen>
+    <dimen name="splashscreen_icon_mask_size_no_background">68dp</dimen>
+    <dimen name="splashscreen_icon_mask_stroke_no_background">18dp</dimen>
+</resources>

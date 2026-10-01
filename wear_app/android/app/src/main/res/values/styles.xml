@@ -2,10 +2,16 @@
 <resources>
     <!-- Wear OS Splash Screen Theme -->
     <style name="LaunchTheme" parent="Theme.SplashScreen">
-        <!-- Background color of the splash screen -->
+        <!-- Background color of the splash screen (both compat and platform) -->
         <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="android:windowSplashScreenBackground">@android:color/black</item>
         <!-- Exactly 48x48dp app icon per Wear OS guidelines (WO-V15) -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_icon</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_screen_icon</item>
+        <!-- Explicit 48dp icon size for SplashScreen library -->
+        <item name="splashScreenIconSize">48dp</item>
+        <!-- Window background fallback for cold start before Activity is attached -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
         <!-- Theme to switch to after the splash screen is done -->
         <item name="postSplashScreenTheme">@style/NormalTheme</item>
     </style>

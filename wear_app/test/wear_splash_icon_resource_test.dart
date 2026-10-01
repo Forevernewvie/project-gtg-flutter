@@ -253,8 +253,41 @@ void main() {
             reason:
                 'installSplashScreen() MUST be called before super.onCreate() as per Android specification',
           );
+          expect(
+            activityContent.contains('setKeepOnScreenCondition'),
+            isTrue,
+            reason:
+                'MainActivity must call setKeepOnScreenCondition to prevent premature dismissal',
+          );
+          expect(
+            activityContent.contains('onFlutterUiDisplayed()'),
+            isTrue,
+            reason:
+                'MainActivity must override onFlutterUiDisplayed to dismiss splash when Flutter is ready',
+          );
+        },
+      );
+
+      test(
+        '7. values/dimens.xml and values-watch-v20/dimens.xml explicitly enforce 48dp splashscreen_icon_size',
+        () {
+          final dimenFiles = [
+            File('$androidRoot/res/values/dimens.xml'),
+            File('$androidRoot/res/values-watch-v20/dimens.xml'),
+          ];
+
+          for (final file in dimenFiles) {
+            expect(file.existsSync(), isTrue, reason: '${file.path} must exist');
+            final content = file.readAsStringSync();
+            expect(
+              content.contains('<dimen name="splashscreen_icon_size_no_background">48dp</dimen>'),
+              isTrue,
+              reason: '${file.path} must specify 48dp for splashscreen_icon_size_no_background',
+            );
+          }
         },
       );
     },
   );
 }
+
